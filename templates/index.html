@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block title %}Cubetastic{% endblock %}
+
+{% block body %}
+<div id="homeDiv" class="white">
+  <div class="container">
+    <div class="row">
+      <p class="flow-text">
+        This is a website all about cubing.
+      </p>
+    </div>
+    <div class="row">
+      <a href="solve.html" id="whatIsARubiksCube" class="animated waves-effect waves-light btn red darken-4 col offset-s4">What is a Rubik's cube?</a>
+    </div>
+    <div id="row2" class="row">
+      <a href="videos.html" class="animated hide waves-effect btn amber col offset-s2">Videos</a>
+      <a href="timer.html" class="animated hide waves-effect waves-light btn black col offset-s5">Cube timer</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  var options = [
+    {selector: '#whatIsARubiksCube', offset: 100, callback: function() {
+      $('#whatIsARubiksCube').addClass('rotateIn');
+    }},
+    {selector: '#row2', offset: 80, callback: function() {
+      $('#row2 a:nth-child(1)').removeClass('hide');
+      $('#row2 a:nth-child(1)').addClass('zoomIn');
+      $('#row2 a:nth-child(2)').removeClass('hide');
+      $('#row2 a:nth-child(2)').addClass('bounceInLeft');
+    } },
+  ];
+  Materialize.scrollFire(options);
+</script>
+{% endblock %}
