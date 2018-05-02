@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cubetastic | Timer</title>
+  <link rel="icon" href="images/icons/icon 512x512.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Acme|Cabin|Play|Saira">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112091281-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-112091281-3');
+  </script>
+</head>
+<body onload="hideloader()">
+  <div id="sk-cube-grid">
+    <div class="sk-cube sk-cube1"></div>
+    <div class="sk-cube sk-cube2"></div>
+    <div class="sk-cube sk-cube3"></div>
+    <div class="sk-cube sk-cube4"></div>
+    <div class="sk-cube sk-cube5"></div>
+    <div class="sk-cube sk-cube6"></div>
+    <div class="sk-cube sk-cube7"></div>
+    <div class="sk-cube sk-cube8"></div>
+    <div class="sk-cube sk-cube9"></div>
+  </div>
+  <div id="hidden" style="display: none">
+    <header id="timerPageHeader" class="navbar-fixed">
+      <nav class="navbar-extended black">
+        <div class="nav-wrapper container">
+          <div class="row">
+            <a href="index.html" id="websiteTitle" class="white-text col s3">Cubetastic</a>
+          </div>
+        </div>
+        <div id="loggedStatus" class="right"></div>
+      </nav>
+    </header>
+    <div id="viewScrambleDiv" class="modal">
+      <div class="modal-content"></div>
+    </div>
+    <div id="mobileListTimes" class="side-nav">
+      <form class="session">
+        <select class="selectSession" onchange="mobileShowTimes()">
+          <option value="session1">Session 1</option>
+          <option value="session2">Session 2</option>
+          <option value="session3">Session 3</option>
+          <option value="session4">Session 4</option>
+          <option value="session5">Session 5</option>
+          <option value="session6">Session 6</option>
+          <option value="session7">Session 7</option>
+          <option value="session8">Session 8</option>
+          <option value="session9">Session 9</option>
+          <option value="session10">Session 10</option>
+          <option value="session11">Session 11</option>
+          <option value="session12">Session 12</option>
+          <option value="session13">Session 13</option>
+          <option value="session14">Session 14</option>
+          <option value="session15">Session 15</option>
+          <option value="session16">Session 16</option>
+          <option value="session17">Session 17</option>
+          <option value="session18">Session 18</option>
+          <option value="session19">Session 19</option>
+          <option value="session20">Session 20</option>
+        </select>
+      </form><br>
+      <div class="timesList"></div>
+    </div>
+    <div id="mobileListRecords" class="side-nav">
+      <div class="pb"><h4>PB: </h4>-:--.---</div><br>
+      <div class="ao5"><h4>Best average of 5: </h4>-:--.---</div><br>
+      <div class="ao12"><h4>Best average of 12: </h4>-:--.---</div><br>
+      <div class="ao50"><h4>Best average of 50: </h4>-:--.---</div><br>
+      <div class="ao100"><h4>Best average of 100: </h4>-:--.---</div><br>
+      <div class="numOfSolves"><h4>No. of solves found: </h4>---</div>
+    </div>
+    <div id="oldScramble" style="display: none"></div>
+    <div class="timer black white-text">
+      <div>
+        <div id="scramblePanel" class="grey darken-4">
+          <div class="input-field">
+            <select id="cubeTypeSelect">
+              <option value="333">3x3x3</option>
+              <option value="222">2x2x2</option>
+              <option value="333ni">3x3x3 bld</option>
+              <option value="pyram">Pyraminx</option>
+              <option value="444">4x4x4</option>
+              <option value="555">5x5x5</option>
+              <option value="666">6x6x6</option>
+              <option value="777">7x7x7</option>
+              <option value="minx">Megaminx</option>
+              <option value="skewb">Skewb</option>
+              <option value="sq1fast">Square 1</option>
+            </select>
+          </div>
+          <h4 id="scramble">Scramble: generating scramble...</h4>
+        </div>
+        <div id="loginMessage">
+          Tip: To save your times and access them from any device, <a href="signin.html">sign in</a>.
+          <div class="btn red lighten-3 red-text right" onclick="dismiss()"><i class="material-icons">close</i></div>
+        </div>
+        <div id="red" class="black darken-4"></div>
+        <div id="green" class="black darken-4"></div>
+        </div>
+        <h1 id="timer">0:00.000</h1>
+        <div id="scrambleImage"></div>
+        <div id="controlPanel" class="darken-3 hoverable hide-on-large-only">
+          <button id="toggle" class="btn red waves-effect center" onclick="f1()">Start</button><br>
+          <a href="#" data-activates="mobileListTimes" class="button-collapse btn amber black-text">
+            Show times
+          </a>
+          <a href="#" data-activates="mobileListRecords" class="button-collapse btn amber black-text">
+            Show records
+          </a>
+        </div>
+      </div>
+      <div id="listTimes" class="grey darken-4 white-text hide-on-med-and-down">
+        <select class="selectSession" onchange="showTimes()">
+          <option value="session1">Session 1</option>
+          <option value="session2">Session 2</option>
+          <option value="session3">Session 3</option>
+          <option value="session4">Session 4</option>
+          <option value="session5">Session 5</option>
+          <option value="session6">Session 6</option>
+          <option value="session7">Session 7</option>
+          <option value="session8">Session 8</option>
+          <option value="session9">Session 9</option>
+          <option value="session10">Session 10</option>
+          <option value="session11">Session 11</option>
+          <option value="session12">Session 12</option>
+          <option value="session13">Session 13</option>
+          <option value="session14">Session 14</option>
+          <option value="session15">Session 15</option>
+          <option value="session16">Session 16</option>
+          <option value="session17">Session 17</option>
+          <option value="session18">Session 18</option>
+          <option value="session19">Session 19</option>
+          <option value="session20">Session 20</option>
+        </select>
+        <div id="timesList" class="timesList"></div>
+      </div>
+      <div id="listRecords" class="grey darken-4 white-text left-align hide-on-med-and-down"><br>
+        <div class="pb"><h4>PB: </h4>-:--.---</div><br>
+        <div class="ao5"><h4>Best average of 5: </h4>-:--.---</div><br>
+        <div class="ao12"><h4>Best average of 12: </h4>-:--.---</div><br>
+        <div class="ao50"><h4>Best average of 50: </h4>-:--.---</div><br>
+        <div class="ao100"><h4>Best average of 100: </h4>-:--.---</div><br>
+        <div class="numOfSolves"><h4>No. of solves found: </h4>---</div>
+      </div>
+      <div id="context-menu">
+        <ul id="context-menu_items">
+          <li id="viewScramble" class="context-menu_item"><a href="#viewScrambleDiv" class="black-text modal-trigger">View scramble</a></li>
+          <li id="deleteTime" class="context-menu_item">Delete time</li>
+        </ul>
+      </div>
+      <footer class="page-footer grey darken-3">
+        <div class="container">
+          <div class="row">
+            <div class="hide-on-med-and-down footerDividerRight col s6">
+              <h5 class="white-text">Cubetastic</h5>
+              <p>Property of Cubetastic</p>
+              <br><br>
+            </div>
+            <div class="hide-on-large-only col s6">
+              <h5 class="white-text">Cubetastic</h5>
+              <p>
+                Property of Cubetastic<br>
+                Try cubetastic in a desktop. It's even better!
+              </p>
+            </div>
+            <div class="col l3 offset-l1 m3 s12">
+              <h5 class="white-text">Contact us</h5>
+              Email id: cubetastic33@gmail.com
+              <iframe src="https://ghbtns.com/github-btn.html?user=cubetastic33&repo=cubetastic33.github.io&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170px" height="30px"></iframe><br>
+              <div class="g-follow" data-annotation="bubble" data-height="24" data-href="//plus.google.com/u/2/109419464958034511057" data-rel="author"></div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            © 2018 | CSS Libraries used: materialize.css, animate.css | Official TNoodle 
+            scrambling program has been used to generate scrambles.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</body>
+<script>
+  if (navigator.serviceWorker.controller) {
+    console.log('Active service worker found, no need to register')
+  } else {
+    //Register the ServiceWorker
+    navigator.serviceWorker.register('firebase-messaging-sw.js', {
+      scope: './'
+    }).then(function(reg) {
+      console.log('Service worker has been registered for scope:'+ reg.scope);
+    });
+  }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+  function hideloader() {
+    $("#sk-cube-grid").hide();
+    $("#hidden").show();
+  }
+</script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="js/materialize.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.1/firebase.js"></script>
+<script src="js/tnoodle.js"></script>
+<script src="js/scrambler.js"></script>
+<script src="js/timer.js"></script>
+<script src="js/main.js"></script>
+<script src="js/loggedStatus.js"></script>
+<script src="js/saveTimes.js"></script>
+<script src="js/timing.js"></script>
+</html>

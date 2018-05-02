@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block title %}Cubetastic | Solve{% endblock %}
+
+{% block body %}
+<div id="division">
+  <h2>Solving a cube</h2>
+  <p>
+    The Rubik's cube was invented in 1974 by Erno Rubik. It took him one month before he was able to solve the Cube for himself. Since then,
+    people all over the world were wondering how to solve the cube - if it was even possible. The best speed cubers (people who take part in
+    speed cubing - a sport where competitors try and solve the cube as quickly as possible) can solve the cube in under 6 seconds. There are
+    many methods to solve the cube. In most methods, we solve it layer-by-layer.
+  </p>
+  <p>
+    In a classic Rubik's Cube, each of the six faces is covered by nine stickers, each of a different colour: white, red, blue, orange, green,
+    and yellow. In currently sold models, white is opposite yellow, blue is opposite green, and orange is opposite red, and the red, white
+    and blue are arranged in that order in a clockwise arrangement. Many varieties of this puzzle are there, with various numbers of sides,
+    dimensions, and stickers, but not all of them are by Rubik's.
+  </p>
+  <h2>Algorithms</h2>
+  <p>
+    A memorised sequence of moves that has a desired effect on the cube is called an algorithm. This word is derived from the mathematical use
+    of algorithm, meaning a list of well-defined instructions for performing a task from a given initial state, to a desired end state. Each
+    method of solving the Rubik's Cube has its own set of algorithms. Algorithms consist of notations, which tell the cuber what moves to do.
+  </p>
+  <h3>Notations</h3>
+  <p>
+    F-Front<br>
+    B-Back<br>
+    U-Up<br>
+    D-Down<br>
+    R-Right<br>
+    L-Left<br>
+    f-Front two layers<br>
+    b-Back two layers<br>
+    u-Up two layers<br>
+    d-Down two layers<br>
+    r-Right two layers<br>
+    l-Left two layers<br>
+    x-Rotate the cube (bring D to F)<br>
+    y-Rotate the cube (bring F to L)<br>
+    z-Rotate the cube (bring U to L)<br>
+    m-middle (direction of x)<br>
+    e-equator (direction of y)<br>
+    s-side (direction of z)<br>
+    i-inverted (Counterclockwise/Anticlocwise)<br>
+    ' -Prime (same as i)<br>
+    w-Wide (like f, b, u, d, r, & l)<br>
+    2-Do the same move twice<br>
+  </p>
+</div>
+{% endblock %}

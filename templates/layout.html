@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Welcome to Cubetastic, a website all about cubing! The timer page has a timer that can store your times, so that you can access it from all devices. There is also a trainer you can try!">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="icon" href="images/icons/icon 512x512.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Acme|Cabin|Play|Saira">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112091281-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-112091281-3');
+  </script>
+</head>
+<body onload="hideloader()">
+  <div id="sk-cube-grid">
+    <div class="sk-cube sk-cube1"></div>
+    <div class="sk-cube sk-cube2"></div>
+    <div class="sk-cube sk-cube3"></div>
+    <div class="sk-cube sk-cube4"></div>
+    <div class="sk-cube sk-cube5"></div>
+    <div class="sk-cube sk-cube6"></div>
+    <div class="sk-cube sk-cube7"></div>
+    <div class="sk-cube sk-cube8"></div>
+    <div class="sk-cube sk-cube9"></div>
+  </div>
+  <div id="hidden" style="display: none">
+    <header class="navbar-fixed">
+      <nav class="navbar-extended indigo darken-4">
+        <div class="nav-wrapper container">
+          <div class="row">
+            <a href="#" data-activates="mobile-menu" class="button-collapse btn">
+              <i class="material-icons">menu</i>
+            </a>
+            <a href="index.html" id="websiteTitle" class="white-text col s3">Cubetastic</a>
+          </div>
+          <div class="row">
+            <ul class="animated bounceInRight hide-on-med-and-down col s12">
+              <li><a href="index.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Home">
+                <i class="material-icons">home</i>
+              </a></li>
+              <li><a href="solve.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Solve">
+                Solve
+              </a></li>
+              <li><a href="pdfs.html" class="white-text tooltipped" data-position="bottom" data-tooltip="PDFs">
+                PDFs
+              </a></li>
+              <li><a href="train.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Train">
+                Train
+              </a></li>
+              <li><a href="timer.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Timer">
+                Timer
+              </a></li>
+              <li><a href="videos.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Videos">
+                Videos
+              </a></li>
+              <li><a href="contactMe.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Contact Me">
+                Contact Me
+              </a></li>
+            </ul>
+          </div>
+        </div>
+        <div id="loggedStatus" class="right"></div>
+      </nav>
+    </header>
+    <ul id="mobile-menu" class="side-nav">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="solve.html">Solve</a></li>
+      <li><a href="pdfs.html">PDFs</a></li>
+      <li><a href="train.html">Train</a></li>
+      <li><a href="timer.html">Timer</a></li>
+      <li><a href="videos.html">Videos</a></li>
+      <li><a href="contactMe.html">Contact Me</a></li>
+    </ul>
+    {% block body %}
+    {% endblock %}
+    <footer class="page-footer grey darken-3">
+      <div class="container">
+        <div class="row">
+          <div class="hide-on-med-and-down footerDividerRight col s6">
+            <h5 class="white-text">Cubetastic</h5>
+            <p>Property of Cubetastic</p>
+            <br><br>
+          </div>
+          <div class="hide-on-large-only col s6">
+            <h5 class="white-text">Cubetastic</h5>
+            <p>
+              Property of Cubetastic<br>
+              Try cubetastic in a desktop. It's even better!
+            </p>
+          </div>
+          <div class="col l3 offset-l1 m3 s12">
+            <h5 class="white-text">Contact Me</h5>
+            Email id: cubetastic33@gmail.com
+            <iframe src="https://ghbtns.com/github-btn.html?user=cubetastic33&repo=cubetastic&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170px" height="30px"></iframe><br>
+            <div class="g-follow" data-annotation="bubble" data-height="24" data-href="//plus.google.com/u/2/109419464958034511057" data-rel="author"></div>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          © 2018 | CSS Libraries used: materialize.css, animate.css
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+<script>
+  if (navigator.serviceWorker.controller) {
+    console.log('Active service worker found, no need to register')
+  } else {
+    //Register the ServiceWorker
+    navigator.serviceWorker.register('firebase-messaging-sw.js', {
+      scope: './'
+    }).then(function(reg) {
+      console.log('Service worker has been registered for scope:'+ reg.scope);
+    });
+  }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+  function hideloader() {
+    $("#sk-cube-grid").hide();
+    $("#hidden").show();
+  }
+</script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<script src="js/materialize.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.1/firebase.js"></script>
+<script src="js/main.js"></script>
+<script src="js/loggedStatus.js"></script>
+{% block javascript %}
+{% endblock %}
+</html>

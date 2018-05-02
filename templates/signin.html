@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block title %}Cubetastic | Sign in{% endblock %}
+
+{% block body %}
+<div id="signinDivision">
+  <div class="container">
+    <div class="row">
+      <div id="formHeading" class="col l10 m8 s12 offset-l1 offset-m2 black white-text center">Sign in</div>
+    </div>
+    <div class="row">
+      <form id="signIn" class="col l10 m8 s12 offset-l1 offset-m2 teal lighten-4">
+        <div class="row">
+          <div class="input-field col s11">
+            <i class="material-icons prefix">account_circle</i>
+            <input type="text" id="username" class="validate" autocomplete="off" required>
+            <label for="username" id="usernameLabel">Username</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s11">
+            <input type="password" id="password" class="validate" required>
+            <label for="password" id="passwordLabel">Password</label>
+          </div>
+        </div>
+        <div class="row">
+            <button type="submit" class="waves-effect btn indigo darken-3 indigo-text text-lighten-3 col s3 offset-s1">Sign in</button>
+        </div>
+        <div class="row">
+          <p class="col s11 offset-s1">
+            Not a member of Cubetastic yet? <a href="signup.html">Sign up</a> now!
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
