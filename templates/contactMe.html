@@ -3,4 +3,66 @@
 {% block title %}Cubetastic | Contact Me{% endblock %}
 
 {% block body %}
+<div id="division">
+  <div id="contactMeForm" class="container z-depth-2" style="padding: 0.25rem 1rem 0.25rem 1rem;">
+    <div class="row">
+      <h2>Send Feedback to Me</h2>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <input type="text" id="title" class="validate">
+        <label for="title">Title</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <textarea id="message" class="materialize-textarea"></textarea>
+        <label for="message">Type your message here</label>
+      </div>
+    </div>
+    <div class="row">
+      <div id="submitMessage" class="outlined-btn z-depth-2 waves-effect right">Submit</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  $('#submitMessage').click(function() {
+    var title = $('#title').val();
+    var message = $('#message').val();
+    $('#contactMeForm').html('\
+      <div class="row">\
+        <h2>Send Feedback to Me</h2>\
+      </div>\
+      <div class="row">\
+        <p class="flow-text">Please wait...</p>\
+      </div>\
+    ');
+    if ((title != '') && (message != '')) {
+      $.ajax({
+        type: 'POST',
+        url: '/sendFeedback',
+        data: {
+          title: title,
+          message: message
+        },
+        success: function(result) {
+          console.log(result);
+          if (result == 'Done!') {
+            $('#contactMeForm').html('\
+              <div class="row">\
+                <h2>Send Feedback to Me</h2>\
+              </div>\
+              <div class="row">\
+                <p class="flow-text">Thanks a lot for sending your message!</p>\
+              </div>\
+            ');
+          }
+        }
+      });
+    }
+  });
+</script>
 {% endblock %}

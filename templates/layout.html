@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1976D2">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="description" content="Welcome to Cubetastic, a website all about cubing! The timer page has a timer that can store your times, so that you can access it from all devices. There is also a trainer you can try!">
   <title>{% block title %}{% endblock %}</title>
-  <link rel="icon" href="images/icons/icon 512x512.png">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Acme|Cabin|Play|Saira">
+  <link rel="icon" href="images/icons/icon-512x512.png">
+  <link rel="apple-touch-icon" href="images/icons/icon-512x512.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Acme|Cabin|Play|Saira|Oswald">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
   <link rel="stylesheet" href="css/main.css">
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest1.json">
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112091281-3"></script>
   <script>
@@ -36,44 +39,57 @@
   </div>
   <div id="hidden" style="display: none">
     <header class="navbar-fixed">
-      <nav class="navbar-extended indigo darken-4">
+      <nav class="navbar-extended">
         <div class="nav-wrapper container">
           <div class="row">
-            <a href="#" data-activates="mobile-menu" class="button-collapse btn">
-              <i class="material-icons">menu</i>
-            </a>
-            <a href="index.html" id="websiteTitle" class="white-text col s3">Cubetastic</a>
+            <a href="#" data-target="mobile-menu" id="sideNavTrigger" class="sidenav-trigger btn red"><i class="material-icons">menu</i></a>
+            <a href="/" id="websiteTitle" class="col s3 hide-on-small-only">Cubetastic</a>
+            <a href="/" id="smallWebsiteTitle" class="col s3 hide-on-med-and-up">Cubetastic</a>
           </div>
           <div class="row">
             <ul class="animated bounceInRight hide-on-med-and-down col s12">
-              <li><a href="index.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Home">
-                <i class="material-icons">home</i>
-              </a></li>
-              <li><a href="solve.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Solve">
-                Solve
-              </a></li>
-              <li><a href="pdfs.html" class="white-text tooltipped" data-position="bottom" data-tooltip="PDFs">
-                PDFs
-              </a></li>
-              <li><a href="train.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Train">
-                Train
-              </a></li>
-              <li><a href="timer.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Timer">
-                Timer
-              </a></li>
-              <li><a href="videos.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Videos">
-                Videos
-              </a></li>
-              <li><a href="contactMe.html" class="white-text tooltipped" data-position="bottom" data-tooltip="Contact Me">
-                Contact Me
-              </a></li>
+              <li>
+                <a href="index.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Home">
+                  <i class="material-icons">home</i>
+                </a>
+              </li>
+              <li>
+                <a href="solve.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Solve">
+                  Solve
+                </a>
+              </li>
+              <li>
+                <a href="pdfs.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="PDFs">
+                  PDFs
+                </a>
+              </li>
+              <li>
+                <a href="train.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Train">
+                  Train
+                </a>
+              </li>
+              <li>
+                <a href="timer.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Timer">
+                  Timer
+                </a>
+              </li>
+              <li>
+                <a href="videos.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Videos">
+                  Videos
+                </a>
+              </li>
+              <li>
+                <a href="contactMe.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Contact Me">
+                  Contact Me
+                </a>
+              </li>
             </ul>
           </div>
         </div>
-        <div id="loggedStatus" class="right"></div>
+        <div id="loggedStatus"></div>
       </nav>
     </header>
-    <ul id="mobile-menu" class="side-nav">
+    <ul id="mobile-menu" class="sidenav">
       <li><a href="index.html">Home</a></li>
       <li><a href="solve.html">Solve</a></li>
       <li><a href="pdfs.html">PDFs</a></li>
@@ -103,15 +119,15 @@
             <h5 class="white-text">Contact Me</h5>
             Email id: cubetastic33@gmail.com
             <iframe src="https://ghbtns.com/github-btn.html?user=cubetastic33&repo=cubetastic&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170px" height="30px"></iframe><br>
-            <div class="g-follow" data-annotation="bubble" data-height="24" data-href="//plus.google.com/u/2/109419464958034511057" data-rel="author"></div>
           </div>
         </div>
         <div class="footer-copyright">
-          © 2018 | CSS Libraries used: materialize.css, animate.css
+          © 2018 | Cubetastic
         </div>
       </div>
     </footer>
   </div>
+  <noscript>You have disabled JavaScript. Cubetastic cannot work without JavaScript, so please enable it!</noscript>
 </body>
 <script>
   if (navigator.serviceWorker.controller) {

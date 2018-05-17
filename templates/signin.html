@@ -4,35 +4,64 @@
 
 {% block body %}
 <div id="signinDivision">
-  <div class="container">
-    <div class="row">
-      <div id="formHeading" class="col l10 m8 s12 offset-l1 offset-m2 black white-text center">Sign in</div>
-    </div>
-    <div class="row">
-      <form id="signIn" class="col l10 m8 s12 offset-l1 offset-m2 teal lighten-4">
-        <div class="row">
-          <div class="input-field col s11">
-            <i class="material-icons prefix">account_circle</i>
-            <input type="text" id="username" class="validate" autocomplete="off" required>
-            <label for="username" id="usernameLabel">Username</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s11">
-            <input type="password" id="password" class="validate" required>
-            <label for="password" id="passwordLabel">Password</label>
-          </div>
-        </div>
-        <div class="row">
-            <button type="submit" class="waves-effect btn indigo darken-3 indigo-text text-lighten-3 col s3 offset-s1">Sign in</button>
-        </div>
-        <div class="row">
-          <p class="col s11 offset-s1">
-            Not a member of Cubetastic yet? <a href="signup.html">Sign up</a> now!
-          </p>
-        </div>
-      </form>
-    </div>
-  </div>
+  <div id="formHeading">Sign In</div>
+  <form id="formDiv" class="z-depth-2">
+    <div class="text-field">
+      <i class="material-icons">account_circle</i>
+      <label for="username" id="usernameLabel">Username</label>
+      <input type="text" id="username" class="browser-default outlined-text-field" autocomplete="off">
+      <div class="helper-text"></div>
+      <i class="material-icons warning-icon">warning</i>
+    </div><br>
+    <div class="text-field">
+      <i class="material-icons">lock</i>
+      <label for="password" id="passwordLabel">Password</label>
+      <input type="password" id="password" class="browser-default outlined-text-field" readonly onfocus="if (this.hasAttribute('readonly')) {this.removeAttribute('readonly');this.blur();this.focus();}">
+    </div><br>
+    <div id="signinBtn" class="contained-btn waves-effect z-depth-1" onclick="$('#formDiv').submit()">Sign In</div>
+    <div id="forgotPassword" class="text-btn waves-effect">Forgot Password</div><br><br>
+    Not a member of Cubetastic yet? <a href="signup.html">Sign up</a> now!
+  </form>
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+  $('#username').focusin(function() {
+    $('#usernameLabel').css({
+      'background-color': '#F1F8E9',
+      'color': '#00B460',
+      'padding': '0 5px',
+      'top': '-0.5rem'
+    });
+  });
+  $('#username').focusout(function() {
+    $('#usernameLabel').css('color', '#7F7F7F');
+    if ($(this).val() == '') {
+      $('#usernameLabel').css({
+        'background-color': '#F1F8E900',
+        'padding': 0,
+        'top': '1rem'
+      });
+    }
+  });
+  $('#password').focusin(function() {
+    $('#passwordLabel').css({
+      'background-color': '#F1F8E9',
+      'color': '#00B460',
+      'padding': '0 5px',
+      'top': '-0.5rem'
+    });
+  });
+  $('#password').focusout(function() {
+    $('#passwordLabel').css('color', '#7F7F7F');
+    if ($(this).val() == '') {
+      $('#passwordLabel').css({
+        'background-color': '#F1F8E900',
+        'padding': 0,
+        'top': '1rem'
+      });
+    }
+  });
+</script>
 {% endblock %}
