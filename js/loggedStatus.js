@@ -16,17 +16,15 @@ firebase.auth().onAuthStateChanged(function(user) {
         firebase.auth().signOut().then(function() {}).catch(function(error) {});
       } else {
         $('#loggedStatus').html('\
-          <ul>\
-            <li>'+username+'<img src="'+profilePic+'" id="profilePic" alt="profile pic"></img>\
-              <ul class="logout">\
-                <li><a href="profile.html">Profile</a></li><br>\
-                <li><a href="" onclick="signOutUser()">Sign out</a></li>\
-              </ul>\
-            </li>\
+          <img src="'+profilePic+'" id="profilePic" class="circle right" alt="profile pic">\
+          <div id="usernameInHeader" class="hide-on-small-only">'+username+'</div>\
+          <ul class="logout">\
+            <li><a href="profile.html">Profile</a></li><br>\
+            <li><a href="#" onclick="signOutUser()">Sign out</a></li>\
           </ul>\
         ');
         $('#loggedStatus').hover(function() {
-          $('#loggedStatus ul li ul').toggle();
+          $('#loggedStatus ul').toggle();
         });
       }
     }, function (errorObject) {
@@ -35,13 +33,7 @@ firebase.auth().onAuthStateChanged(function(user) {
   } else {
     // No user is signed in.
     if (document.getElementById("loggedStatus").innerHTML == "") {
-      $('#loggedStatus').html('\
-        <ul class="logout">\
-          <li>\
-            <a href="signin.html">Sign in</a>\
-          </li>\
-        </ul>\
-      ');
+      $('#loggedStatus').html('<a id="signInButton" href="signin.html">Sign in</a>');
     }
   }
 });
