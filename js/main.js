@@ -60,14 +60,12 @@ $('#signupDivision #email').keyup(function() {
 
 $('#signupDivision #confirmPassword').keyup(function() {
   if ($(this).val() == $('#password').val()) {
-    //If both the passwords are matching
     $('#password').attr('class', 'browser-default outlined-text-field');
     $('#passwordLabel').attr('class', '');
     $('#password ~ .helper-text').attr('class', 'helper-text');
     $('#password ~ .helper-text').text('The passwords are matching.');
     $('#password ~ .error-icon').hide();
   } else {
-    //If both the passwords are not matching
     $('#password').attr('class', 'browser-default outlined-text-field error-message');
     $('#passwordLabel').attr('class', 'error-message-label');
     $('#password ~ .helper-text').attr('class', 'helper-text error-text');
@@ -136,7 +134,6 @@ function usernameValidity(usernameGiven) {
 
 function signUpUser(e) {
   e.preventDefault();
-  //Get values
   var username = $('#username').val();
   var email = $('#email').val();
   var password = $('#password').val();
@@ -155,25 +152,21 @@ function signUpUser(e) {
   if (($('#username ~ .error-icon').css('display') == 'none') && ($('#password ~ .error-icon').css('display') == 'none')) {
     M.toast({'html': 'Please wait...'});
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-      // Handle Errors here.
       var errorCode = error.code;
       var errorMessage = error.message;
       if (errorCode == 'auth/email-already-in-use') {
-        //Update UI to inform user
         $('#email').attr('class', 'browser-default outlined-text-field error-message');
         $('#emailLabel').attr('class', 'error-message-label');
         $('#email ~ .helper-text').attr('class', 'helper-text error-text');
         $('#email ~ .helper-text').text('Email address already in use!');
         $('#email ~ .error-icon').show();
       } else if (errorCode == 'auth/invalid-email') {
-        //Update UI to inform user
         $('#email').attr('class', 'browser-default outlined-text-field error-message');
         $('#emailLabel').attr('class', 'error-message-label');
         $('#email ~ .helper-text').attr('class', 'helper-text error-text');
         $('#email ~ .helper-text').text('Email address not properly formatted!');
         $('#email ~ .error-icon').show();
       } else if (errorCode == 'auth/weak-password') {
-        //Update UI to inform user
         $('#password').attr('class', 'browser-default outlined-text-field error-message');
         $('#passwordLabel').attr('class', 'error-message-label');
         $('#password ~ .helper-text').attr('class', 'helper-text error-text');
@@ -205,11 +198,9 @@ function signUpUser(e) {
             console.log(result);
             if (result == 'created user ' + username + '.') {
               user.sendEmailVerification().then(function() {
-                // Email sent.
                 alert("Verification email has been sent.");
                 window.location.href="index.html";
               }).catch(function(error) {
-                // An error happened.
                 M.toast({'html': errorMessage, 'displayLength': 10000});
               });
             }
@@ -224,23 +215,17 @@ function signUpUser(e) {
 
 function signInUser(e) {
   e.preventDefault();
-  //Get values
   var username = $('#username').val();
   var password = $('#password').val();
   M.toast({'html': 'Please wait...', 'displayLength': 10000});
   db.ref('users').on('value', function(data) {
-    var i = 0;
     data.forEach(function(child) {
-      i++;
       if (username == child.child('username').val()) {
-        firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
+        firebase.auth().signInWithEmailAndPassword(child.child('email').val(), password).then(function(user) {
           window.location.href="index.html";
         }).catch(function(error) {
-          // Handle Errors here.
           M.toast({'html': error.message, 'displayLength': 10000});
         });
-      } else if (i == data.numChildren()) {
-        M.toast({'html': 'Wrong username!', 'displayLength': 7500});
       }
     });
   });
