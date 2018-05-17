@@ -1,0 +1,154 @@
+body {
+  overflow-x: hidden;
+}
+
+#timerPageHeader nav {
+  height: 5em;
+}
+
+#websiteTitle {
+  margin-left: 10px;
+}
+
+#timerPageHeader #loggedStatus {
+  background-color: black;
+}
+
+#timer {
+  background-size: 100%;
+  text-align: center;
+  min-height: 90vh;
+  padding: 1px;
+  width: 100%;
+}
+
+.valign-wrapper:not(.floating-btn) {
+  height: 80vh;
+}
+
+#time {
+  margin: auto;
+}
+
+#records {
+  text-align: left;
+  padding: 5px;
+  position: absolute;
+  top: calc(5em + 10px);
+  left: 10px;
+  height: calc(30vh - 5em);
+  width: 15vw;
+}
+
+#session {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  height: 70vh;
+  width: 15vw;
+}
+
+#records, #session, table {
+  border-radius: 3px;
+  font-family: Roboto;
+}
+
+/*
+.z-depth-1 {
+  -webkit-box-shadow: 0 2px 2px 0 rgba(233, 233, 233, 0.14),0 3px 1px -2px rgba(233, 233, 233, 0.12),0 1px 5px 0 rgba(233, 233, 233, 0.2);
+  box-shadow :0 2px 2px 0 rgba(233, 233, 233, 0.14),0 3px 1px -2px rgba(233, 233, 233, 0.12),0 1px 5px 0 rgba(233, 233, 233, 0.2);
+}
+*/
+
+#selectSession {
+  position: absolute;
+  top: 35vh;
+  right: 53vw;
+  width: 10em;
+}
+
+#selectCategory {
+  position: absolute;
+  top: 35vh;
+  left: 53vw;
+  width: 10em;
+}
+
+#editTimeBtn {
+  position: absolute;
+  top: 42vh;
+}
+
+#showSessionBtn {
+  position: fixed;
+  left: 23px;
+  bottom: 23px;
+  height: 4rem;
+  width: 4rem;
+  margin-bottom: 0;
+  padding-top: 1rem;
+  z-index: 997;
+}
+
+#font1 {font-family: 'Play';}
+#font2 {font-family: 'Iceberg';}
+#font3 {font-family: 'Unica One';}
+#font4 {font-family: 'Share Tech Mono';}
+#font5 {font-family: 'Contrail One';}
+#font6 {font-family: 'VT323';}
+
+#red, #green {
+  border-radius: 100%;
+  height: 1.5em;
+  width: 1.5em;
+  position: absolute;
+  left: calc(50vw - 1em);
+}
+
+#red {
+  top: 32vh;
+}
+
+#green {
+  top: calc(32vh + 2.5em);
+}
+
+#scramble {
+  font-size: 1.5em;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: 15vw;
+  margin-right: 15vw;
+  word-wrap: break-word;
+}
+
+#scrambleImage {
+  border-radius: 3px;
+  padding: 10px;
+  position: absolute;
+  top: calc(5em + 10px);
+  right: 10px;
+  -webkit-box-shadow:0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
+  box-shadow:0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
+.tabs .tab a {
+  color: black;
+}
+
+.tabs .tab a:focus, .tabs .tab a:focus.active {
+  background-color:rgba(175, 175, 175, 0.2);
+}
+
+.tabs .tab a:hover, .tabs .tab a.active {
+  color: black;
+}
+
+.tabs .tab.disabled a, .tabs .tab.disabled a:hover {
+  color:black;
+}
+
+.tabs .indicator {
+  background-color: black;
+}
