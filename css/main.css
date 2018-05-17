@@ -545,6 +545,11 @@ p {
   box-shadow: none !important;
 }
 
+#formDiv > div i:first-child {
+  position: relative;
+  bottom: -0.5rem;
+}
+
 @media (min-width: 550px) {
   #formHeading {
     margin: 0 15vw;
