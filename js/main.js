@@ -11,27 +11,15 @@ firebase.initializeApp(config);
 
 var db = firebase.database();
 var storage = firebase.storage();
+var messaging = firebase.messaging();
 
 $(document).ready(function() {
   $('body').css('background-color', 'white');
   if ($('.button-collapse').length) {
     $('.button-collapse').sideNav();
   }
-  if ($('.carousel.carousel-slider').length) {
-    $('.carousel.carousel-slider').carousel({
-      duration: 300,
-      fullWidth: true
-    });
-    setInterval(function() {
-      $('.carousel').carousel('next');
-    }, 2500);
-  }
-  if ($('select').length) {
-    $('select').material_select();
-  }
-  if ($('.modal').length) {
-    $('.modal').modal();
-  }
+  var sideNavElem = document.querySelectorAll('.sidenav');
+  var sideNavInstance = M.Sidenav.init(sideNavElem);
 });
 
 $('#timerDropdownTrigger').hover(function(e) {
@@ -39,73 +27,198 @@ $('#timerDropdownTrigger').hover(function(e) {
   $('#timerDropdown').toggle();
 });
 
-$("#signUp").submit(signUpUser);
-$("#signIn").submit(signInUser);
-$("#signUp #username").keyup(function() {
-  if ($("#username").val() != "") {usernameAvailable($("#username").val())} else {$("#msg").html("");$("#msg").hide();}
+$('#signupDivision #formDiv').submit(signUpUser);
+$('#signinDivision #formDiv').submit(signInUser);
+
+$('#signupDivision #username').keyup(function() {
+  if ($(this).val() != '') {
+    if ($(this).val().length > 6) {
+      usernameAvailability($(this).val());
+    } else {
+      $('#username').attr('class', 'browser-default outlined-text-field error-message');
+      $('#usernameLabel').attr('class', 'error-message-label');
+      $('#username ~ .helper-text').attr('class', 'helper-text error-text');
+      $('#username ~ .helper-text').text('Username should be at least 6 characters.');
+      $('#username ~ .error-icon').show();
+    }
+  } else {
+    $(this).attr('class', 'browser-default outlined-text-field');
+    $('#usernameLabel').attr('class', '');
+    $('#username ~ .helper-text').attr('class', 'helper-text');
+    $('#username ~ .helper-text').empty();
+    $('#username ~ .material-icons').hide();
+  }
 });
 
-function usernameAvailable(username) {
-  var usernameExists;
-  var ref = firebase.database().ref("users").orderByChild("username").equalTo(username);
-  $('#username').attr('class', 'valid');
-  $('#usernameLabel').attr('data-success', username+' is available.');
-  ref.on("child_added", function(snapshot) {
-    var usersdata = snapshot.val();
-    if (usersdata.username == username) {
-      $('#username').attr('class', 'invalid');
-      $('#usernameLabel').attr('data-error', usersdata.username+' already exists. Choose a different name!');
-      usernameExists = true;
-    } else {
-      usernameExists = false;
-    }
+$('#signupDivision #email').keyup(function() {
+  $('#email').attr('class', 'browser-default outlined-text-field');
+  $('#emailLabel').attr('class', '');
+  $('#email ~ .helper-text').attr('class', 'helper-text');
+  $('#email ~ .helper-text').empty('');
+  $('#email ~ .error-icon').hide();
+});
+
+$('#signupDivision #confirmPassword').keyup(function() {
+  if ($(this).val() == $('#password').val()) {
+    //If both the passwords are matching
+    $('#password').attr('class', 'browser-default outlined-text-field');
+    $('#passwordLabel').attr('class', '');
+    $('#password ~ .helper-text').attr('class', 'helper-text');
+    $('#password ~ .helper-text').text('The passwords are matching.');
+    $('#password ~ .error-icon').hide();
+  } else {
+    //If both the passwords are not matching
+    $('#password').attr('class', 'browser-default outlined-text-field error-message');
+    $('#passwordLabel').attr('class', 'error-message-label');
+    $('#password ~ .helper-text').attr('class', 'helper-text error-text');
+    $('#password ~ .helper-text').text('The passwords aren\'t matching!');
+    $('#password ~ .error-icon').show();
+  }
+});
+
+$('#signinDivision #username').keyup(function() {
+  if ($(this).val() != '') {
+    usernameValidity($(this).val());
+  } else {
+    $(this).attr('class', 'browser-default outlined-text-field');
+    $('#usernameLabel').attr('class', '');
+    $('#username ~ .helper-text').attr('class', 'helper-text');
+    $('#username ~ .helper-text').empty();
+    $('#username ~ .material-icons').hide();
+  }
+});
+
+function usernameAvailability(usernameGiven) {
+  db.ref('users').on('value', function(data) {
+    var i = 0;
+    data.forEach(function(user) {
+      i++;
+      if (usernameGiven == user.child('username').val()) {
+        $('#username').attr('class', 'browser-default outlined-text-field error-message');
+        $('#usernameLabel').attr('class', 'error-message-label');
+        $('#username ~ .helper-text').attr('class', 'helper-text error-text');
+        $('#username ~ .helper-text').text('User with name "' + usernameGiven + '" already exists!');
+        $('#username ~ .error-icon').show();
+      }
+      if ((i == data.numChildren()) && ($('#username ~ .helper-text').text() != 'User with name "' + usernameGiven + '" already exists!')) {
+        $('#username').attr('class', 'browser-default outlined-text-field');
+        $('#usernameLabel').attr('class', '');
+        $('#username ~ .helper-text').attr('class', 'helper-text');
+        $('#username ~ .helper-text').text('Username "' + usernameGiven + '" is available!');
+        $('#username ~ .error-icon').hide();
+      }
+    });
+  });
+}
+
+function usernameValidity(usernameGiven) {
+  db.ref('users').on('value', function(data) {
+    var i = 0;
+    data.forEach(function(user) {
+      i++;
+      if (usernameGiven == user.child('username').val()) {
+        $('#username').attr('class', 'browser-default outlined-text-field');
+        $('#usernameLabel').attr('class', '');
+        $('#username ~ .helper-text').attr('class', 'helper-text');
+        $('#username ~ .helper-text').text('User "' + usernameGiven + '" exists.');
+        $('#username ~ .warning-icon').hide();
+      }
+      if ((i == data.numChildren()) && ($('#username ~ .helper-text').text() != 'User "' + usernameGiven + '" exists.')) {
+        $('#username').attr('class', 'browser-default outlined-text-field warning-message');
+        $('#usernameLabel').attr('class', 'warning-message-label');
+        $('#username ~ .helper-text').attr('class', 'helper-text warning-text');
+        $('#username ~ .helper-text').text('User "' + usernameGiven + '" does not exist!');
+        $('#username ~ .warning-icon').show();
+      }
+    });
   });
 }
 
 function signUpUser(e) {
   e.preventDefault();
   //Get values
-  var username = $("#username").val();
-  var email = $("#email").val();
-  var password = $("#password").val();
-  var confPassword = $("#confPassword").val();
-  var location = $("#locationSelector").find(":selected").val();
-  if ((1 === 1) && (password == confPassword)) {
-    Materialize.toast('Please wait...');
+  var username = $('#username').val();
+  var email = $('#email').val();
+  var password = $('#password').val();
+  var confPassword = $('#confirmPassword').val();
+  var phone = $('#phone').val();
+  var location = $('#selectLocation').val();
+  if (username.length > 6) {
+    usernameAvailability(username);
+  } else {
+    $('#username').attr('class', 'browser-default outlined-text-field error-message');
+    $('#usernameLabel').attr('class', 'error-message-label');
+    $('#username ~ .helper-text').attr('class', 'helper-text error-text');
+    $('#username ~ .helper-text').text('Username should be at least 6 characters.');
+    $('#username ~ .error-icon').show();
+  }
+  if (($('#username ~ .error-icon').css('display') == 'none') && ($('#password ~ .error-icon').css('display') == 'none')) {
+    M.toast({'html': 'Please wait...'});
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
       var errorMessage = error.message;
-      if (errorCode == 'auth/weak-password') {
-        $('#password').attr('class', 'invalid');
-        $('#passwordLabel').attr('data-error', 'The password is too weak.');
+      if (errorCode == 'auth/email-already-in-use') {
+        //Update UI to inform user
+        $('#email').attr('class', 'browser-default outlined-text-field error-message');
+        $('#emailLabel').attr('class', 'error-message-label');
+        $('#email ~ .helper-text').attr('class', 'helper-text error-text');
+        $('#email ~ .helper-text').text('Email address already in use!');
+        $('#email ~ .error-icon').show();
+      } else if (errorCode == 'auth/invalid-email') {
+        //Update UI to inform user
+        $('#email').attr('class', 'browser-default outlined-text-field error-message');
+        $('#emailLabel').attr('class', 'error-message-label');
+        $('#email ~ .helper-text').attr('class', 'helper-text error-text');
+        $('#email ~ .helper-text').text('Email address not properly formatted!');
+        $('#email ~ .error-icon').show();
+      } else if (errorCode == 'auth/weak-password') {
+        //Update UI to inform user
+        $('#password').attr('class', 'browser-default outlined-text-field error-message');
+        $('#passwordLabel').attr('class', 'error-message-label');
+        $('#password ~ .helper-text').attr('class', 'helper-text error-text');
+        $('#password ~ .helper-text').text('Password is too weak!');
+        $('#password ~ .error-icon').show();
+      } else {
+        M.toast({'html': errorMessage, 'displayLength': 10000});
       }
-      else {
-        Materialize.toast(errorMessage, 10000);
-      }
+      M.toast({'html': 'Please rectify any mistakes in the form!'});
     });
-
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
-        var user = firebase.auth().currentUser;
         var uid = user.uid;
-        db.ref('users/'+uid).child('email').set(email);
-        db.ref('users/'+uid).child('location').set(location);
-        db.ref('users/'+uid).child('profilePic').set('/images/defaultProfilePic.png');
-        db.ref('users/'+uid).child('username').set(username);
-        user.sendEmailVerification().then(function() {
-          // Email sent.
-          alert("Verification email has been sent.");
-          window.location.href="index.html";
-        }).catch(function(error) {
-          // An error happened.
-          Materialize.toast(errorMessage, 10000);
+        user.updateProfile({
+          displayName: username,
+          photoURL: '/images/defaultProfilePic.png'
+        });
+        $.ajax({
+          type: 'POST',
+          url: '/createUser',
+          data: {
+            uid: user.uid,
+            email: email,
+            location: location,
+            phone: phone,
+            username: username
+          },
+          success: function(result) {
+            console.log(result);
+            if (result == 'created user ' + username + '.') {
+              user.sendEmailVerification().then(function() {
+                // Email sent.
+                alert("Verification email has been sent.");
+                window.location.href="index.html";
+              }).catch(function(error) {
+                // An error happened.
+                M.toast({'html': errorMessage, 'displayLength': 10000});
+              });
+            }
+          }
         });
       }
     });
-  } else if (password != confPassword) {
-    $('#confPassword').attr('class', 'invalid');
-    $('#confPasswordLabel').attr('data-error', 'The two passwords don\'t match!');
+  } else {
+    M.toast({'html': 'Please rectify any mistakes in the form!'});
   }
 }
 
@@ -114,33 +227,61 @@ function signInUser(e) {
   //Get values
   var username = $('#username').val();
   var password = $('#password').val();
-  Materialize.toast('Please wait...', 10000);
-  var usersRef = db.ref('users').orderByChild('username').equalTo(username);
-  usersRef.once('child_added', function(snapshot) {
-    email = snapshot.val().email;
-    firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
-      window.location.href="index.html";
-    }).catch(function(error) {
-      // Handle Errors here.
-      if (error.code === 'auth/wrong-password') {
-        $('#password').attr('class', 'invalid');
-        $('#passwordLabel').attr('data-error', 'Wrong password or username!');
-      } else {
-        Materialize.toast(error.message, 10000);
+  M.toast({'html': 'Please wait...', 'displayLength': 10000});
+  db.ref('users').on('value', function(data) {
+    var i = 0;
+    data.forEach(function(child) {
+      i++;
+      if (username == child.child('username').val()) {
+        firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
+          window.location.href="index.html";
+        }).catch(function(error) {
+          // Handle Errors here.
+          M.toast({'html': error.message, 'displayLength': 10000});
+        });
+      } else if (i == data.numChildren()) {
+        M.toast({'html': 'Wrong username!', 'displayLength': 7500});
       }
     });
-  }, function (errorObject) {
-    console.log("The read failed: " + errorObject.code);
   });
 }
+
+$('#forgotPassword').click(function() {
+  firebase.auth().sendPasswordResetEmail(prompt('Enter your email address')).then(function() {
+    console.log('Sent password reset email.');
+  }).catch(function(error) {
+    console.log('Error: ', error);
+  });
+});
 
 function signOutUser() {
   firebase.auth().signOut().then(function() {}).catch(function(error) {
     console.log(error);
-    Materialize.toast(error, 10000);
+    M.toast({'html': error, 'displayLength': 10000});
   });
 }
 
-function dismiss() {
-  $('#loginMessage').hide();
+function isFocused() {
+  return document.hasFocus() || document.getElementById('chatIFrame').contentWindow.document.hasFocus();
 }
+
+messaging.onMessage(function(payload) {
+  M.toast({'html': payload.notification.title, 'displayLength': 3000});
+  if (isFocused() == false) {
+    navigator.serviceWorker.register('firebase-messaging-sw.js', {
+      scope: './'
+    }).then(function(reg) {
+      console.log('Service worker has been registered for scope:'+ reg.scope);
+      var options = {
+        body: payload.notification.body,
+        icon: payload.notification.icon,
+        vibrate: [100, 50, 100],
+        data: {
+          dateOfArrival: Date.now(),
+          primaryKey: 1
+        }
+      };
+      reg.showNotification(payload.notification.title, options);
+    });
+  }
+});
