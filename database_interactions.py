@@ -1,17 +1,17 @@
 import datetime
 import firebase_admin
-from firebase_admin import credentials, db
+from firebase_admin import credentials, auth, db
 from pyfcm import FCMNotification
 
-push_service = FCMNotification(api_key='AAAArW3PuMs:APA91bFjoq3DKRuw9DKPQekgM9rNuCAfPCyJr2dKeXtm0pp1EY9fYGLo1M-H7_hp5dt6gpdacczr-HnarjPcyF8QvGJtGSN4HcSXK4sNv4SGEStutj_69Fe3z0uMurSIUeIDfSGyJxyp')
+push_service = FCMNotification(api_key='api_key')
 
 #Firebase Initialization
-cred = credentials.Certificate('static/cubetastic-f5f7e-firebase-adminsdk-m94n9-cba250f5b1.json')
+cred = credentials.Certificate('static/cubetastic-33-firebase-adminsdk-89yl9-fe0a5bbca0.json')
 default_app = firebase_admin.initialize_app(cred, {
-  'databaseURL': 'https://cubetastic-f5f7e.firebaseio.com'
+  'databaseURL': 'https://cubetastic-33.firebaseio.com'
 })
 
-def create_user(uid, email, location, phone, username, profilePic='/images/defaultProfilePic.png'):
+def create_user(uid, email, location, phone, username, profilePic):
   db.reference('users').child(uid).set({
     'email': str(email),
     'location': str(location),
@@ -24,10 +24,32 @@ def create_user(uid, email, location, phone, username, profilePic='/images/defau
 def send_feedback(title, message):
     feedback_ref = db.reference('/feedback')
     feedback_ref.push({
-        'title': str(title),
-        'message': str(message)
+      'title': str(title),
+      'message': str(message)
     })
     return 'Done!'
+
+def save_time(uid, time, session, scramble, category, plus_two):
+  db.reference('times/'+str(uid)).child('session'+str(session)).push({
+    'time': str(time),
+    'scramble': scramble,
+    'category': category,
+    'plusTwo': plus_two
+  })
+  return 'saved time'
+
+def plus_two_solve(uid, session, key, plus_two):
+  db.reference('times/'+str(uid)+'/session'+str(session)+'/'+str(key)).child('plusTwo').set(plus_two)
+  return plus_two
+
+def dnf_solve(uid, session, key):
+  db.reference('times/'+str(uid)+'/session'+str(session)+'/'+str(key)).child('plusTwo').set('DNF')
+  return 'Successfully set solve as DNF'
+
+def delete_solve(uid, session, key):
+  if db.reference('times/'+str(uid)+'/session'+str(session)).child(str(key)).get() != None:
+    db.reference('times/'+str(uid)+'/session'+str(session)).child(str(key)).delete()
+    return 'Deleted solve.'
 
 def send_chat_message(uid, group, message):
     db.reference('/chat/' + str(group)).push({
@@ -47,11 +69,9 @@ def notifyUsersInGroup(uid, requiredGroup, message):
     if users[user]['username'] != username:
       try:
         for group in users[user]['chat_groups']:
-          print('crossed checkpoint 1', group)
           if group == requiredGroup:
             for fcmToken, fcmTokenUid in fcmTokens.items():
               if fcmTokenUid == user:
-                print('crossed checkpoint 2', message)
                 message_title = str(username) + ' has sent a message'
                 if len(message) > 50:
                   message = str(message[0:50]) + '...'
@@ -59,3 +79,23 @@ def notifyUsersInGroup(uid, requiredGroup, message):
                 print('Notified ' + str(user))
       except Exception as e:
         print('Error '+ str(e))
+
+def update_email_address(uid, email):
+  db.reference('users/' + uid).child('email').set(str(email))
+  return 'updated email to ' + str(email) + '.'
+
+def update_profile_pic(uid, profilePic):
+  db.reference('users/' + uid).child('profilePic').set(str(profilePic))
+  return 'updated profile pic to ' + str(profilePic) + '.'
+
+def update_phone_number(uid, phone):
+  db.reference('users/' + uid).child('phone').set(str(phone))
+  return 'updated number to ' + str(phone) + '.'
+
+def update_location(uid, location):
+  db.reference('users/' + uid).child('location').set(str(location))
+  return 'updated location to ' + str(location) + '.'
+
+def update_bio(uid, bio):
+  db.reference('users/' + uid).child('bio').set(str(bio))
+  return 'updated bio to ' + str(bio) + '.'
