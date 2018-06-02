@@ -1,0 +1,321 @@
+/*
+  Theme Color Variables
+*/
+
+$mdc-theme-primary: #00A455;
+$mdc-theme-secondary: #33BDCC;
+$mdc-theme-on-primary: #FFFFFF;
+$mdc-theme-on-secondary: #000000;
+
+/*
+  Imports
+*/
+
+@import "@material/theme/mdc-theme";
+@import "@material/form-field/mdc-form-field";
+@import "@material/fab/mdc-fab";
+@import "@material/checkbox/mdc-checkbox";
+@import "@material/top-app-bar/mdc-top-app-bar";
+@import "@material/drawer/temporary/mdc-temporary-drawer";
+
+/*
+  Material Components
+*/
+
+.mdc-top-app-bar {
+  @include mdc-top-app-bar-fill-color-accessible(#000000);
+  z-index: 2;
+}
+
+.mdc-top-app-bar__title {
+  font-family: Play;
+  font-size: 2rem;
+}
+
+.mdc-drawer {
+  font-family: Roboto;
+}
+
+.mdc-button--outlined {
+  border-radius: 3px;
+}
+
+.mdc-checkbox {
+  @include mdc-checkbox-container-colors(#757575, #FFFFFF, $mdc-theme-primary);
+  @include mdc-checkbox-ink-color($mdc-theme-on-primary);
+}
+
+#editTimeBtn, #moreFAB, #mobileSessionFAB {
+  @include mdc-fab-accessible(#000000);
+}
+
+/*
+  Media Queries
+*/
+
+@media only screen and (min-width: 640px) {
+  #time h1 {
+    font-size: 7rem;
+  }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 640px) {
+  #time h1 {
+    font-size: 5rem;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  #time h1 {
+    font-size: 3rem;
+  }
+}
+
+/*
+  Other Stuff
+*/
+
+#timer {
+  background-size: 100%;
+  text-align: center;
+  min-height: calc(100vh - 64px);
+  padding-top: 5rem;
+  width: 100%;
+}
+
+#contextMenu {
+  display: none;
+  background-color: #FFFFFF;
+  border-radius: 3px;
+  padding: 0;
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  z-index: 1000;
+
+  li {
+    color: #424242;
+    cursor: pointer;
+    font-family: Roboto-Medium;
+    list-style-type: none;
+    padding: 0.5rem;
+    margin: 0.25rem;
+  }
+
+  li:hover {
+    background-color: #424242;
+    color: #FFFFFF;
+  }
+}
+
+#records {
+  text-align: left;
+  padding: 5px;
+  position: absolute;
+  top: calc(5em + 10px);
+  left: 10px;
+  height: calc(30vh - 6rem);
+  width: 15vw;
+}
+
+#session {
+  position: absolute;
+  top: calc(30vh + 10px);
+  left: 10px;
+  height: calc(70vh - 5rem);
+  overflow-y: auto;
+}
+
+#records, #session, table {
+  border-radius: 3px;
+  font-family: Roboto;
+}
+
+#session table {
+  width: 100%;
+}
+
+#session table td, #session table th {
+  padding: 1rem 0.5rem !important;
+}
+
+.button-group {
+  display: flex;
+  position: absolute;
+  top: 35vh;
+
+  .button-group-left button {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .button-group-right button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+#sessionButtonGroup {
+  right: 53vw;
+  .button-group-right button {
+    border-left: none;
+  }
+}
+
+#categoryButtonGroup {
+  left: 53vw;
+  .button-group-left button {
+    border-right: none;
+  }
+}
+
+#recordsTable, #sessionTimesTable table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: Roboto;
+  text-align: left;
+
+  th, td {
+    padding: 0.75rem;
+  }
+}
+
+#timeContainer {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  box-align: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 80vh;
+}
+
+#time {
+  margin: auto;
+}
+
+#time h1 {
+  line-height: 110%;
+  margin: 2.8rem 0 1.68rem 0;
+  font-weight: 400;
+}
+
+#editTimeBtn {
+  position: absolute;
+}
+
+.red {
+  background-color: #F44336;
+}
+
+.green {
+  background-color: #00A455;
+}
+
+#red, #green {
+  border-radius: 100%;
+  height: 1.5em;
+  width: 1.5em;
+  position: absolute;
+  left: calc(50vw - 1em);
+}
+
+#red {
+  top: 32vh;
+}
+
+#green {
+  top: calc(32vh + 2.5em);
+}
+
+#scramble {
+  font-family: 'Roboto Condensed';
+  font-size: 1.5em;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: 15vw;
+  margin-right: 15vw;
+  word-wrap: break-word;
+}
+
+#scrambleImage {
+  border-radius: 3px;
+  padding: 10px;
+  position: absolute;
+  top: calc(5em + 10px);
+  right: 10px;
+  -webkit-box-shadow:0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
+  box-shadow:0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
+#mobileSessionFAB {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+}
+
+#moreFAB, #feedbackFAB, #settingsFAB, #infoFAB, #installFAB {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+#installFAB {
+  display: none;
+  bottom: calc(20px  + 4rem);
+  right: calc(10px + 0.5rem);
+}
+
+#infoFAB {
+  display: none;
+  bottom: calc(40px  + 6rem);
+  right: calc(10px + 0.5rem);
+}
+
+#settingsFAB {
+  display: none;
+  bottom: calc(60px + 8rem);
+  right: calc(10px + 0.5rem);
+}
+
+#feedbackFAB {
+  display: none;
+  bottom: calc(80px + 10rem);
+  right: calc(10px + 0.5rem);
+}
+
+.highlight {
+  color: #FFC400;
+}
+
+#colorSettings {
+  display: none;
+}
+
+#settingsDialog .mdc-select {
+  width: 50%;
+}
+
+#colorSettings label:not(.mdc-floating-label) {
+  color: #000000;
+}
+
+.disabledLabel {
+  color: #626262 !important;
+}
+
+#resetColorSettings {
+  color: #F44336;
+}
+
+#pageFooter {
+  background-color: #000000;
+}
+
+.footer-copyright {
+  background-color: #212121;
+}
