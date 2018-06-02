@@ -5,53 +5,63 @@ app = Flask(__name__, static_url_path='/')
 
 @app.route('/')
 def index():
-  database_interactions.notifyUsersInGroup('7PtpjgYYmpPQU8loZliCjbhYfw43', 'group1', 'Opened index.html')
   return render_template('index.html')
 
-@app.route('/index.html')
+@app.route('/index')
 def index_html():
-  database_interactions.notifyUsersInGroup('7PtpjgYYmpPQU8loZliCjbhYfw43', 'group1', 'Opened index.html')
   return render_template('index.html')
 
-@app.route('/solve.html')
+@app.route('/solve')
 def solve_html():
   return render_template('solve.html')
 
-@app.route('/pdfs.html')
-def pdfs_html():
-  return render_template('pdfs.html')
-
-@app.route('/train.html')
-def train_html():
-  return render_template('train.html')
+@app.route('/timer')
+def timer():
+  return render_template('timer.html')
 
 @app.route('/timer.html')
 def timer_html():
-  database_interactions.notifyUsersInGroup('7PtpjgYYmpPQU8loZliCjbhYfw43', 'group1', 'Opened timer.html')
-  return render_template('timer.html')
+  return render_template('oldtimer.html')
 
-@app.route('/collabicube.html')
-def collabicube_html():
-  return render_template('collabicube.html')
+@app.route('/saveTime', methods=['POST'])
+def saveTime():
+  uid = request.form.getlist('uid')[0]
+  time = request.form.getlist('time')[0]
+  session = request.form.getlist('session')[0]
+  scramble = request.form.getlist('scramble')[0]
+  category = request.form.getlist('category')[0]
+  plus_two = request.form.getlist('plus_two')[0]
+  return database_interactions.save_time(uid, time, session, scramble, category, plus_two)
 
-@app.route('/chat.html')
-def chat_html():
-  return render_template('chat.html')
+@app.route('/plusTwoSolve', methods=['POST'])
+def plusTwoSolve():
+  uid = request.form.getlist('uid')[0]
+  session = request.form.getlist('session')[0]
+  key = request.form.getlist('key')[0]
+  plus_two = request.form.getlist('plus_two')[0]
+  return database_interactions.plus_two_solve(uid, session, key, plus_two)
 
-@app.route('/installpwa.html')
-def installpwa_html():
+
+@app.route('/DNFSolve', methods=['POST'])
+def DNFSolve():
+  uid = request.form.getlist('uid')[0]
+  session = request.form.getlist('session')[0]
+  key = request.form.getlist('key')[0]
+  return database_interactions.dnf_solve(uid, session, key)
+
+@app.route('/deleteSolve', methods=['POST'])
+def deleteSolve():
+  uid = request.form.getlist('uid')[0]
+  session = request.form.getlist('session')[0]
+  key = request.form.getlist('key')[0]
+  return database_interactions.delete_solve(uid, session, key)
+
+@app.route('/installpwa')
+def installpwa():
   return render_template('installpwa.html')
 
-@app.route('/smartTimer.html')
-def smartTimer_html():
-  return render_template('smartTimer.html')
-
-@app.route('/videos.html')
-def videos_html():
-  return render_template('videos.html')
-
-@app.route('/contactMe.html')
-def contactMe_html():
+@app.route('/contactMe')
+def contactMe():
   return render_template('contactMe.html')
 
 @app.route('/sendFeedback', methods=['POST'])
@@ -60,23 +70,46 @@ def sendFeedback():
   message = request.form.getlist('message')
   return database_interactions.send_feedback(title[0], message[0])
 
-@app.route('/sendChatMessage', methods=['POST'])
-def sendChatMessage():
-  uid = request.form.getlist('uid')[0]
-  group = request.form.getlist('group')[0]
-  message = request.form.getlist('message')[0]
-  return database_interactions.send_chat_message(uid, group, message)
-
-@app.route('/profile.html')
-def profile_html():
+@app.route('/profile')
+def profile():
   return render_template('profile.html')
 
-@app.route('/signin.html')
-def signin_html():
+@app.route('/updateEmailAddress', methods=['POST'])
+def updateEmailAddress():
+  uid = request.form.getlist('uid')[0]
+  email = request.form.getlist('email')[0]
+  return database_interactions.update_email_address(uid, email)
+
+@app.route('/updateProfilePic', methods=['POST'])
+def updateProfilePic():
+  uid = request.form.getlist('uid')[0]
+  profilePic = request.form.getlist('profilePic')[0]
+  return database_interactions.update_profile_pic(uid, profilePic)
+
+@app.route('/updatePhoneNumber', methods=['POST'])
+def updatePhoneNumber():
+  uid = request.form.getlist('uid')[0]
+  phone = request.form.getlist('phone')[0]
+  return database_interactions.update_phone_number(uid, phone)
+
+@app.route('/updateLocation', methods=['POST'])
+def updateLocation():
+  uid = request.form.getlist('uid')[0]
+  location = request.form.getlist('location')[0]
+  return database_interactions.update_location(uid, location)
+
+@app.route('/updateBio', methods=['POST'])
+def updateBio():
+  uid = request.form.getlist('uid')[0]
+  bio = request.form.getlist('bio')[0]
+  return database_interactions.update_bio(uid, bio)
+
+@app.route('/signin')
+def signin():
   return render_template('signin.html')
 
-@app.route('/signup.html')
-def signup_html():
+@app.route('/signup')
+def signup():
   return render_template('signup.html')
 
 @app.route('/createUser', methods=['POST'])
@@ -85,8 +118,9 @@ def createUser():
   email = request.form.getlist('email')[0]
   location = request.form.getlist('location')[0]
   phone = request.form.getlist('phone')[0]
+  photoURL = request.form.getlist('photoURL')[0]
   username = request.form.getlist('username')[0]
-  return database_interactions.create_user(uid, email, location, phone, username)
+  return database_interactions.create_user(uid, email, location, phone, username, photoURL)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -99,10 +133,6 @@ def send_js(path):
 @app.route('/css/<path:path>')
 def send_css(path):
   return send_from_directory('css', path)
-
-@app.route('/pdfs/<path:path>')
-def send_pdf(path):
-  return send_from_directory('pdfs', path)
 
 @app.route('/images/<path:path>')
 def send_images(path):
@@ -129,4 +159,4 @@ def sitemap_xml():
   return send_from_directory('static', 'sitemap.xml')
 
 if __name__ == '__main__':
-  app.run(debug = True)
+  app.run(debug = True, port=1515)
