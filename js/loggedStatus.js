@@ -1,39 +1,47 @@
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User is signed in.
-    var nowUser = firebase.auth().currentUser;
-    var email = nowUser.email;
-    var emailVerified = nowUser.emailVerified;
-    var username;
-    var profilePic;
-    var usersRef = db.ref('users').orderByChild('email').equalTo(email);
-    usersRef.once('child_added', function(snapshot) {
-      username = snapshot.val().username;
-      profilePic = snapshot.val().profilePic;
-
+    var email = user.email;
+    var emailVerified = user.emailVerified;
+    username = user.displayName;
+    db.ref('users/' + user.uid).on('value', function(data) {
+      profilePic = data.child('profilePic').val();
       if (emailVerified == false) {
-        $('#loggedStatus').html("<a href=\"signin.html\" class=\"logout\">Email Not Verified | Sign in</a>");
-        firebase.auth().signOut().then(function() {}).catch(function(error) {});
-      } else {
-        $('#loggedStatus').html('\
-          <img src="'+profilePic+'" id="profilePic" class="circle right" alt="profile pic">\
-          <div id="usernameInHeader" class="hide-on-small-only">'+username+'</div>\
-          <ul class="logout">\
-            <li><a href="profile.html">Profile</a></li><br>\
-            <li><a href="#" onclick="signOutUser()">Sign out</a></li>\
-          </ul>\
-        ');
-        $('#loggedStatus').hover(function() {
-          $('#loggedStatus ul').toggle();
+        firebase.auth().signOut().then(function() {}).catch(function(error) {
+          console.log(error);
         });
+        $('#profileLinkInHeader').html('<a href="/signin" class="material-icons mdc-top-app-bar__action-item" aria-label="Sign In" alt="Sign In">account_circle</a>');
+        $('.mdc-drawer__content .mdc-list:last-child').html('\
+          <a href="/signin" class="mdc-list-item" tabindex="-1">Sign In</a>\
+          <a href="/signup" class="mdc-list-item" tabindex="-1">Sign Up</a>\
+        ');
+        if (window.location.pathname == '/signin') {
+          $('.mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
+        } else if (window.location.pathname == '/signup') {
+          $('.mdc-drawer__content .mdc-list:last-child a:last-child').addClass('mdc-list-item--activated');
+        }
+      } else {
+        $('#profileLinkInHeader').html('<img src="' + profilePic + '" class="material-icons mdc-top-app-bar__action-item" onclick="window.location.href=\'/profile\'">');
+        $('.mdc-drawer__content .mdc-list:last-child').html('\
+          <a href="/profile" class="mdc-list-item" tabindex="-1">Profile</a>\
+          <a href="#" class="mdc-list-item" onclick="signOutUser()" tabindex="-1">Sign out</a>\
+        ');
+        if (window.location.pathname == '/profile') {
+          $('.mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
+        }
       }
-    }, function (errorObject) {
-      console.log('The read failed: ' + errorObject.code);
     });
   } else {
     // No user is signed in.
-    if (document.getElementById("loggedStatus").innerHTML == "") {
-      $('#loggedStatus').html('<a id="signInButton" href="signin.html">Sign in</a>');
+    $('#profileLinkInHeader').html('<a href="signin" class="material-icons mdc-top-app-bar__action-item" aria-label="Sign In" alt="Sign In">account_circle</a>');
+    $('.mdc-drawer__content .mdc-list:last-child').html('\
+      <a href="/signin" class="mdc-list-item" tabindex="-1">Sign In</a>\
+      <a href="/signup" class="mdc-list-item" tabindex="-1">Sign Up</a>\
+    ');
+    if (window.location.pathname == '/signin') {
+      $('.mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
+    } else if (window.location.pathname == '/signup') {
+      $('.mdc-drawer__content .mdc-list:last-child a:last-child').addClass('mdc-list-item--activated');
     }
   }
 });
