@@ -1,11 +1,11 @@
 {
-  "name": "Cubetastic",
+  "name": "Cubetastic | Timer",
   "short_name": "cubetastic",
   "theme_color": "#000000",
-  "background_color": "#33cc90",
+  "background_color": "#000000",
   "display": "standalone",
-  "orientation": "landscape",
-  "start_url": "/timer.html",
+  "orientation": "any",
+  "start_url": "/timer",
   "icons": [
     {
       "src": "images/icons/icon-72x72.png",

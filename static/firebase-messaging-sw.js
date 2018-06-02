@@ -23,24 +23,25 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV0.3';
+var cacheName = 'cubetasticV1.0';
 var filesToCache = [
   '/',
-  '/index.html',
-  '/solve.html',
-  '/pdfs.html',
-  '/train.html',
-  '/timer.html',
-  '/installpwa.html',
-  '/contactMe.html',
+  '/index',
+  '/solve',
+  '/timer',
+  '/installpwa',
+  '/contactMe',
+  '/signin',
+  '/signup',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
-  'https://fonts.googleapis.com/css?family=Acme|Cabin|Saira|Play|Iceberg|Unica+One|Atomic+Age|Coda|Contrail+One|Kelly+Slab|Nova+Flat|Nova+Round|Share+Tech+Mono|VT323',
+  'https://fonts.googleapis.com/css?family=Acme|Cabin|Play|Saira|Oswald',
+  'https://fonts.googleapis.com/css?family=Cabin|Saira|Play|Iceberg|Unica+One|Contrail+One|Share+Tech+Mono|Black+Han+Sans|Copse|Noto+Sans|Space+Mono|Titillium+Web',
   'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js',
-  '/css/materialize.min.css',
+  'https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js',
   '/css/main.css',
   '/css/timer.css',
-  'images/icons/icon-512x512.png',
-  'js/materialize.min.js',
+  '/images/icons/icon-512x512.png',
+  '/images/textures/cubes.png',
   '/js/main.js',
   '/js/loggedStatus.js',
   '/js/timer.js',

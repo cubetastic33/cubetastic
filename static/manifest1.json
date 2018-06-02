@@ -1,10 +1,10 @@
 {
     "name": "Cubetastic",
     "short_name": "cubetastic",
-    "theme_color": "#00b460",
-    "background_color": "#FFEB3B",
+    "theme_color": "#00A455",
+    "background_color": "#00c076",
     "display": "standalone",
-    "orientation": "landscape",
+    "orientation": "any",
     "start_url": "/",
     "icons": [
       {
