@@ -13,13 +13,8 @@ var db = firebase.database();
 var storage = firebase.storage();
 var messaging = firebase.messaging();
 
-$(document).ready(function() {
-  $('body').css('background-color', 'white');
-  if ($('.button-collapse').length) {
-    $('.button-collapse').sideNav();
-  }
-  var sideNavElem = document.querySelectorAll('.sidenav');
-  var sideNavInstance = M.Sidenav.init(sideNavElem);
+window.addEventListener('load', function() {
+  $('body').css('background-color', '#FFFFFF');
 });
 
 $('#timerDropdownTrigger').hover(function(e) {
@@ -35,42 +30,27 @@ $('#signupDivision #username').keyup(function() {
     if ($(this).val().length > 6) {
       usernameAvailability($(this).val());
     } else {
-      $('#username').attr('class', 'browser-default outlined-text-field error-message');
-      $('#usernameLabel').attr('class', 'error-message-label');
-      $('#username ~ .helper-text').attr('class', 'helper-text error-text');
+      $('#username').parent().attr('class', 'outlined-input-field error-input-field');
       $('#username ~ .helper-text').text('Username should be at least 6 characters.');
-      $('#username ~ .error-icon').show();
     }
   } else {
-    $(this).attr('class', 'browser-default outlined-text-field');
-    $('#usernameLabel').attr('class', '');
-    $('#username ~ .helper-text').attr('class', 'helper-text');
+    $('#username').parent().attr('class', 'outlined-input-field');
     $('#username ~ .helper-text').empty();
-    $('#username ~ .material-icons').hide();
   }
 });
 
 $('#signupDivision #email').keyup(function() {
-  $('#email').attr('class', 'browser-default outlined-text-field');
-  $('#emailLabel').attr('class', '');
-  $('#email ~ .helper-text').attr('class', 'helper-text');
-  $('#email ~ .helper-text').empty('');
-  $('#email ~ .error-icon').hide();
+  $('#email').parent().attr('class', 'outlined-input-field');
+  $('#email ~ .helper-text').empty();
 });
 
 $('#signupDivision #confirmPassword').keyup(function() {
   if ($(this).val() == $('#password').val()) {
-    $('#password').attr('class', 'browser-default outlined-text-field');
-    $('#passwordLabel').attr('class', '');
-    $('#password ~ .helper-text').attr('class', 'helper-text');
+    $('#password').parent().attr('class', 'outlined-input-field success-input-field');
     $('#password ~ .helper-text').text('The passwords are matching.');
-    $('#password ~ .error-icon').hide();
   } else {
-    $('#password').attr('class', 'browser-default outlined-text-field error-message');
-    $('#passwordLabel').attr('class', 'error-message-label');
-    $('#password ~ .helper-text').attr('class', 'helper-text error-text');
+    $('#password').parent().attr('class', 'outlined-input-field error-input-field');
     $('#password ~ .helper-text').text('The passwords aren\'t matching!');
-    $('#password ~ .error-icon').show();
   }
 });
 
@@ -78,32 +58,23 @@ $('#signinDivision #username').keyup(function() {
   if ($(this).val() != '') {
     usernameValidity($(this).val());
   } else {
-    $(this).attr('class', 'browser-default outlined-text-field');
-    $('#usernameLabel').attr('class', '');
-    $('#username ~ .helper-text').attr('class', 'helper-text');
+    $(this).parent().attr('class', 'outlined-input-field');
     $('#username ~ .helper-text').empty();
-    $('#username ~ .material-icons').hide();
   }
 });
 
 function usernameAvailability(usernameGiven) {
-  db.ref('users').on('value', function(data) {
+  db.ref('users').once('value', function(data) {
     var i = 0;
     data.forEach(function(user) {
       i++;
       if (usernameGiven == user.child('username').val()) {
-        $('#username').attr('class', 'browser-default outlined-text-field error-message');
-        $('#usernameLabel').attr('class', 'error-message-label');
-        $('#username ~ .helper-text').attr('class', 'helper-text error-text');
+        $('#username').parent().attr('class', 'outlined-input-field error-input-field');
         $('#username ~ .helper-text').text('User with name "' + usernameGiven + '" already exists!');
-        $('#username ~ .error-icon').show();
       }
       if ((i == data.numChildren()) && ($('#username ~ .helper-text').text() != 'User with name "' + usernameGiven + '" already exists!')) {
-        $('#username').attr('class', 'browser-default outlined-text-field');
-        $('#usernameLabel').attr('class', '');
-        $('#username ~ .helper-text').attr('class', 'helper-text');
+        $('#username').parent().attr('class', 'outlined-input-field success-input-field');
         $('#username ~ .helper-text').text('Username "' + usernameGiven + '" is available!');
-        $('#username ~ .error-icon').hide();
       }
     });
   });
@@ -115,18 +86,14 @@ function usernameValidity(usernameGiven) {
     data.forEach(function(user) {
       i++;
       if (usernameGiven == user.child('username').val()) {
-        $('#username').attr('class', 'browser-default outlined-text-field');
-        $('#usernameLabel').attr('class', '');
-        $('#username ~ .helper-text').attr('class', 'helper-text');
-        $('#username ~ .helper-text').text('User "' + usernameGiven + '" exists.');
-        $('#username ~ .warning-icon').hide();
+        //Username is valid
+        $('#username').parent().attr('class', 'outlined-input-field success-input-field');
+        $('#username ~ .helper-text').text('User "' + usernameGiven + '" exists!');
       }
-      if ((i == data.numChildren()) && ($('#username ~ .helper-text').text() != 'User "' + usernameGiven + '" exists.')) {
-        $('#username').attr('class', 'browser-default outlined-text-field warning-message');
-        $('#usernameLabel').attr('class', 'warning-message-label');
-        $('#username ~ .helper-text').attr('class', 'helper-text warning-text');
+      if ((i == data.numChildren()) && ($('#username ~ .helper-text').text() != 'User "' + usernameGiven + '" exists!')) {
+        //Username is invalid
+        $('#username').parent().attr('class', 'outlined-input-field warning-input-field');
         $('#username ~ .helper-text').text('User "' + usernameGiven + '" does not exist!');
-        $('#username ~ .warning-icon').show();
       }
     });
   });
@@ -143,39 +110,28 @@ function signUpUser(e) {
   if (username.length > 6) {
     usernameAvailability(username);
   } else {
-    $('#username').attr('class', 'browser-default outlined-text-field error-message');
-    $('#usernameLabel').attr('class', 'error-message-label');
-    $('#username ~ .helper-text').attr('class', 'helper-text error-text');
+    $('#username').parent().attr('class', 'outlined-input-field error-input-field');
     $('#username ~ .helper-text').text('Username should be at least 6 characters.');
-    $('#username ~ .error-icon').show();
   }
-  if (($('#username ~ .error-icon').css('display') == 'none') && ($('#password ~ .error-icon').css('display') == 'none')) {
-    M.toast({'html': 'Please wait...'});
+  if (($('#username').parent().hasClass('error-input-field') === false) && ($('#password').parent().hasClass('error-input-field') === false)) {
+    snackbar.show({message: 'Please wait...', timeout: 6000});
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
       var errorCode = error.code;
       var errorMessage = error.message;
       if (errorCode == 'auth/email-already-in-use') {
-        $('#email').attr('class', 'browser-default outlined-text-field error-message');
-        $('#emailLabel').attr('class', 'error-message-label');
-        $('#email ~ .helper-text').attr('class', 'helper-text error-text');
-        $('#email ~ .helper-text').text('Email address already in use!');
-        $('#email ~ .error-icon').show();
+        $('#email').parent().attr('class', 'outlined-input-field error-input-field');
+        $('#email ~ .helper-text').text('This email address is already in use!');
       } else if (errorCode == 'auth/invalid-email') {
-        $('#email').attr('class', 'browser-default outlined-text-field error-message');
-        $('#emailLabel').attr('class', 'error-message-label');
-        $('#email ~ .helper-text').attr('class', 'helper-text error-text');
-        $('#email ~ .helper-text').text('Email address not properly formatted!');
-        $('#email ~ .error-icon').show();
+        $('#email').parent().attr('class', 'outlined-input-field error-input-field');
+        $('#email ~ .helper-text').text('Email address is not properly formatted!');
       } else if (errorCode == 'auth/weak-password') {
-        $('#password').attr('class', 'browser-default outlined-text-field error-message');
-        $('#passwordLabel').attr('class', 'error-message-label');
-        $('#password ~ .helper-text').attr('class', 'helper-text error-text');
+        $('#password').parent().attr('class', 'outlined-input-field error-input-field');
         $('#password ~ .helper-text').text('Password is too weak!');
-        $('#password ~ .error-icon').show();
       } else {
-        M.toast({'html': errorMessage, 'displayLength': 10000});
+        console.log(error);
+        snackbar.show({message: error, multiline: true, timeout: 10000});
       }
-      M.toast({'html': 'Please rectify any mistakes in the form!'});
+      snackbar.show({message: 'Please rectify any mistakes in the form!', multiline: true, timeout: 10000});
     });
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
@@ -192,6 +148,7 @@ function signUpUser(e) {
             email: email,
             location: location,
             phone: phone,
+            photoURL: '/images/defaultProfilePic.png',
             username: username
           },
           success: function(result) {
@@ -199,9 +156,10 @@ function signUpUser(e) {
             if (result == 'created user ' + username + '.') {
               user.sendEmailVerification().then(function() {
                 alert("Verification email has been sent.");
-                window.location.href="index.html";
+                window.location.href="/profile";
               }).catch(function(error) {
-                M.toast({'html': errorMessage, 'displayLength': 10000});
+                console.log(error);
+                snackbar.show({message: error, multiline: true, timeout: 10000});
               });
             }
           }
@@ -209,26 +167,38 @@ function signUpUser(e) {
       }
     });
   } else {
-    M.toast({'html': 'Please rectify any mistakes in the form!'});
+    snackbar.show({message: 'Please rectify any mistakes in the form!', timeout: 10000});
   }
 }
+
+signedinnow = false;
 
 function signInUser(e) {
   e.preventDefault();
   var username = $('#username').val();
   var password = $('#password').val();
-  M.toast({'html': 'Please wait...', 'displayLength': 10000});
-  db.ref('users').on('value', function(data) {
-    data.forEach(function(child) {
-      if (username == child.child('username').val()) {
-        firebase.auth().signInWithEmailAndPassword(child.child('email').val(), password).then(function(user) {
-          window.location.href="index.html";
-        }).catch(function(error) {
-          M.toast({'html': error.message, 'displayLength': 10000});
-        });
-      }
+  if (username === '') {
+    $('#username').parent().attr('class', 'outlined-input-field error-input-field');
+    $('#username ~ .helper-text').text('Please enter your username!');
+  } else {
+    snackbar.show({message: 'Please wait...'});
+    db.ref('users').on('value', function(data) {
+      data.forEach(function(child) {
+        if ($('#username').parent().hasClass('warning-input-field')) {
+          snackbar.show({message: 'Wrong Username!', timeout: 4000});
+        }
+        if (username == child.child('username').val()) {
+          signedinnow = true;
+          firebase.auth().signInWithEmailAndPassword(child.child('email').val(), password).then(function(user) {
+            window.location.href="/profile";
+          }).catch(function(error) {
+            console.log(error);
+            snackbar.show({message: error, multiline: true, timeout: 10000});
+          });
+        }
+      });
     });
-  });
+  }
 }
 
 $('#forgotPassword').click(function() {
@@ -242,7 +212,8 @@ $('#forgotPassword').click(function() {
 function signOutUser() {
   firebase.auth().signOut().then(function() {}).catch(function(error) {
     console.log(error);
-    M.toast({'html': error, 'displayLength': 10000});
+    console.log(error);
+    snackbar.show({message: error, multiline: true, timeout: 10000});
   });
 }
 
@@ -251,7 +222,7 @@ function isFocused() {
 }
 
 messaging.onMessage(function(payload) {
-  M.toast({'html': payload.notification.title, 'displayLength': 3000});
+  snackbar.show({message: payload.notification.title, multiline: true, timeout: 4000});
   if (isFocused() == false) {
     navigator.serviceWorker.register('firebase-messaging-sw.js', {
       scope: './'
