@@ -5,40 +5,40 @@
 {% block body %}
 <div id="signupDivision">
   <div id="formHeading">Sign Up</div>
-  <form id="formDiv" class="z-depth-2">
-    <div class="text-field">
+  <form id="formDiv" class="mdc-elevation--z4">
+    <div class="outlined-input-field">
       <i class="material-icons">account_circle</i>
-      <label for="username" id="usernameLabel">Username</label>
-      <input type="text" id="username" class="browser-default outlined-text-field" required autocomplete="off"><br><br>
-      <div class="helper-text"></div>
+      <input type="text" id="username" class="outlined-text-field" autocomplete="off" required>
+      <label for="username">Username</label>
       <i class="material-icons error-icon">error_outline</i>
-    </div>
-    <div class="text-field">
+      <div class="helper-text"></div>
+    </div><br><br>
+    <div class="outlined-input-field">
       <i class="material-icons">email</i>
-      <label for="email" id="emailLabel">Email</label>
-      <input type="text" id="email" class="browser-default outlined-text-field" required autocomplete="off"><br><br>
-      <div class="helper-text"></div>
+      <input type="email" id="email" class="outlined-text-field" autocomplete="off" required>
+      <label for="email">Email</label>
       <i class="material-icons error-icon">error_outline</i>
-    </div>
-    <div class="text-field">
+      <div class="helper-text"></div>
+    </div><br><br>
+    <div class="outlined-input-field">
       <i class="material-icons">lock</i>
-      <label for="password" id="passwordLabel">Password</label>
-      <input type="password" id="password" class="browser-default outlined-text-field" required readonly onfocus="if (this.hasAttribute('readonly')) {this.removeAttribute('readonly');this.blur();this.focus();}">
-      <label for="confirmPassword" id="confirmPasswordLabel">Confirm Password</label>
-      <input type="password" id="confirmPassword" class="browser-default outlined-text-field" readonly onfocus="if (this.hasAttribute('readonly')) {this.removeAttribute('readonly');this.blur();this.focus();}">
-      <div class="helper-text"></div>
+      <input type="password" id="password" class="outlined-text-field" required readonly onfocus="if (this.hasAttribute('readonly')) {this.removeAttribute('readonly');this.blur();this.focus();}">
+      <label for="password">Password</label>
+      <input type="password" id="confirmPassword" class="outlined-text-field" readonly onfocus="if (this.hasAttribute('readonly')) {this.removeAttribute('readonly');this.blur();this.focus();}">
+      <label for="confirmPassword">Confirm Password</label>
       <i class="material-icons error-icon">error_outline</i>
-    </div><br>
-    <div class="text-field">
+      <div class="helper-text"></div>
+    </div><br><br>
+    <div class="outlined-input-field">
       <i class="material-icons">phone</i>
-      <label for="email" id="phoneLabel">Phone (optional)</label>
-      <input type="number" id="phone" class="browser-default outlined-text-field" autocomplete="off"><br><br>
-    </div>
-    <div class="select-input-field">
-      <i class="material-icons outlined">my_location</i>
-      <label for="selectLocation" id="selectLocationLabel">Select your location. If you can't find your country, select the biggest country near it.</label>
-      <select id="selectLocation" required>
-        <option value="None" disabled selected></option>
+      <input type="number" id="phone" class="outlined-text-field" autocomplete="off">
+      <label for="phone">Phone (optional)</label>
+      <div class="helper-text"></div>
+    </div><br><br>
+    <div class="outlined-input-field">
+      <i class="material-icons">my_location</i>
+      <select id="selectLocation" class="outlined-select-field">
+        <option value="" disabled selected></option>
         <option value="Afghanistan">Afghanistan</option>
         <option value="Albania">Albania</option>
         <option value="Algeria">Algeria</option>
@@ -182,130 +182,127 @@
         <option value="Zambia">Zambia</option>
         <option value="Zimbabwe">Zimbabwe</option>
       </select>
+      <label for="selectLocation">Select your location</label>
+      <i class="material-icons dropdown-icon">arrow_drop_down</i>
+    </div><br><br>
+    <div class="button-container">
+      <button type="submit" id="signUpButton" class="mdc-button mdc-button--unelevated">Sign Up</button>
     </div>
-    <div id="signupBtn" class="contained-btn waves-effect z-depth-1" onclick="$('#submitSignUpForm').click()">Sign Up</div><br><br>
-    <button type="submit" id="submitSignUpForm" style="display: none"></button>
-    Already a member of Cubetastic? <a href="signin.html">Sign in</a> now!
+    <p>Already a member of Cubetastic? <a href="signin">Sign in</a> now!</p>
   </form>
 </div>
 {% endblock %}
 
 {% block javascript %}
 <script>
-  M.AutoInit();
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      signOutUser();
+      snackbar.show({message: 'You have been signed out', timeout: 5000});
+    }
+  });
+  //Add ripple effect to button
+  mdc.ripple.MDCRipple.attachTo(document.querySelector('#signUpButton'));
+  //JS to move label on focus
   $('#username').focusin(function() {
-    $('#usernameLabel').css({
-      'background-color': '#F1F8E9',
-      'color': '#00B460',
-      'padding': '0 5px',
-      'top': '-0.5rem'
-    });
+    $('#username ~ label').animate({
+      'fontSize': '0.8rem',
+      'top': '-0.7rem',
+      'padding': '0.25rem'
+    }, 80);
   });
   $('#username').focusout(function() {
-    $('#usernameLabel').css('color', '#7F7F7F');
-    if ($(this).val() == '') {
-      $('#usernameLabel').css({
-        'background-color': '#F1F8E900',
-        'padding': 0,
-        'top': '1rem'
-      });
-    }
-    if ($('#username ~ .error-icon').css('display') == 'none') {
-      $('#username ~ .helper-text').empty();
+    if ($(this).val() === '') {
+      $('#username ~ label').animate({
+        'fontSize': '1rem',
+        'top': '1rem',
+        'padding': 0
+      }, 80);
     }
   });
+
   $('#email').focusin(function() {
-    $('#emailLabel').css({
-      'background-color': '#F1F8E9',
-      'color': '#00B460',
-      'padding': '0 5px',
-      'top': '-0.5rem'
-    });
+    $('#email ~ label').animate({
+      'fontSize': '0.8rem',
+      'top': '-0.7rem',
+      'padding': '0.25rem'
+    }, 80);
   });
   $('#email').focusout(function() {
-    $('#emailLabel').css('color', '#7F7F7F');
-    if ($(this).val() == '') {
-      $('#emailLabel').css({
-        'background-color': '#F1F8E900',
-        'padding': 0,
-        'top': '1rem'
-      });
+    if ($(this).val() === '') {
+      $('#email ~ label').animate({
+        'fontSize': '1rem',
+        'top': '1rem',
+        'padding': 0
+      }, 80);
     }
   });
+
   $('#password').focusin(function() {
-    $('#passwordLabel').css({
-      'background-color': '#F1F8E9',
-      'color': '#00B460',
-      'padding': '0 5px',
-      'top': '-0.5rem'
-    });
+    $('#password + label').animate({
+      'fontSize': '0.8rem',
+      'top': '-0.7rem',
+      'padding': '0.25rem'
+    }, 80);
   });
   $('#password').focusout(function() {
-    $('#passwordLabel').css('color', '#7F7F7F');
-    if ($(this).val() == '') {
-      $('#passwordLabel').css({
-        'background-color': '#F1F8E900',
-        'padding': 0,
-        'top': '1rem'
-      });
+    if ($(this).val() === '') {
+      $('#password + label').animate({
+        'fontSize': '1rem',
+        'top': '1rem',
+        'padding': 0
+      }, 80);
     }
   });
+
   $('#confirmPassword').focusin(function() {
-    $('#confirmPasswordLabel').css({
-      'background-color': '#F1F8E9',
-      'color': '#00B460',
-      'padding': '0 5px',
-      'top': '-0.5rem'
-    });
+    $('#confirmPassword ~ label').animate({
+      'fontSize': '0.8rem',
+      'top': '-0.7rem',
+      'padding': '0.25rem'
+    }, 80);
   });
   $('#confirmPassword').focusout(function() {
-    $('#confirmPasswordLabel').css('color', '#7F7F7F');
-    if ($(this).val() == '') {
-      $('#confirmPasswordLabel').css({
-        'background-color': '#F1F8E900',
-        'padding': 0,
-        'top': '1rem'
-      });
-    }
-    if ($('#password ~ .error-icon').css('display') == 'none') {
-      $('#password ~ .helper-text').empty();
+    if ($(this).val() === '') {
+      $('#confirmPassword ~ label').animate({
+        'fontSize': '1rem',
+        'top': '1rem',
+        'padding': 0
+      }, 80);
     }
   });
+
   $('#phone').focusin(function() {
-    $('#phoneLabel').css({
-      'background-color': '#F1F8E9',
-      'color': '#00B460',
-      'padding': '0 5px',
-      'top': '-0.5rem'
-    });
+    $('#phone ~ label').animate({
+      'fontSize': '0.8rem',
+      'top': '-0.7rem',
+      'padding': '0.25rem'
+    }, 80);
   });
   $('#phone').focusout(function() {
-    $('#phoneLabel').css('color', '#7F7F7F');
-    if ($(this).val() == '') {
-      $('#phoneLabel').css({
-        'background-color': '#F1F8E900',
-        'padding': 0,
-        'top': '1rem'
-      });
+    if ($(this).val() === '') {
+      $('#phone ~ label').animate({
+        'fontSize': '1rem',
+        'top': '1rem',
+        'padding': 0
+      }, 80);
     }
   });
-  $('.select-dropdown.dropdown-trigger').focusin(function() {
-    $('#selectLocationLabel').css({
-      'background-color': '#F1F8E9',
-      'color': '#00B460',
-      'padding': '0 5px',
-      'top': '-0.5rem',
-      'z-index': 1000
-    });
+
+  $('#selectLocation').change(function() {
+    $('#selectLocation ~ label').animate({
+      'fontSize': '0.8rem',
+      'top': '-0.7rem',
+      'padding': '0.25rem'
+    }, 80);
   });
-  $('.select-dropdown.dropdown-trigger').focusout(function() {
-    $('#selectLocationLabel').css('color', '#7F7F7F');
-    if ($('#selectLocation').val() === null) {
-      $('#selectLocationLabel').css({
-        'background-color': '#F1F8E900',
-        'padding': 0,
-        'top': '1rem'
-      });
+  $('#selectLocation').focusout(function() {
+    if ($(this).val() === null) {
+      $('#selectLocation ~ label').animate({
+        'fontSize': '1rem',
+        'top': '1rem',
+        'padding': 0
+      }, 80);
     }
   });
 </script>

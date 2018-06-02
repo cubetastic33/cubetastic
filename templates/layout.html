@@ -11,7 +11,6 @@
   <link rel="apple-touch-icon" href="images/icons/icon-512x512.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Acme|Cabin|Play|Saira|Oswald">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="manifest" href="manifest1.json">
@@ -38,92 +37,71 @@
     <div class="sk-cube sk-cube9"></div>
   </div>
   <div id="hidden" style="display: none">
-    <header class="navbar-fixed">
-      <nav class="navbar-extended">
-        <div class="nav-wrapper container">
-          <div class="row">
-            <a href="#" data-target="mobile-menu" id="sideNavTrigger" class="sidenav-trigger btn red"><i class="material-icons">menu</i></a>
-            <a href="/" id="websiteTitle" class="col s3 hide-on-small-only">Cubetastic</a>
-            <a href="/" id="smallWebsiteTitle" class="col s3 hide-on-med-and-up">Cubetastic</a>
+    <aside class="mdc-drawer mdc-drawer--temporary mdc-typography">
+      <nav class="mdc-drawer__drawer">
+        <header class="mdc-drawer__header  mdc-theme--on-primary mdc-theme--primary-bg">
+          <div class="mdc-drawer__header-content">
+            <img src="/images/icons/icon-152x152.png" alt="cubetastic logo">
+            Cubetastic
           </div>
-          <div class="row">
-            <ul class="animated bounceInRight hide-on-med-and-down col s12">
-              <li>
-                <a href="index.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Home">
-                  <i class="material-icons">home</i>
-                </a>
-              </li>
-              <li>
-                <a href="solve.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Solve">
-                  Solve
-                </a>
-              </li>
-              <li>
-                <a href="pdfs.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="PDFs">
-                  PDFs
-                </a>
-              </li>
-              <li>
-                <a href="train.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Train">
-                  Train
-                </a>
-              </li>
-              <li>
-                <a href="timer.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Timer">
-                  Timer
-                </a>
-              </li>
-              <li>
-                <a href="videos.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Videos">
-                  Videos
-                </a>
-              </li>
-              <li>
-                <a href="contactMe.html" class="grey-text text-darken-3 tooltipped" data-position="bottom" data-tooltip="Contact Me">
-                  Contact Me
-                </a>
-              </li>
-            </ul>
+        </header>
+        <nav class="mdc-drawer__content mdc-list-group">
+          <div class="mdc-list">
+            <a href="index" class="mdc-list-item">
+              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
+            </a>
+            <a href="solve" class="mdc-list-item">
+              Solve
+            </a>
+            <a href="timer" class="mdc-list-item">
+              Timer
+            </a>
+            <a href="contactMe" class="mdc-list-item">
+              Contact Me
+            </a>
           </div>
-        </div>
-        <div id="loggedStatus"></div>
+          <hr class="mdc-list-divider">
+          <div class="mdc-list">
+            <a href="/signin" class="mdc-list-item" tabindex="-1">Sign In</a>
+            <a href="/signup" class="mdc-list-item" tabindex="-1">Sign Up</a>
+          </div>
+        </nav>
       </nav>
+    </aside>
+    <header class="mdc-top-app-bar mdc-top-app-bar--fixed">
+      <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+          <i class="material-icons mdc-top-app-bar__navigation-icon menu">menu</i>
+          <span class="mdc-top-app-bar__title" onclick="window.location.href='/'">Cubetastic</span>
+        </section>
+        <section id="profileLinkInHeader" class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+          <a href="/signin" class="material-icons mdc-top-app-bar__action-item" aria-label="Sign In" alt="Sign In">account_circle</a>
+        </section>
+      </div>
     </header>
-    <ul id="mobile-menu" class="sidenav">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="solve.html">Solve</a></li>
-      <li><a href="pdfs.html">PDFs</a></li>
-      <li><a href="train.html">Train</a></li>
-      <li><a href="timer.html">Timer</a></li>
-      <li><a href="videos.html">Videos</a></li>
-      <li><a href="contactMe.html">Contact Me</a></li>
-    </ul>
     {% block body %}
     {% endblock %}
-    <footer class="page-footer grey darken-3">
-      <div class="container">
-        <div class="row">
-          <div class="hide-on-med-and-down footerDividerRight col s6">
-            <h5 class="white-text">Cubetastic</h5>
-            <p>Property of Cubetastic</p>
-            <br><br>
-          </div>
-          <div class="hide-on-large-only col s6">
-            <h5 class="white-text">Cubetastic</h5>
-            <p>
-              Property of Cubetastic<br>
-              Try cubetastic in a desktop. It's even better!
-            </p>
-          </div>
-          <div class="col l3 offset-l1 m3 s12">
-            <h5 class="white-text">Contact Me</h5>
-            Email id: cubetastic33@gmail.com
-            <iframe src="https://ghbtns.com/github-btn.html?user=cubetastic33&repo=cubetastic&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170px" height="30px"></iframe><br>
-          </div>
+    <div class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+      <div class="mdc-snackbar__text"></div>
+      <div class="mdc-snackbar__action-wrapper">
+        <button type="button" class="mdc-snackbar__action-button"></button>
+      </div>
+    </div>
+    <footer id="pageFooter">
+      <div id="footerBox">
+        <div class="footerLeftDiv">
+          <h3>Cubetastic</h3>
+          <p>Property of Cubetastic</p>
+          <br><br>
         </div>
-        <div class="footer-copyright">
-          © 2018 | Cubetastic
+        <div class="footerRightDiv">
+          <h3>Contact Me</h3>
+          Email id: cubetastic33@gmail.com<br>
+          <iframe title="github btn" src="https://ghbtns.com/github-btn.html?user=cubetastic33&repo=cubetastic&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170px" height="30px"></iframe><br>
         </div>
+      </div>
+      <div class="footer-copyright">
+        © 2018 | Cubetastic
       </div>
     </footer>
   </div>
@@ -148,10 +126,15 @@
     $("#hidden").show();
   }
 </script>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-<script src="js/materialize.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.6.1/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
 <script src="js/main.js"></script>
+<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+<script>
+  mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar'));
+  var drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-drawer--temporary'));
+  document.querySelector('.menu').addEventListener('click', function() {drawer.open = true;});
+  const snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
+</script>
 <script src="js/loggedStatus.js"></script>
 {% block javascript %}
 {% endblock %}

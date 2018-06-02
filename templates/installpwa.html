@@ -4,19 +4,30 @@
 
 {% block body %}
 <div id="division">
-  <div class="container">
-    <div class="row">
-      <h2>Google Chrome</h2>
-    </div>
-    <div class="row">
-      <img src="/images/chrome_install_pwa_desktop.png" alt="google chrome">
-    </div>
-    <div class="row">
-      <p class="flow-text">
-        In Google Chrome Desktop, you can add a PWA to your homescreen pretty easily, as shown
-        in the above screenshot.
-      </p>
-    </div>
-  </div>
+  <h2>Google Chrome (Android)</h2>
+  <p>You will get an install banner asking you to add it, but if you denied that, you can just
+    click the top right menu in chrome, and click "add to homescreen".
+  </p>
+  <h2>Firefox (Android)</h2>
+  <p>
+    It's really simple: if the site you're visiting is a PWA, firefox will show a home icon
+    in the URL bar, and all you need to do is to click that.
+  </p>
+  <h2>Safari (iOS)</h2>
+  <p>Please follow this link: <a href="https://youtu.be/S7TIVG5F2xw?t=35">click me</a></p>
+  <h2>Google Chrome (Desktop)</h2>
+  <img src="/images/chrome_install_pwa_desktop.png" class="instruction-img" alt="Google Chrome">
+  <p>
+    In Google Chrome Desktop, you can add a PWA to your homescreen pretty easily, as shown
+    in the above screenshot.
+  </p>
+  <h2>Opera (Desktop)</h2>
+  <ol>
+    <li>Press "ctrl + shift + I" to open developer tools.</li>
+    <li>Click on "Application"</li>
+    <li>Make sure "Manifest" is selected in the left, then click on "Add to homescreen"</li>
+  </ol>
+  <img src='/images/opera_select_application.png' class='instruction-img' alt='Opera - select "Application"'>
+  <img src="/images/opera_install_pwa_desktop.png" class="instruction-img" alt="Opera">
 </div>
 {% endblock %}
