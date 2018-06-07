@@ -31,7 +31,8 @@ def saveTime():
   scramble = request.form.getlist('scramble')[0]
   category = request.form.getlist('category')[0]
   plus_two = request.form.getlist('plus_two')[0]
-  return database_interactions.save_time(uid, time, session, scramble, category, plus_two)
+  solve_date = request.form.getlist('solve_date')[0]
+  return database_interactions.save_time(uid, time, session, scramble, category, plus_two, solve_date)
 
 @app.route('/plusTwoSolve', methods=['POST'])
 def plusTwoSolve():
@@ -55,6 +56,12 @@ def deleteSolve():
   session = request.form.getlist('session')[0]
   key = request.form.getlist('key')[0]
   return database_interactions.delete_solve(uid, session, key)
+
+@app.route('/deleteSession', methods=['POST'])
+def deleteSession():
+  uid = request.form.getlist('uid')[0]
+  session = request.form.getlist('session')[0]
+  return database_interactions.delete_session(uid, session)
 
 @app.route('/installpwa')
 def installpwa():
@@ -111,6 +118,22 @@ def signin():
 @app.route('/signup')
 def signup():
   return render_template('signup.html')
+
+@app.route('/userExists', methods=['POST'])
+def userExists():
+  uid = request.form.getlist('uid')[0]
+  username = request.form.getlist('username')[0]
+  return jsonify(database_interactions.user_exists(uid, username))
+
+@app.route('/usernameExists', methods=['POST'])
+def usernameExists():
+  username = request.form.getlist('username')[0]
+  return database_interactions.username_exists(username)
+
+@app.route('/getEmail', methods=['POST'])
+def getEmail():
+  username = request.form.getlist('username')[0]
+  return database_interactions.get_email(username)
 
 @app.route('/createUser', methods=['POST'])
 def createUser():

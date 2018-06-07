@@ -3,7 +3,7 @@
   xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" 
   xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url> 
-    <loc>https://cubetastic.herokuapp.com/index.html</loc>
+    <loc>https://cubetastic.herokuapp.com/index</loc>
     <image:image>
        <image:loc>https://cubetastic.herokuapp.com/images/icons/icon-512x512.png</image:loc>
        <image:caption>Cubetastic Logo</image:caption>
@@ -11,41 +11,30 @@
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://cubetastic.herokuapp.com/solve.html</loc>
+    <loc>https://cubetastic.herokuapp.com/solve</loc>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://cubetastic.herokuapp.com/pdfs.html</loc>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://cubetastic.herokuapp.com/train.html</loc>
-  </url>
-  <url>
-    <loc>https://cubetastic.herokuapp.com/timer.html</loc>
+    <loc>https://cubetastic.herokuapp.com/timer</loc>
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://cubetastic.herokuapp.com/collabicube.html</loc>
+    <loc>https://cubetastic.herokuapp.com/collabicube</loc>
     <priority>1</priority>
   </url>
   <url>
-    <loc>https://cubetastic.herokuapp.com/videos.html</loc>
+    <loc>https://cubetastic.herokuapp.com/contactMe</loc>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://cubetastic.herokuapp.com/contactMe.html</loc>
-    <priority>0.9</priority>
+    <loc>https://cubetastic.herokuapp.com/profile</loc>
   </url>
   <url>
-    <loc>https://cubetastic.herokuapp.com/profile.html</loc>
-  </url>
-  <url>
-    <loc>https://cubetastic.herokuapp.com/signin.html</loc>
+    <loc>https://cubetastic.herokuapp.com/signin</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://cubetastic.herokuapp.com/signup.html</loc>
+    <loc>https://cubetastic.herokuapp.com/signup</loc>
     <priority>0.8</priority>
   </url>
 </urlset>

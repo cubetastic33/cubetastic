@@ -14,6 +14,7 @@ entireTimerDiv.addEventListener("touchstart", handleFullStart, false);
 entireTimerDiv.addEventListener("touchend", handleFullEnd, false);
 
 var solveInfoDialog = new mdc.dialog.MDCDialog(document.querySelector('#solveInfoDialog'));
+var editSessionsDialog = new mdc.dialog.MDCDialog(document.querySelector('#editSessionsDialog'));
 var snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
 
 $(window).keydown(function(e) {
@@ -258,7 +259,10 @@ $('#refreshScramble').click(function() {
 //Save Times
 
 function saveTime(time, session, scramble, category, plusTwo) {
+  var d = new Date();
   if (firebase.auth().currentUser) {
+    //Convert string to int
+    time = (parseInt(time.split(':')[0])*60000) + (parseInt(time.split(':')[1].split('.')[0])*1000) + parseInt(time.split('.')[1]);
     $.ajax({
       type: 'POST',
       url: '/saveTime',
@@ -268,15 +272,37 @@ function saveTime(time, session, scramble, category, plusTwo) {
         session: session,
         scramble: scramble,
         category: category,
-        plus_two: plusTwo
+        plus_two: plusTwo,
+        solve_date: d.getTime()
       },
       success: function(result) {
         console.log(result);
+        if (selectedSession > noOfSessions) {
+          noOfSessions = selectedSession;
+        }
+        sessionNames = sessionNames.slice(0, noOfSessions);
+        for (var i = 0; i < noOfSessions; i++) {
+          if (i >= sessionNames.length) {
+            if (i+1 != selectedSession) {
+              sessionNames.push('Session '+(i+1));
+            } else {
+              sessionNames.push($('#selectSession').html());
+            }
+          }
+        }
+        localStorage.setItem('sessionNames', JSON.stringify(sessionNames));
+        $('#selectSession + div ul').attr('data-selected', selectedSession);
+        $('#selectSession + div ul').empty();
+        for (var i=0; i<sessionNames.length; i++) {
+          $('#selectSession + div ul').append('\
+            <li class="mdc-list-item" role="menuitem" tabindex="0">'+sessionNames[i]+'</li>\
+          ');
+        }
       }
     });
   } else {
     var times = database.transaction(['times'], 'readwrite').objectStore('times');
-    times.add({session: session, time: time, scramble: scramble, category: category, plusTwo: plusTwo});
+    times.add({session: session, time: time, scramble: scramble, category: category, plusTwo: plusTwo, solveDate: d.getTime()});
     showTimesFromIndexedDB();
   }
 }
@@ -284,22 +310,88 @@ function saveTime(time, session, scramble, category, plusTwo) {
 //Other code
 
 var selectedSession = parseInt(localStorage.getItem('selectedSession'));
+var noOfSessions = parseInt(localStorage.getItem('noOfSessions'));
 var sessionNames = JSON.parse(localStorage.getItem('sessionNames'));
 var selectedCategory = localStorage.getItem('selectedCategory');
 var category = {'3x3x3': '333', '2x2x2': '222', '3x3x3 bld': '333ni', 'Pyraminx': 'pyram', '4x4x4': '444', '5x5x5': '555', '6x6x6': '666', '7x7x7': '777', 'Megaminx': 'minx', 'Skewb': 'skewb', 'Square 1': 'sq1fast'}
+var reset = false;
 
 if (selectedCategory == null) {
   localStorage.setItem('selectedSession', '1');
   selectedSession = 1;
-  localStorage.setItem('sessionNames', JSON.stringify(['Session 1', 'Session 2', 'Session 3', 'Session 4', 'Session 5', 'Session 6', 'Session 7', 'Session 8', 'Session 9', 'Session 10']));
-  sessionNames = JSON.parse(localStorage.getItem('sessionNames'));
+  localStorage.setItem('noOfSessions', 10);
+  noOfSessions = 10;
+  var sessionNames = [];
+  for (var i = 1; i <= noOfSessions; i++) {
+    sessionNames.push('Session '+i);
+  }
+  localStorage.setItem('sessionNames', JSON.stringify(sessionNames));
+  reset = true;
   localStorage.setItem('selectedCategory', '3x3x3');
   selectedCategory = '3x3x3';
 }
 
+firebase.auth().onAuthStateChanged(function(user) {
+  if (reset) {
+    if (user) {
+      db.ref('times/'+user.uid).once('value', function(data) {
+        if (data.hasChildren() == false) {
+          localStorage.setItem('noOfSessions', 10);
+          noOfSessions = 10;
+          for (var i = 0; i < noOfSessions; i++) {
+            sessionNames[i] = 'Session '+(i+1);
+          }
+          localStorage.setItem('sessionNames', JSON.stringify(sessionNames));
+        }
+      });
+    } else {
+      localStorage.setItem('noOfSessions', 10);
+      noOfSessions = 10;
+      for (var i = 0; i < noOfSessions; i++) {
+        sessionNames[i] = 'Session '+(i+1);
+      }
+      localStorage.setItem('sessionNames', JSON.stringify(sessionNames));
+    }
+  }
+  if (user) {
+    db.ref('times/'+user.uid).orderByKey().limitToLast(1).once('child_added', function(data) {
+      if (parseInt(data.key.split('session')[1]) > 10) {
+        localStorage.setItem('noOfSessions', data.key.split('session')[1]);
+        noOfSessions = parseInt(data.key.split('session')[1]);
+      } else {
+        localStorage.setItem('noOfSessions', 10);
+        noOfSessions = 10;
+      }
+      console.log(noOfSessions);
+      sessionNames = sessionNames.slice(0, noOfSessions);
+      for (var i = 0; i < noOfSessions; i++) {
+        if (i >= sessionNames.length) {
+          if (i+1 != selectedSession) {
+            sessionNames.push('Session '+(i+1));
+          } else {
+            sessionNames.push($('#selectSession').html());
+          }
+        }
+      }
+      localStorage.setItem('sessionNames', JSON.stringify(sessionNames));
+      $('#selectSession + div ul').attr('data-selected', selectedSession);
+      $('#selectSession + div ul').empty();
+      for (var i=0; i<sessionNames.length; i++) {
+        $('#selectSession + div ul').append('\
+          <li class="mdc-list-item" role="menuitem" tabindex="0">'+sessionNames[i]+'</li>\
+        ');
+      }
+      $('#selectSession').text(sessionNames[selectedSession-1]);
+    });
+  }
+});
+
 $('#selectSession + div ul').attr('data-selected', selectedSession);
+$('#selectSession + div ul').empty();
 for (var i=0; i<sessionNames.length; i++) {
-  $('#selectSession + div ul li:nth-child(' + (i+1) + ')').text(sessionNames[i]);
+  $('#selectSession + div ul').append('\
+    <li class="mdc-list-item" role="menuitem" tabindex="0">'+sessionNames[i]+'</li>\
+  ');
 }
 $('#selectSession').text(sessionNames[selectedSession-1]);
 $('#selectCategory').text(selectedCategory);
@@ -324,11 +416,45 @@ categoryMenuEl.addEventListener('MDCMenu:selected', function(evt) {
 });
 
 //Handle renaming of sessions
-$('#editSessionName').click(function() {
-  var newName = prompt('Enter a new name for the selected session');
-  sessionNames[selectedSession-1] = newName;
-  localStorage.setItem('sessionNames', JSON.stringify(sessionNames));
+$('#editSessions').click(function() {
+  editSessionsDialog.show();
+});
+
+$('#createNewSession').click(function() {
+  var newName = $('#newSessionName').val();
+  if (newName.length >= 1) {
+    sessionNames.push(newName);
+    localStorage.setItem('sessionNames', JSON.stringify(sessionNames));
+    localStorage.setItem('noOfSessions', sessionNames.length);
+    noOfSessions = selectedSession = sessionNames.length;
+    localStorage.setItem('selectedSession', noOfSessions);
+    $('#selectSession + div ul').attr('data-selected', selectedSession);
+    $('#selectSession + div ul').empty();
+    for (var i=0; i<sessionNames.length; i++) {
+      $('#selectSession + div ul').append('\
+        <li class="mdc-list-item" role="menuitem" tabindex="0">'+sessionNames[i]+'</li>\
+      ');
+    }
+    $('#selectSession').text(sessionNames[selectedSession-1]);
+    showTimesFromFirebase();
+    $('#newSessionName').val('');
+    editSessionsDialog.close();
+  } else {
+    snackbar.show({message: 'Error, name is too short.'});
+  }
+});
+
+$('#renameSession').click(function() {
+  var newName = $('#newSessionName').val();
+  if (newName.length >= 1) {
+    sessionNames[selectedSession-1] = newName;
+    localStorage.setItem('sessionNames', JSON.stringify(sessionNames));
     $('#selectSession + div ul li:nth-child(' + (selectedSession) + '), #selectSession').text(newName);
+    $('#newSessionName').val('');
+    editSessionsDialog.close();
+  } else {
+    snackbar.show({message: 'Error, name is too short.'});
+  }
 });
 
 function puzzlesLoaded(puzzles) {
@@ -358,6 +484,13 @@ Array.min = function( array ){
 
 function add(a, b) {return a + b}
 
+function formatTime(milliseconds) {
+  if (Math.floor(milliseconds/60000) == 0) {
+    return (milliseconds%60000-milliseconds%1000)/1000+'.'+parseInt(milliseconds%1000);
+  }
+  return Math.floor(milliseconds/60000)+':'+(milliseconds%60000-milliseconds%1000)/1000+'.'+parseInt(milliseconds%1000);
+}
+
 function showTimesFromFirebase() {
   db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).on('value', function(data) {
     $('#session, #sessionTimesTable').html('\
@@ -375,11 +508,11 @@ function showTimesFromFirebase() {
     var pb = '-:--.---';
     data.forEach(function(solve) {
       n++;
-      var pt = solve.val().time;
+      var pt = formatTime(solve.val().time);
       var time = solve.val().time;
       if (solve.val().plusTwo == 'true') {
-        pt = pt.split(':')[0] + ':' + (parseInt(pt.split(':')[1].split('.')[0])+2).toString() + '.' + pt.split('.')[1] + '+';
-        time = time.split(':')[0] + ':' + (parseInt(time.split(':')[1].split('.')[0])+2).toString() + '.' + time.split('.')[1];
+        pt = formatTime(time + 2000) + '+';
+        time = time + 2000;
       } else if (solve.val().plusTwo == 'DNF') {
         pt = 'DNF';
         time = time + '(DNF)';
@@ -389,11 +522,11 @@ function showTimesFromFirebase() {
         timesForAvg100.push(0);
       }
       if (solve.val().plusTwo != 'DNF') {
-        timesForAvg5.push((parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]));
-        timesForAvg12.push((parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]));
-        timesForAvg50.push((parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]));
-        timesForAvg100.push((parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]));
-        if (pb == '-:--.---' || (parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]) < pb) {pb = (parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1])}
+        timesForAvg5.push(parseInt(time));
+        timesForAvg12.push(parseInt(time));
+        timesForAvg50.push(parseInt(time));
+        timesForAvg100.push(parseInt(time));
+        if (pb == '-:--.---' || time < pb) {pb = time}
       }
       var avg5 = '-:--.---';
       var avg12 = '-:--.---';
@@ -401,32 +534,30 @@ function showTimesFromFirebase() {
       var avg100 = '-:--.---';
       if (timesForAvg5.length == 5) {
         avg5 = (timesForAvg5.reduce(add, 0) - Array.min(timesForAvg5) - Array.max(timesForAvg5))/3;
-        var minutes = Math.floor(avg5/60);
-        avg5 = minutes + ':' + (avg5%60).toString().split('.')[0] + '.' + (avg5%60).toString().split('.')[1].substr(0, 3);
+        console.log(timesForAvg5);
+        avg5 = formatTime(avg5);
         timesForAvg5.shift();
       }
       if (timesForAvg12.length == 12) {
-        avg12 = (timesForAvg12.reduce(add, 0) - Array.min(timesForAvg12) - Array.max(timesForAvg12))/12;
-        var minutes = Math.floor(avg12/60);
-        avg12 = minutes + ':' + (avg12%60).toString().split('.')[0] + '.' + (avg12%60).toString().split('.')[1].substr(0, 3);
+        avg12 = (timesForAvg12.reduce(add, 0) - Array.min(timesForAvg12) - Array.max(timesForAvg12))/10;
+        avg12 = formatTime(avg12);
         timesForAvg12.shift();
       }
       if (timesForAvg50.length == 50) {
-        avg50 = (timesForAvg50.reduce(add, 0) - Array.min(timesForAvg50) - Array.max(timesForAvg50))/50;
-        var minutes = Math.floor(avg50/60);
-        avg50 = minutes + ':' + (avg50%60).toString().split('.')[0] + '.' + (avg50%60).toString().split('.')[1].substr(0, 3);
+        avg50 = (timesForAvg50.reduce(add, 0) - Array.min(timesForAvg50) - Array.max(timesForAvg50))/48;
+        avg50 = formatTime(avg50);
         timesForAvg50.shift();
       }
       if (timesForAvg100.length == 100) {
-        avg100 = (timesForAvg100.reduce(add, 0) - Array.min(timesForAvg100) - Array.max(timesForAvg100))/100;
-        var minutes = Math.floor(avg100/60);
-        avg100 = minutes + ':' + (avg100%60).toString().split('.')[0] + '.' + (avg100%60).toString().split('.')[1].substr(0, 3);
+        avg100 = (timesForAvg100.reduce(add, 0) - Array.min(timesForAvg100) - Array.max(timesForAvg100))/98;
+        avg100 = formatTime(avg100);
         timesForAvg100.shift();
       }
+      var solveDate = parseInt(solve.val().solveDate);
       $('#session table tbody, #sessionTimesTable table tbody').append('\
-        <tr class="mdc-elevation--z3" data-key="'+solve.key+'" data-time="'+time+
+        <tr class="mdc-elevation--z3" data-key="'+solve.key+'" data-time="'+formatTime(time)+
         '" data-scramble="'+solve.val().scramble+'" data-category="'+solve.val().category+
-        '" data-plus-two="'+solve.val().plusTwo+'"><td>'+n+'</td><td>'+pt+
+        '" data-plus-two="'+solve.val().plusTwo+'" data-solve-date="'+new Date(solveDate).toUTCString()+'"><td>'+n+'</td><td>'+pt+
         '</td><td>'+avg5+'</td></tr>\
       ');
       $('#records, #recordsTable').html('\
@@ -486,19 +617,19 @@ function showTimesFromIndexedDB() {
           timesForAvg5.shift();
         }
         if (timesForAvg12.length == 12) {
-          avg12 = (timesForAvg12.reduce(add, 0) - Array.min(timesForAvg12) - Array.max(timesForAvg12))/12;
+          avg12 = (timesForAvg12.reduce(add, 0) - Array.min(timesForAvg12) - Array.max(timesForAvg12))/10;
           var minutes = Math.floor(avg12/60);
           avg12 = minutes + ':' + (avg12%60).toString().split('.')[0] + '.' + (avg12%60).toString().split('.')[1].substr(0, 3);
           timesForAvg12.shift();
         }
         if (timesForAvg50.length == 50) {
-          avg50 = (timesForAvg50.reduce(add, 0) - Array.min(timesForAvg50) - Array.max(timesForAvg50))/50;
+          avg50 = (timesForAvg50.reduce(add, 0) - Array.min(timesForAvg50) - Array.max(timesForAvg50))/48;
           var minutes = Math.floor(avg50/60);
           avg50 = minutes + ':' + (avg50%60).toString().split('.')[0] + '.' + (avg50%60).toString().split('.')[1].substr(0, 3);
           timesForAvg50.shift();
         }
         if (timesForAvg100.length == 100) {
-          avg100 = (timesForAvg100.reduce(add, 0) - Array.min(timesForAvg100) - Array.max(timesForAvg100))/100;
+          avg100 = (timesForAvg100.reduce(add, 0) - Array.min(timesForAvg100) - Array.max(timesForAvg100))/98;
           var minutes = Math.floor(avg100/60);
           avg100 = minutes + ':' + (avg100%60).toString().split('.')[0] + '.' + (avg100%60).toString().split('.')[1].substr(0, 3);
           timesForAvg100.shift();
@@ -506,7 +637,7 @@ function showTimesFromIndexedDB() {
         $('#session table tbody, #sessionTimesTable table tbody').append('\
           <tr class="mdc-elevation--z3" data-key="'+cursor.primaryKey+'" data-time="'+cursor.value.time+
           '" data-scramble="'+cursor.value.scramble+'" data-category="'+cursor.value.category+
-          '" data-plus-two="'+cursor.value.plusTwo+'"><td>'+n+'</td><td>'+time+pt+
+          '" data-plus-two="'+cursor.value.plusTwo+'" data-solve-date="'+new Date(cursor.value.solveDate)+'"><td>'+n+'</td><td>'+time+pt+
           '</td><td>'+avg5+'</td></tr>\
         ');
         $('#records, #recordsTable').html('\
@@ -520,6 +651,7 @@ function showTimesFromIndexedDB() {
       }
       cursor.continue();
     }
+    document.querySelector('#session').scrollTo(0, document.querySelector('#session').scrollHeight);
     initContextMenu();
     initMobileContextMenu();
   });
@@ -620,6 +752,42 @@ function DNFTimeFromIndexedDB(primaryKey) {
   }
 }
 
+function deleteSessionFromFirebase() {
+  if (confirm('Are you sure you want to delete this entire session? It cannot be undone.')) {
+    $.ajax({
+      type: 'POST',
+      url: '/deleteSession',
+      data: {
+        uid: firebase.auth().currentUser.uid,
+        session: $('#selectSession + div ul').attr('data-selected')
+      },
+      success: function(result) {
+        console.log(result);
+        snackbar.show({message: 'Successfully deleted session.'});
+      }
+    });
+  }
+}
+
+function deleteSessionFromIndexedDB() {
+  if (confirm('Are you sure you want to delete this entire session? It cannot be undone.') === true) {
+    //User has confirmed he/she wants to delete the session
+    var times = database.transaction(['times'], 'readwrite').objectStore('times');
+    var sessionTimes = times.index('session');
+    sessionTimes.openCursor().addEventListener('success', function(event) {
+      var cursor = event.target.result;
+      if (cursor) {
+        if (cursor.key == $('#selectSession + div ul').attr('data-selected')) {
+          cursor.delete();
+          snackbar.show({message: 'Successfully deleted time', timeout: 200});
+          showTimesFromIndexedDB();
+        }
+        cursor.continue();
+      }
+    });
+  }
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     showTimesFromFirebase();
@@ -671,6 +839,8 @@ $(window).keyup(function(e) {
     } else {
       DNFTimeFromIndexedDB(parseInt(primaryKey));
     }
+  } else if (e.shiftKey && e.which == 83) {
+    //shift + S => Toggle scramble image
   }
 });
 
@@ -683,6 +853,7 @@ function initContextMenu() {
     var scramble = $(this).attr('data-scramble');
     var category = $(this).attr('data-category');
     var plusTwo = $(this).attr('data-plus-two');
+    var solveDate = $(this).attr('data-solve-date');
     e.preventDefault();
     $('#contextMenu').css({
       'display': 'block',
@@ -696,6 +867,7 @@ function initContextMenu() {
         <b>Solve Time: </b>'+time+'\
         <b>+2: </b>'+plusTwo+'<br>\
         <b>Scramble: </b>'+scramble+'<br>\
+        <b>Solve Date: </b>'+solveDate+'<br>\
       ');
       $('#contextMenu').hide();
     });
@@ -721,6 +893,14 @@ function initContextMenu() {
         DNFTimeFromFirebase(primaryKey);
       } else {
         DNFTimeFromIndexedDB(parseInt(primaryKey));
+      }
+    });
+    $('#deleteSession').off('click').click(function() {
+      $('#contextMenu').hide();
+      if (firebase.auth().currentUser) {
+        deleteSessionFromFirebase();
+      } else {
+        deleteSessionFromIndexedDB();
       }
     });
   });

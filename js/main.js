@@ -1,4 +1,3 @@
-// Initialize Firebase
 var config = {
   apiKey: "apiKey",
   authDomain: "authDomain",
@@ -27,7 +26,7 @@ $('#signinDivision #formDiv').submit(signInUser);
 
 $('#signupDivision #username').keyup(function() {
   if ($(this).val() != '') {
-    if ($(this).val().length > 6) {
+    if ($(this).val().length >= 6) {
       usernameAvailability($(this).val());
     } else {
       $('#username').parent().attr('class', 'outlined-input-field error-input-field');
@@ -64,38 +63,46 @@ $('#signinDivision #username').keyup(function() {
 });
 
 function usernameAvailability(usernameGiven) {
-  db.ref('users').once('value', function(data) {
-    var i = 0;
-    data.forEach(function(user) {
-      i++;
-      if (usernameGiven == user.child('username').val()) {
+  $.ajax({
+    type: 'POST',
+    url: '/usernameExists',
+    data: {
+      username: usernameGiven
+    },
+    success: function(usernameExists) {
+      console.log(usernameExists);
+      if (usernameExists == 'True') {
+        //Username already exists
         $('#username').parent().attr('class', 'outlined-input-field error-input-field');
         $('#username ~ .helper-text').text('User with name "' + usernameGiven + '" already exists!');
-      }
-      if ((i == data.numChildren()) && ($('#username ~ .helper-text').text() != 'User with name "' + usernameGiven + '" already exists!')) {
+      } else {
+        //Username is available
         $('#username').parent().attr('class', 'outlined-input-field success-input-field');
         $('#username ~ .helper-text').text('Username "' + usernameGiven + '" is available!');
       }
-    });
+    }
   });
 }
 
 function usernameValidity(usernameGiven) {
-  db.ref('users').on('value', function(data) {
-    var i = 0;
-    data.forEach(function(user) {
-      i++;
-      if (usernameGiven == user.child('username').val()) {
+  $.ajax({
+    type: 'POST',
+    url: '/usernameExists',
+    data: {
+      username: usernameGiven
+    },
+    success: function(usernameExists) {
+      console.log(usernameExists);
+      if (usernameExists == 'True') {
         //Username is valid
         $('#username').parent().attr('class', 'outlined-input-field success-input-field');
         $('#username ~ .helper-text').text('User "' + usernameGiven + '" exists!');
-      }
-      if ((i == data.numChildren()) && ($('#username ~ .helper-text').text() != 'User "' + usernameGiven + '" exists!')) {
+      } else {
         //Username is invalid
         $('#username').parent().attr('class', 'outlined-input-field warning-input-field');
         $('#username ~ .helper-text').text('User "' + usernameGiven + '" does not exist!');
       }
-    });
+    }
   });
 }
 
@@ -107,7 +114,7 @@ function signUpUser(e) {
   var confPassword = $('#confirmPassword').val();
   var phone = $('#phone').val();
   var location = $('#selectLocation').val();
-  if (username.length > 6) {
+  if (username.length >= 6) {
     usernameAvailability(username);
   } else {
     $('#username').parent().attr('class', 'outlined-input-field error-input-field');
@@ -182,14 +189,19 @@ function signInUser(e) {
     $('#username ~ .helper-text').text('Please enter your username!');
   } else {
     snackbar.show({message: 'Please wait...'});
-    db.ref('users').on('value', function(data) {
-      data.forEach(function(child) {
-        if ($('#username').parent().hasClass('warning-input-field')) {
-          snackbar.show({message: 'Wrong Username!', timeout: 4000});
-        }
-        if (username == child.child('username').val()) {
-          signedinnow = true;
-          firebase.auth().signInWithEmailAndPassword(child.child('email').val(), password).then(function(user) {
+    if ($('#username').parent().hasClass('warning-input-field')) {
+      snackbar.show({message: 'Wrong Username!', timeout: 4000});
+    }
+    else {
+      signedinnow = true;
+      $.ajax({
+        type: 'POST',
+        url: '/getEmail',
+        data: {
+          username: username
+        },
+        success: function(email) {
+          firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
             window.location.href="/profile";
           }).catch(function(error) {
             console.log(error);
@@ -197,7 +209,7 @@ function signInUser(e) {
           });
         }
       });
-    });
+    }
   }
 }
 

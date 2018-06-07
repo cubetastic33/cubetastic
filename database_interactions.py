@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import credentials, auth, db
 from pyfcm import FCMNotification
 
-push_service = FCMNotification(api_key='api_key')
+push_service = FCMNotification(api_key='AAAA5UoD0m8:APA91bGfwqFu_W6POM9liLPR_HQpFVW2Jn1dXHmOLb1px9aHxx_3q8f1_7MISFx-57u14Tu8MLY6BRiK2L8TNZjd-o5BSBI0n9OGK3ql4AwJAyxcDytaZvjTQY6LiwTiptVSjQDdl_Jj')
 
 #Firebase Initialization
 cred = credentials.Certificate('static/cubetastic-33-firebase-adminsdk-89yl9-fe0a5bbca0.json')
@@ -21,6 +21,30 @@ def create_user(uid, email, location, phone, username, profilePic):
   })
   return 'created user ' + str(username) + '.'
 
+def user_exists(uid, username):
+  users = db.reference('users').get()
+  usernameExists = []
+  uidExists = []
+  for user in users:
+    usernameExists.append(users[user]['username'] == username)
+    uidExists.append(user)
+  usernameExists = True in usernameExists
+  return {'name': str(usernameExists), 'uid': uidExists}
+
+def username_exists(username):
+  users = db.reference('users').get()
+  usernameExists = []
+  for user in users:
+    usernameExists.append(users[user]['username'] == username)
+  return 'True' if True in usernameExists else 'False'
+
+def get_email(username):
+  users = db.reference('users').get()
+  for user in users:
+    #Check if username = user's username
+    if users[user]['username'] == username:
+      return users[user]['email']
+
 def send_feedback(title, message):
     feedback_ref = db.reference('/feedback')
     feedback_ref.push({
@@ -29,12 +53,13 @@ def send_feedback(title, message):
     })
     return 'Done!'
 
-def save_time(uid, time, session, scramble, category, plus_two):
+def save_time(uid, time, session, scramble, category, plus_two, solve_date):
   db.reference('times/'+str(uid)).child('session'+str(session)).push({
     'time': str(time),
     'scramble': scramble,
     'category': category,
-    'plusTwo': plus_two
+    'plusTwo': plus_two,
+    'solveDate': solve_date
   })
   return 'saved time'
 
@@ -50,6 +75,11 @@ def delete_solve(uid, session, key):
   if db.reference('times/'+str(uid)+'/session'+str(session)).child(str(key)).get() != None:
     db.reference('times/'+str(uid)+'/session'+str(session)).child(str(key)).delete()
     return 'Deleted solve.'
+
+def delete_session(uid, session):
+  if db.reference('times/'+str(uid)+'/session'+str(session)).get() != None:
+    db.reference('times/'+str(uid)+'/session'+str(session)).delete()
+    return 'Deleted session.'
 
 def send_chat_message(uid, group, message):
     db.reference('/chat/' + str(group)).push({

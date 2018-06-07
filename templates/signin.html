@@ -57,12 +57,17 @@
     console.log(newUser);
     if (newUser) {
       if (newUser.displayName.length >= 6) {
-        db.ref('users').once('value', function(data) {
-          var i = 0;
-          var deleted = false;
-          data.forEach(function(user) {
-            i++;
-            if ((newUser.displayName == user.child('username').val()) && (newUser.uid != user.key)) {
+        $.ajax({
+          type: 'POST',
+          url: '/userExists',
+          data: {
+            username: newUser.displayName,
+            uid: newUser.uid
+          },
+          success: function(userExists) {
+            console.log(userExists);
+            var deleted = false;
+            if (userExists.name == 'True' && userExists.uid.includes(newUser.uid) === false) {
               snackbar.show({message: 'Somebody else already has that username! Please try other options.', multiline: true, timeout: 10000});
               newUser.delete().then(function() {
                 console.log('Deleted account');
@@ -71,12 +76,12 @@
               });
               deleted = true;
             }
-            if (newUser.uid == user.key) {
+            if (userExists.uid.includes(newUser.uid) === true) {
               deleted = true;
               snackbar.show({message: 'User already exists, signing in', multiline: true, timeout: 10000});
               window.location.href="/profile";
             }
-            if ((i == data.numChildren()) && (deleted === false)) {
+            if (userExists.name == 'False' && deleted === false) {
               snackbar.show({message: 'Success! Creating user "' + newUser.displayName + '".', multiline: true, timeout: 5000});
               $.ajax({
                 type: 'POST',
@@ -103,7 +108,7 @@
                 }
               });
             }
-          });
+          }
         });
       } else {
         snackbar.show({message: 'Your username "'+newUser.displayName+'" is too short. Please try other options!', multiline: true, timeout: 6000});

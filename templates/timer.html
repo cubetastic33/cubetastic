@@ -93,6 +93,28 @@
         </div>
       </nav>
     </aside>
+    <aside id="editSessionsDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="editSessionsLabel">
+      <div class="mdc-dialog__surface">
+        <header class="mdc-dialog__header">
+          <h2 id="editSessionsLabel" class="mdc-dialog__header__title">
+            Edit Sessions
+          </h2>
+        </header>
+        <section class="mdc-dialog__body">
+          <div id="sessionNameInput" class="mdc-text-field mdc-text-field--box">
+            <input type="text" id="newSessionName" class="mdc-text-field__input">
+            <label class="mdc-floating-label" for="newSessionName">Name</label>
+            <div class="mdc-line-ripple"></div>
+          </div><br>
+          <button id="createNewSession" class="mdc-button">+ New Session</button>
+          <button id="renameSession" class="mdc-button mdc-button--unelevated">Rename Session</button>
+        </section>
+        <footer class="mdc-dialog__footer">
+          <button type="button" class="mdc-button mdc-button--unelevated mdc-dialog__footer__button mdc-dialog__footer__button--accept">Done</button>
+        </footer>
+      </div>
+      <div class="mdc-dialog__backdrop"></div>
+    </aside>
     <header class="mdc-top-app-bar mdc-top-app-bar--fixed">
       <div class="mdc-top-app-bar__row">
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
@@ -275,7 +297,14 @@
           when you are using some other device or browser, you just need to sign in to your
           account, and all your times from this device will appear there! If you have any feedback,
           you can click the feedback icon in the menu, and it will redirect you to a feedback
-          page.<br>
+          page.<br><br>
+          <h3>Keyboard shortcuts</h3>
+          There are currently 3 keyboard shortcuts:
+          <ul>
+            <li>`shift + del` to delete last solve</li>
+            <li>`shift + 2` to toggle last solve as +2</li>
+            <li>`shift + D` to set last solve as DNF</li>
+          </ul>
           This website is also open source, which means you can view and contribute to the
           source code. To do this, click the github icon (a cat) in the footer below.<br>
           I have used the open source libraries JQuery and MDC Web in this website.
@@ -317,7 +346,7 @@
       </div>
       <div id="sessionButtonGroup" class="button-group">
         <div class="button-group-left">
-          <button id="editSessionName" class="mdc-button mdc-button--outlined">
+          <button id="editSessions" class="mdc-button mdc-button--outlined">
             <i class="material-icons">edit</i>
           </button>
         </div>
@@ -404,7 +433,8 @@
         <div class="footerRightDiv">
           <h3>Contact Me</h3>
           Email id: cubetastic33@gmail.com<br>
-          <iframe title="github btn" src="https://ghbtns.com/github-btn.html?user=cubetastic33&repo=cubetastic&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170px" height="30px"></iframe><br>
+          <a id="githubBtn" class="mdc-button mdc-button--raised" href="https://github.com/cubetastic33/cubetastic"><img src="/images/Octocat/Octocat.png" alt="GitLab">GitHub</a>
+          <a id="gitlabBtn" class="mdc-button mdc-button--raised" href="https://gitlab.com/cubetastic/cubetastic"><img src="/images/gitlab_logo.png" alt="GitLab">GitLab</a>
         </div>
       </div>
       <div class="footer-copyright">
@@ -418,6 +448,7 @@
     <li id="togglePlusTwo">Toggle +2</li>
     <li id="setAsDNF">Set as DNF</li>
     <li id="deleteTime">Delete Time</li>
+    <li id="deleteSession">Delete Session</li>
   </ul>
   <div class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
     <div class="mdc-snackbar__text"></div>
@@ -453,11 +484,12 @@
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 <script async>
   mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
-  mdc.ripple.MDCRipple.attachTo(document.querySelector('#editSessionName'));
+  mdc.ripple.MDCRipple.attachTo(document.querySelector('#editSessions'));
   mdc.ripple.MDCRipple.attachTo(document.querySelector('#refreshScramble'));
   mdc.ripple.MDCRipple.attachTo(document.querySelector('#mobileSessionFAB'));
   mdc.ripple.MDCRipple.attachTo(document.querySelector('#moreFAB'));
   mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar'));
+  mdc.textField.MDCTextField.attachTo(document.querySelector('#sessionNameInput'));
 
   //Drawers
   var drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-drawer--temporary'));

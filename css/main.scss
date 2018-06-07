@@ -269,7 +269,7 @@ h2 {
 }
 
 h3 {
-  font-family: Acme;
+  font-family: Roboto-Medium;
 }
 
 p {
@@ -293,6 +293,24 @@ ol li {
 
 .hide {
   display: none;
+}
+
+#githubBtn, #gitlabBtn {
+  @include mdc-button-container-fill-color(#FFFFFF);
+  @include mdc-button-corner-radius(3px);
+  font-family: Roboto-Medium;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.75);
+  height: 40px;
+  letter-spacing: 0;
+  margin: 1rem 0 1rem 0;
+  padding: 8px;
+  text-transform: none;
+
+  img {
+    height: 18px;
+    margin-right: 5px;
+  }
 }
 
 #pageFooter {
@@ -477,7 +495,7 @@ a {
   font-family: Roboto;
   padding-top: calc(64px + 1rem);
   padding-bottom: 20px;
-  
+
   #formDiv {
     background-color: #FFFFFF;
     background-image: url('/images/textures/fabric-of-squares.png');
@@ -517,7 +535,7 @@ a {
     background-color: #242424;
     color: #FFFFFF;
     font-family: Play;
-    
+
     div:first-child, div:last-child {
       border: 2px solid #FFFFFF;
       border-radius: 2px;
@@ -635,10 +653,10 @@ a {
   #password, #confirmPassword {
     width: calc(50% - 5rem);
   }
-  
+
   #confirmPassword {
     margin-left: 1.5rem;
-  
+
     + label {
       left: calc(50% + 2rem);
     }
