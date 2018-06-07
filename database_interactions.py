@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import credentials, auth, db
 from pyfcm import FCMNotification
 
-push_service = FCMNotification(api_key='AAAA5UoD0m8:APA91bGfwqFu_W6POM9liLPR_HQpFVW2Jn1dXHmOLb1px9aHxx_3q8f1_7MISFx-57u14Tu8MLY6BRiK2L8TNZjd-o5BSBI0n9OGK3ql4AwJAyxcDytaZvjTQY6LiwTiptVSjQDdl_Jj')
+push_service = FCMNotification(api_key='api_key')
 
 #Firebase Initialization
 cred = credentials.Certificate('static/cubetastic-33-firebase-adminsdk-89yl9-fe0a5bbca0.json')
