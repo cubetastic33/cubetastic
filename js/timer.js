@@ -511,7 +511,7 @@ function showTimesFromFirebase() {
       var pt = formatTime(solve.val().time);
       var time = solve.val().time;
       if (solve.val().plusTwo == 'true') {
-        pt = formatTime(time + 2000) + '+';
+        pt = formatTime(parseInt(time) + 2000) + '+';
         time = time + 2000;
       } else if (solve.val().plusTwo == 'DNF') {
         pt = 'DNF';
