@@ -6,10 +6,22 @@ from pyfcm import FCMNotification
 push_service = FCMNotification(api_key='api_key')
 
 #Firebase Initialization
-cred = credentials.Certificate('static/cubetastic-33-firebase-adminsdk-89yl9-fe0a5bbca0.json')
+cred = credentials.Certificate('static/certificate.json')
 default_app = firebase_admin.initialize_app(cred, {
   'databaseURL': 'https://cubetastic-33.firebaseio.com'
 })
+
+def escapeHTML(text):
+  if '&' in text:
+    text.replace('&', '&#38;')
+  if '<' in text:
+    text.replace('<', '&#60;')
+  if '>' in text:
+    text.replace('>', '&#62;')
+  if '"' in text:
+    text.replace('"', '&#34;')
+  if "'" in text:
+    text.replace("'", '&#39;')
 
 def create_user(uid, email, location, phone, username, profilePic):
   db.reference('users').child(uid).set({
@@ -48,16 +60,16 @@ def get_email(username):
 def send_feedback(title, message):
     feedback_ref = db.reference('/feedback')
     feedback_ref.push({
-      'title': str(title),
-      'message': str(message)
+      'title': escapeHTML(title),
+      'message': escapeHTML(message)
     })
     return 'Done!'
 
 def save_time(uid, time, session, scramble, category, plus_two, solve_date):
   db.reference('times/'+str(uid)).child('session'+str(session)).push({
-    'time': str(time),
-    'scramble': scramble,
-    'category': category,
+    'time': escapeHTML(str(time)),
+    'scramble': escapeHTML(scramble),
+    'category': escapeHTML(category),
     'plusTwo': plus_two,
     'solveDate': solve_date
   })
@@ -82,13 +94,13 @@ def delete_session(uid, session):
     return 'Deleted session.'
 
 def send_chat_message(uid, group, message):
-    db.reference('/chat/' + str(group)).push({
-        'author': str(uid),
-        'message': str(message),
-        'time': str(datetime.datetime.now().time()) + ',' + str(datetime.datetime.now().date())
-    })
-    notifyUsersInGroup(uid, group, message)
-    return 'Success'
+  db.reference('/chat/' + str(group)).push({
+    'author': escapeHTML(uid),
+    'message': escapeHTML(message),
+    'time': str(datetime.datetime.now().time()) + ',' + str(datetime.datetime.now().date())
+  })
+  notifyUsersInGroup(uid, group, message)
+  return 'Success'
 
 def notifyUsersInGroup(uid, requiredGroup, message):
   fcmTokens = db.reference('fcmTokens').get()
