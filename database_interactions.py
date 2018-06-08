@@ -8,7 +8,7 @@ push_service = FCMNotification(api_key='api_key')
 #Firebase Initialization
 cred = credentials.Certificate('static/certificate.json')
 default_app = firebase_admin.initialize_app(cred, {
-  'databaseURL': 'https://cubetastic-33.firebaseio.com'
+  'databaseURL': 'databaseURL'
 })
 
 def escapeHTML(text):
@@ -22,6 +22,7 @@ def escapeHTML(text):
     text.replace('"', '&#34;')
   if "'" in text:
     text.replace("'", '&#39;')
+  return text
 
 def create_user(uid, email, location, phone, username, profilePic):
   db.reference('users').child(uid).set({
