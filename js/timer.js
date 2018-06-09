@@ -561,7 +561,7 @@ function showTimesFromFirebase() {
         '</td><td>'+avg5+'</td></tr>\
       ');
       $('#records, #recordsTable').html('\
-        <b>PB: </b>'+Math.floor(pb/60)+':'+(pb%60).toString()+'<br>\
+        <b>PB: </b>'+formatTime(pb)+'<br>\
         <b>Avg of 5: </b>'+avg5+'<br>\
         <b>Avg of 12: </b>'+avg12+'<br>\
         <b>Avg of 50: </b>'+avg50+'<br>\
