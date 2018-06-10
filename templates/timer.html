@@ -72,14 +72,29 @@
     <aside id="sessionDrawer" class="mdc-drawer mdc-drawer--temporary mdc-typography">
       <nav class="mdc-drawer__drawer">
         <div class="mdc-drawer__content">
-          <h3>Records</h3>
-          <table id="recordsTable">
-            <tr class="mdc-elevation--z2"><td>PB</td><td>22.644</td></tr>
-            <tr class="mdc-elevation--z2"><td>Avg Of 5</td><td>24.510</td></tr>
-            <tr class="mdc-elevation--z2"><td>Avg Of 12</td><td>-:--.---</td></tr>
-            <tr class="mdc-elevation--z2"><td>Avg Of 50</td><td>-:--.---</td></tr>
-            <tr class="mdc-elevation--z2"><td>Avg Of 100</td><td>-:--.---</td></tr>
-          </table>
+          <div id="mobileRecords">
+            <div id="mobileTypeOfStats" class="mdc-select mdc-select--box">
+              <select class="mdc-select__native-control">
+                <option value="best" selected>Best</option>
+                <option value="current">Current</option>
+                <option value="worst">Worst</option>
+              </select>
+              <label class="mdc-floating-label">Type</label>
+              <div class="mdc-line-ripple"></div>
+            </div>
+            <div class="statsField">
+              <span class="statsText">Single from</span>
+              <input type="text" id="mobileSingleFrom" class="statsTextField" value="all">
+              <span class="statsText">:</span>
+              <div id="mobileSingle" class="statsText"></div>
+            </div>
+            <div class="statsField">
+              <span class="statsText">Average of</span>
+              <input type="number" id="mobileAverageOf" class="statsTextField" min="3" value="5">
+              <span class="statsText">:</span>
+              <div id="mobileAverage" class="statsText"></div>
+            </div>
+          </div>
           <h3>Session Times</h3>
           <div id="sessionTimesTable">
             <table>
