@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://gitlab.com/cubetastic/cubetastic/blob/master/LICENSE)
 ![Version](https://img.shields.io/badge/version-1.2.0-brightgreen.svg)
 
-Hello everyone, and welcome to cubetastic. Here, you can find the official source code of my website.
+Hello everyone, and welcome to cubetastic. Here, you can find the official source code of my website. Click [here](https://cubetastic.herokuapp.com) to go to the website itself.
 
 ## Cubetastic Web Timer
 
