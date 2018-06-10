@@ -115,7 +115,7 @@ $mdc-theme-on-secondary: #000000;
   margin: 0.5rem 0;
 
   .statsText {
-    color: $mdc-theme-on-primary;
+    color: #000000;
     font-family: Roboto-Medium;
 
       ~ .statsTextField {
@@ -126,6 +126,7 @@ $mdc-theme-on-secondary: #000000;
         background-color: #00000000;
         border: none;
         border-bottom: 1px solid #000000;
+        color: #000000;
       }
 
       ~ #singleFrom {
@@ -147,13 +148,13 @@ $mdc-theme-on-secondary: #000000;
   top: 75px;
 }
 
+#records .mdc-select, #mobileRecords .mdc-select {
+  width: 100%;
+}
+
 #records {
   text-align: left;
   padding: 5px;
-
-  .mdc-select {
-    width: 100%;
-  }
 }
 
 #session {

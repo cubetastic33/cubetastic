@@ -16,6 +16,8 @@ entireTimerDiv.addEventListener("touchend", handleFullEnd, false);
 var solveInfoDialog = new mdc.dialog.MDCDialog(document.querySelector('#solveInfoDialog'));
 var editSessionsDialog = new mdc.dialog.MDCDialog(document.querySelector('#editSessionsDialog'));
 var snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
+var typeOfStats = new mdc.select.MDCSelect(document.querySelector('#typeOfStats'));
+var mobileTypeOfStats = new mdc.select.MDCSelect(document.querySelector('#mobileTypeOfStats'));
 
 $(window).keydown(function(e) {
   if (timerRunning == true) {
@@ -486,25 +488,86 @@ function add(a, b) {return a + b}
 
 function formatTime(milliseconds) {
   if (Math.floor(milliseconds/60000) == 0) {
-    return (milliseconds%60000-milliseconds%1000)/1000+'.'+parseInt(milliseconds%1000);
+    return (milliseconds%60000-milliseconds%1000)/1000+'.'+('000'+parseInt(milliseconds%1000)).substr(-3);
   }
-  return Math.floor(milliseconds/60000)+':'+(milliseconds%60000-milliseconds%1000)/1000+'.'+parseInt(milliseconds%1000);
+  return Math.floor(milliseconds/60000)+':'+(milliseconds%60000-milliseconds%1000)/1000+'.'+('000'+parseInt(milliseconds%1000)).substr(-3);
+}
+
+function calcSingle(type, range) {
+  var single = '-:--.---';
+  if (range.includes('-')) {
+    if (/^\d+$/.test(range.split('-')[0]) && /^\d+$/.test(range.split('-')[1])) {
+      if (parseInt(range.split('-')[0]) < parseInt(range.split('-')[1])) {
+        if (type === 'current') {
+          single = timesForAvg[parseInt(range.split('-')[1]) - 1];
+        } else if (type === 'best') {
+          single = Array.min(timesForAvg.slice((parseInt(range.split('-')[0])-1), parseInt(range.split('-')[1])));
+        } else if (type === 'worst') {
+          single = Array.max(timesForAvg.slice((parseInt(range.split('-')[0])-1), parseInt(range.split('-')[1])));
+        }
+      } else {
+        snackbar.show({message: 'Please enter numbers in ascending order, like "5-20".'});
+      }
+    } else {
+      snackbar.show({message: 'Please enter a number range, like "5-20".'});
+    }
+  } else if (range === 'all') {
+    if (type === 'current') {
+      single = timesForAvg[timesForAvg.length - 1];
+    } else if (type === 'best') {
+      single = Array.min(timesForAvg);
+    } else if (type === 'worst') {
+      single = Array.max(timesForAvg);
+    }
+  } else {
+    snackbar.show({message: 'Please enter a number range or "all" if you want your overall single.', multiline: true});
+  }
+  if (single !== '-:--.---') {
+    return formatTime(single);
+  }
+  return single;
+}
+
+function calcAverage(type, range) {
+  range = parseInt(range);
+  var avg = '-:--.---';
+  if (type === 'current') {
+    if (timesForAvg.length >= range) {
+      avg = (timesForAvg.slice(-1*range).reduce(add, 0) - Array.min(timesForAvg.slice(-1*range)) - Array.max(timesForAvg.slice(-1*range)))/(range-2);
+    }
+  } else {
+    if (timesForAvg.length >= range) {
+      averages = [];
+      for (var i=(range-1); i<timesForAvg.length; i++) {
+        var currentArray = timesForAvg.slice(i-(range-1), i+1);
+        var avgOfCurrent = (currentArray.reduce(add, 0) - Array.min(currentArray) - Array.max(currentArray))/(range-2);
+        averages.push(avgOfCurrent);
+      }
+
+      if (type === 'best') {
+        avg = Array.min(averages);
+      } else {
+        avg = Array.max(averages);
+      }
+    }
+  }
+  if (avg != '-:--.---') {
+    return formatTime(avg);
+  }
+  return avg;
 }
 
 function showTimesFromFirebase() {
   db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).on('value', function(data) {
     $('#session, #sessionTimesTable').html('\
       <table>\
-        <thead><tr class="mdc-elevation--z3"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>\
+        <thead><tr class="mdc-elevation--z6"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>\
         <tbody>\
         </tbody>\
       </table>\
     ');
     var n = 0;
-    var timesForAvg5 = [];
-    var timesForAvg12 = [];
-    var timesForAvg50 = [];
-    var timesForAvg100 = [];
+    window.timesForAvg = [];
     var pb = '-:--.---';
     data.forEach(function(solve) {
       n++;
@@ -516,58 +579,32 @@ function showTimesFromFirebase() {
       } else if (solve.val().plusTwo == 'DNF') {
         pt = 'DNF';
         time = time + '(DNF)';
-        timesForAvg5.push(0);
-        timesForAvg12.push(0);
-        timesForAvg50.push(0);
-        timesForAvg100.push(0);
+        timesForAvg.push(0);
       }
       if (solve.val().plusTwo != 'DNF') {
-        timesForAvg5.push(parseInt(time));
-        timesForAvg12.push(parseInt(time));
-        timesForAvg50.push(parseInt(time));
-        timesForAvg100.push(parseInt(time));
+        timesForAvg.push(parseInt(time));
         if (pb == '-:--.---' || time < pb) {pb = time}
       }
-      var avg5 = '-:--.---';
-      var avg12 = '-:--.---';
-      var avg50 = '-:--.---';
-      var avg100 = '-:--.---';
-      if (timesForAvg5.length == 5) {
-        avg5 = (timesForAvg5.reduce(add, 0) - Array.min(timesForAvg5) - Array.max(timesForAvg5))/3;
-        console.log(timesForAvg5);
-        avg5 = formatTime(avg5);
-        timesForAvg5.shift();
-      }
-      if (timesForAvg12.length == 12) {
-        avg12 = (timesForAvg12.reduce(add, 0) - Array.min(timesForAvg12) - Array.max(timesForAvg12))/10;
-        avg12 = formatTime(avg12);
-        timesForAvg12.shift();
-      }
-      if (timesForAvg50.length == 50) {
-        avg50 = (timesForAvg50.reduce(add, 0) - Array.min(timesForAvg50) - Array.max(timesForAvg50))/48;
-        avg50 = formatTime(avg50);
-        timesForAvg50.shift();
-      }
-      if (timesForAvg100.length == 100) {
-        avg100 = (timesForAvg100.reduce(add, 0) - Array.min(timesForAvg100) - Array.max(timesForAvg100))/98;
-        avg100 = formatTime(avg100);
-        timesForAvg100.shift();
-      }
       var solveDate = parseInt(solve.val().solveDate);
-      $('#session table tbody, #sessionTimesTable table tbody').append('\
-        <tr class="mdc-elevation--z3" data-key="'+solve.key+'" data-time="'+formatTime(time)+
+      $('#session table tbody, #sessionTimesTable table tbody').prepend('\
+        <tr class="mdc-elevation--z6" data-key="'+solve.key+'" data-time="'+formatTime(time)+
         '" data-scramble="'+solve.val().scramble+'" data-category="'+solve.val().category+
         '" data-plus-two="'+solve.val().plusTwo+'" data-solve-date="'+new Date(solveDate).toUTCString()+'"><td>'+n+'</td><td>'+pt+
-        '</td><td>'+avg5+'</td></tr>\
+        '</td><td>'+calcAverage('current', 5)+'</td></tr>\
       ');
-      $('#records, #recordsTable').html('\
-        <b>PB: </b>'+formatTime(pb)+'<br>\
-        <b>Avg of 5: </b>'+avg5+'<br>\
-        <b>Avg of 12: </b>'+avg12+'<br>\
-        <b>Avg of 50: </b>'+avg50+'<br>\
-        <b>Avg of 100: </b>'+avg100+'<br>\
-      ');
-      document.querySelector('#session').scrollTo(0, document.querySelector('#session').scrollHeight);
+      $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
+      $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+      $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
+      $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+      document.querySelector('#session').scrollTo(0, 0);
+      $('#typeOfStats select, #singleFrom, #averageOf').off('change').change(function() {
+        $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
+        $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+      });
+      $('#mobileTypeOfStats select, #mobileSingleFrom, #mobileAverageOf').off('change').change(function() {
+        $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
+        $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+      });
       initContextMenu();
       initMobileContextMenu();
     });
@@ -579,17 +616,13 @@ function showTimesFromIndexedDB() {
   var sessionTimes = times.index('session');
   $('#session, #sessionTimesTable').html('\
     <table>\
-      <thead><tr class="mdc-elevation--z3"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>\
+      <thead><tr class="mdc-elevation--z6"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>\
       <tbody>\
       </tbody>\
     </table>\
   ');
   var n = 0;
-  var timesForAvg5 = [];
-  var timesForAvg12 = [];
-  var timesForAvg50 = [];
-  var timesForAvg100 = [];
-  var pb = '-:--.---';
+  window.timesForAvg = [];
   sessionTimes.openCursor().addEventListener('success', function(event) {
     var cursor = event.target.result;
     if (cursor) {
@@ -601,57 +634,30 @@ function showTimesFromIndexedDB() {
           time = time.split(':')[0] + ':' + (parseInt(time.split(':')[1].split('.')[0])+2).toString() + '.' + time.split('.')[1];
           pt = '+';
         }
-        timesForAvg5.push((parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]));
-        timesForAvg12.push((parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]));
-        timesForAvg50.push((parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]));
-        timesForAvg100.push((parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]));
-        var avg5 = '-:--.---';
-        var avg12 = '-:--.---';
-        var avg50 = '-:--.---';
-        var avg100 = '-:--.---';
-        if (pb == '-:--.---' || (parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1]) < pb) {pb = (parseInt(time.split(':')[0])*60) + parseFloat(time.split(':')[1])}
-        if (timesForAvg5.length == 5) {
-          avg5 = (timesForAvg5.reduce(add, 0) - Array.min(timesForAvg5) - Array.max(timesForAvg5))/3;
-          var minutes = Math.floor(avg5/60);
-          avg5 = minutes + ':' + (avg5%60).toString().split('.')[0] + '.' + (avg5%60).toString().split('.')[1].substr(0, 3);
-          timesForAvg5.shift();
-        }
-        if (timesForAvg12.length == 12) {
-          avg12 = (timesForAvg12.reduce(add, 0) - Array.min(timesForAvg12) - Array.max(timesForAvg12))/10;
-          var minutes = Math.floor(avg12/60);
-          avg12 = minutes + ':' + (avg12%60).toString().split('.')[0] + '.' + (avg12%60).toString().split('.')[1].substr(0, 3);
-          timesForAvg12.shift();
-        }
-        if (timesForAvg50.length == 50) {
-          avg50 = (timesForAvg50.reduce(add, 0) - Array.min(timesForAvg50) - Array.max(timesForAvg50))/48;
-          var minutes = Math.floor(avg50/60);
-          avg50 = minutes + ':' + (avg50%60).toString().split('.')[0] + '.' + (avg50%60).toString().split('.')[1].substr(0, 3);
-          timesForAvg50.shift();
-        }
-        if (timesForAvg100.length == 100) {
-          avg100 = (timesForAvg100.reduce(add, 0) - Array.min(timesForAvg100) - Array.max(timesForAvg100))/98;
-          var minutes = Math.floor(avg100/60);
-          avg100 = minutes + ':' + (avg100%60).toString().split('.')[0] + '.' + (avg100%60).toString().split('.')[1].substr(0, 3);
-          timesForAvg100.shift();
-        }
-        $('#session table tbody, #sessionTimesTable table tbody').append('\
-          <tr class="mdc-elevation--z3" data-key="'+cursor.primaryKey+'" data-time="'+cursor.value.time+
+        timesForAvg.push((parseInt(time.split(':')[0])*60000) + (parseFloat(time.split(':')[1])*1000));
+        $('#session table tbody, #sessionTimesTable table tbody').prepend('\
+          <tr class="mdc-elevation--z6" data-key="'+cursor.primaryKey+'" data-time="'+cursor.value.time+
           '" data-scramble="'+cursor.value.scramble+'" data-category="'+cursor.value.category+
           '" data-plus-two="'+cursor.value.plusTwo+'" data-solve-date="'+new Date(cursor.value.solveDate)+'"><td>'+n+'</td><td>'+time+pt+
-          '</td><td>'+avg5+'</td></tr>\
+          '</td><td>'+calcAverage('current', 5)+'</td></tr>\
         ');
-        $('#records, #recordsTable').html('\
-          <b>PB: </b>'+Math.floor(pb/60)+':'+(pb%60).toString()+'<br>\
-          <b>Avg of 5: </b>'+avg5+'<br>\
-          <b>Avg of 12: </b>'+avg12+'<br>\
-          <b>Avg of 50: </b>'+avg50+'<br>\
-          <b>Avg of 100: </b>'+avg100+'<br>\
-        ');
-        document.querySelector('#session').scrollTo(0, document.querySelector('#session').scrollHeight);
+        $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
+        $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+        $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
+        $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+        document.querySelector('#session').scrollTo(0, 0);
+        $('#typeOfStats select, #singleFrom, #averageOf').off('change').change(function() {
+          $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
+          $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+        });
+        $('#mobileTypeOfStats select, #mobileSingleFrom, #mobileAverageOf').off('change').change(function() {
+          $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
+          $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+        });
       }
       cursor.continue();
     }
-    document.querySelector('#session').scrollTo(0, document.querySelector('#session').scrollHeight);
+    document.querySelector('#session').scrollTo(0, 0);
     initContextMenu();
     initMobileContextMenu();
   });
@@ -817,15 +823,15 @@ firebase.auth().onAuthStateChanged(function(user) {
 $(window).keyup(function(e) {
   if (e.shiftKey && e.which == 46) {
     //shift + del => delete last solve
-    var key = $('#session table tbody tr:last-child').attr('data-key');
+    var key = $('#session table tbody tr:first-child').attr('data-key');
     if (firebase.auth().currentUser) {
       deleteTimeFromFirebase(key);
-    } else if ($('#session table tbody tr:last-child').attr('data-key')) {
+    } else if ($('#session table tbody tr:first-child').attr('data-key')) {
       deleteTimeFromIndexedDb(parseInt(key));
     }
   } else if (e.shiftKey && e.which == 50) {
     //shift + 2 => toggle last solve as +2
-    var primaryKey = $('#session table tbody tr:last-child').attr('data-key');
+    var primaryKey = $('#session table tbody tr:first-child').attr('data-key');
     if (firebase.auth().currentUser) {
       plusTwoTimeFromFirebase(primaryKey);
     } else {
@@ -833,7 +839,7 @@ $(window).keyup(function(e) {
     }
   } else if (e.shiftKey && e.which == 68) {
     //shift + D => set last solve as DNF
-    var primaryKey = $('#session table tbody tr:last-child').attr('data-key');
+    var primaryKey = $('#session table tbody tr:first-child').attr('data-key');
     if (firebase.auth().currentUser) {
       DNFTimeFromFirebase(primaryKey);
     } else {
@@ -841,6 +847,16 @@ $(window).keyup(function(e) {
     }
   } else if (e.shiftKey && e.which == 83) {
     //shift + S => Toggle scramble image
+    /*$('#showscrambleimage').prop('checked', !$('#showscrambleimage').prop('checked'));
+    console.log($('#scrambleImage').attr('class'));
+    if ($('#showscrambleimage').prop('checked') == true) {
+      localStorage.setItem('showscrambleimage', '');
+      $('#scrambleImage').attr('class', '');
+    } else {
+      localStorage.setItem('showscrambleimage', 'hide');
+      $('#scrambleImage').attr('class', 'hide');
+    }
+    console.log($('#scrambleImage').attr('class'));*/
   }
 });
 
@@ -913,6 +929,7 @@ function initMobileContextMenu() {
     var scramble = $(this).attr('data-scramble');
     var category = $(this).attr('data-category');
     var plusTwo = $(this).attr('data-plus-two');
+    var solveDate = $(this).attr('data-solve-date');
     e.preventDefault();
     $('#contextMenu').css({
       'display': 'block',
@@ -926,6 +943,7 @@ function initMobileContextMenu() {
         <b>Solve Time: </b>'+time+'\
         <b>+2: </b>'+plusTwo+'<br>\
         <b>Scramble: </b>'+scramble+'<br>\
+        <b>Solve Date: </b>'+solveDate+'<br>\
       ');
       $('#contextMenu').hide();
     });
@@ -951,6 +969,14 @@ function initMobileContextMenu() {
         DNFTimeFromFirebase(primaryKey);
       } else {
         DNFTimeFromIndexedDB(parseInt(primaryKey));
+      }
+    });
+    $('#deleteSession').off('click').click(function() {
+      $('#contextMenu').hide();
+      if (firebase.auth().currentUser) {
+        deleteSessionFromFirebase();
+      } else {
+        deleteSessionFromIndexedDB();
       }
     });
   });
@@ -1028,15 +1054,16 @@ $('.mdc-button--outlined').css({
   'border-color': textcolor,
   'color': textcolor
 });
+$('#records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', textcolor);
 $('#records').css('background-color', recordsbgcolor);
 $('#session').css('background-color', sessionbgcolor);
 $('#scrambleImage').css('background-color', scrambleimagebgcolor);
 if (replaceshadow == true) {
   $('#records, #session, tr').css('border', '1px solid white');
-  $('#records, #session tr').removeClass('mdc-elevation--z4');
+  $('#records, #session tr').removeClass('mdc-elevation--z6');
 } else {
   $('#records, #session, tr').css('border', '');
-  $('#records, #session tr').addClass('mdc-elevation--z4');
+  $('#records, #session tr').addClass('mdc-elevation--z6');
 }
 
 if (bgImage != 'None') {
@@ -1130,6 +1157,7 @@ $('#enableInspection').change(function() {
 });
 
 $('#showscrambleimage').change(function() {
+  console.log('eh98hfe9w8hf98hefw89hy');
   if ($(this).prop('checked') == true) {
     localStorage.setItem('showscrambleimage', '');
     $('#scrambleImage').attr('class', '');
@@ -1199,7 +1227,7 @@ $('#bgcolor').change(function() {
 $('#textcolor').change(function() {
   localStorage.setItem('textcolor', $(this).val());
   textcolor = $(this).val();
-  $('#timer').css('color', textcolor);
+  $('#timer, .statsText, .statsTextField, #typeOfStats').css('color', textcolor);
   $('.mdc-button--outlined').css({
     'border-color': textcolor,
     'color': textcolor
