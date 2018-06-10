@@ -175,6 +175,7 @@ $warning: #F9A825;
 @import "@material/button/mdc-button";
 @import "@material/fab/mdc-fab";
 @import "@material/form-field/mdc-form-field";
+@import "@material/floating-label/mdc-floating-label";
 @import "@material/select/mdc-select";
 @import "@material/list/mdc-list";
 @import "@material/menu/mdc-menu";
@@ -292,7 +293,7 @@ ol li {
 }
 
 .hide {
-  display: none;
+  display: none !important;
 }
 
 #githubBtn, #gitlabBtn {

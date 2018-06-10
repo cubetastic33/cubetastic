@@ -15,6 +15,9 @@ $mdc-theme-on-secondary: #000000;
 @import "@material/form-field/mdc-form-field";
 @import "@material/fab/mdc-fab";
 @import "@material/checkbox/mdc-checkbox";
+@import "@material/floating-label/mdc-floating-label";
+@import "@material/textfield/mdc-text-field";
+@import "@material/select/mdc-select";
 @import "@material/top-app-bar/mdc-top-app-bar";
 @import "@material/drawer/temporary/mdc-temporary-drawer";
 
@@ -108,21 +111,53 @@ $mdc-theme-on-secondary: #000000;
   }
 }
 
+.statsField {
+  margin: 0.5rem 0;
+
+  .statsText {
+    color: $mdc-theme-on-primary;
+    font-family: Roboto-Medium;
+
+      ~ .statsTextField {
+        width: 2rem;
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        background-color: #00000000;
+        border: none;
+        border-bottom: 1px solid #000000;
+      }
+
+      ~ #singleFrom {
+        width: 4rem;
+      }
+  }
+}
+
+#typeOfStats {
+  background-color: #FFFFFF10;
+}
+
+#leftPanel {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 85px);
+  position: absolute;
+  left: 10px;
+  top: 75px;
+}
+
 #records {
   text-align: left;
   padding: 5px;
-  position: absolute;
-  top: calc(5em + 10px);
-  left: 10px;
-  height: calc(30vh - 6rem);
-  width: 15vw;
+
+  .mdc-select {
+    width: 100%;
+  }
 }
 
 #session {
-  position: absolute;
-  top: calc(30vh + 10px);
-  left: 10px;
-  height: calc(70vh - 5rem);
+  margin-top: 10px;
   overflow-y: auto;
 }
 

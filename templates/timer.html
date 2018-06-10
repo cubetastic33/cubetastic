@@ -335,14 +335,33 @@
       <div class="mdc-dialog__backdrop"></div>
     </aside>
     <div id="timer">
-      <div id="records" class="mdc-elevation--z5 hide-on-med-and-down">
-      </div>
-      <div id="session" class="hide-on-med-and-down">
-        <table>
-          <thead><tr class="mdc-elevation--z3"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>
-          <tbody>
-          </tbody>
-        </table>
+      <div id="leftPanel" class="mdc-elevation--z6">
+        <div id="records" class="hide-on-med-and-down mdc-elevation--z6">
+          <div id="typeOfStats" class="mdc-select mdc-select--box">
+            <select class="mdc-select__native-control">
+              <option value="best" selected>Best</option>
+              <option value="current">Current</option>
+              <option value="worst">Worst</option>
+            </select>
+            <label class="mdc-floating-label">Type</label>
+            <div class="mdc-line-ripple"></div>
+          </div>
+          <div class="statsField">
+            <span class="statsText">Single from</span>
+            <input type="text" id="singleFrom" class="statsTextField" value="all">
+            <span class="statsText">:</span>
+            <div id="single" class="statsText"></div>
+          </div>
+          <div class="statsField">
+            <span class="statsText">Average of</span>
+            <input type="number" id="averageOf" class="statsTextField" min="3" value="5">
+            <span class="statsText">:</span>
+            <div id="average" class="statsText"></div>
+          </div>
+        </div>
+        <div id="session" class="hide-on-med-and-down">
+          Please Wait...
+        </div>
       </div>
       <div id="sessionButtonGroup" class="button-group">
         <div class="button-group-left">
