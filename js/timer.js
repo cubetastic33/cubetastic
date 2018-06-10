@@ -1227,7 +1227,7 @@ $('#bgcolor').change(function() {
 $('#textcolor').change(function() {
   localStorage.setItem('textcolor', $(this).val());
   textcolor = $(this).val();
-  $('#timer, .statsText, .statsTextField, #typeOfStats').css('color', textcolor);
+  $('#timer, #records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', textcolor);
   $('.mdc-button--outlined').css({
     'border-color': textcolor,
     'color': textcolor
