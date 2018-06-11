@@ -501,7 +501,10 @@ function calcSingle(type, range) {
         if (type === 'current') {
           single = timesForAvg[parseInt(range.split('-')[1]) - 1];
         } else if (type === 'best') {
-          single = Array.min(timesForAvg.slice((parseInt(range.split('-')[0])-1), parseInt(range.split('-')[1])));
+          var finalTimesForAvg = timesForAvg.filter(function(item) { 
+            return item !== 0;
+          });
+          single = Array.min(finalTimesForAvg.slice((parseInt(range.split('-')[0])-1), parseInt(range.split('-')[1])));
         } else if (type === 'worst') {
           single = Array.max(timesForAvg.slice((parseInt(range.split('-')[0])-1), parseInt(range.split('-')[1])));
         }
@@ -515,9 +518,15 @@ function calcSingle(type, range) {
     if (type === 'current') {
       single = timesForAvg[timesForAvg.length - 1];
     } else if (type === 'best') {
-      single = Array.min(timesForAvg);
+      var finalTimesForAvg = timesForAvg.filter(function(item) { 
+        return item !== 0;
+      });
+      single = Array.min(finalTimesForAvg);
     } else if (type === 'worst') {
-      single = Array.max(timesForAvg);
+      var finalTimesForAvg = timesForAvg.filter(function(item) { 
+        return item !== 0;
+      });
+      single = Array.max(finalTimesForAvg);
     }
   } else {
     snackbar.show({message: 'Please enter a number range or "all" if you want your overall single.', multiline: true});
@@ -634,7 +643,11 @@ function showTimesFromIndexedDB() {
           time = time.split(':')[0] + ':' + (parseInt(time.split(':')[1].split('.')[0])+2).toString() + '.' + time.split('.')[1];
           pt = '+';
         }
-        timesForAvg.push((parseInt(time.split(':')[0])*60000) + (parseFloat(time.split(':')[1])*1000));
+        if (cursor.value.time != 'DNF') {
+          timesForAvg.push((parseInt(time.split(':')[0])*60000) + (parseFloat(time.split(':')[1])*1000));
+        } else {
+          timesForAvg.push(0);
+        }
         $('#session table tbody, #sessionTimesTable table tbody').prepend('\
           <tr class="mdc-elevation--z6" data-key="'+cursor.primaryKey+'" data-time="'+cursor.value.time+
           '" data-scramble="'+cursor.value.scramble+'" data-category="'+cursor.value.category+
@@ -1132,6 +1145,7 @@ function updateTheme() {
     'border-color': allThemes[colortheme][1],
     'color': allThemes[colortheme][1]
   });
+  $('#records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', allThemes[1]);
   $('#records').css('background-color', allThemes[colortheme][2]);
   $('#session').css('background-color', allThemes[colortheme][3]);
   $('#scrambleImage').css('background-color', allThemes[colortheme][4]);
