@@ -1,6 +1,6 @@
 # Cubetastic
 
-[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://gitlab.com/cubetastic/cubetastic/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/cubetastic/cubetastic/blob/master/LICENSE)
 ![Version](https://img.shields.io/badge/version-1.2.2-brightgreen.svg)
 
 Hello everyone, and welcome to cubetastic. Here, you can find the official source code of my website. Click [here](https://cubetastic.herokuapp.com) to go to the website itself.
@@ -26,7 +26,7 @@ However, please note that the TNoodle scrambles for bigger puzzles like 4x4, 5x5
 + Google Chrome (Linux, added to homescreen), with custom background image and inbuilt transparent theme, customized to have white text
    ![Google Chrome (Linux, added to homescreen), with custom background image and inbuilt transparent theme, customized to have white text](https://i.redd.it/0cze8925t6311.png "Google Chrome (Linux, added to homescreen), with custom background image and inbuilt transparent theme, customized to have white text")
 + Firefox Quantum (on Linux), with inbuilt Gray Wisp theme
-   ![Firefox Quantum (on Linux), with inbuilt Gray Wisp theme](https://lh3.googleusercontent.com/Vjv_NKoPbzJRnMRFecUgyKIJTIWd0HSqcOJQaJs_eIfKSpaU-QcMkxrExrh-M9u0_hSi_AwjZdWObwynsJ4EMrr7kjpWkKmlANBZIq1kC8TRiHULCsPemGhjUQAEMD_eY5Yu32x6h_8s5GCOtwHW9xsLE-zrcmL0f4Mmuv9y4X8M0RVZR57S_6pkVn03FaXE9DPoCZxkemElU8wZtL_R6-QLXBWOaUz3ksCiM2neoBAtj6L5A9Xgp9DlCQbui7CLheqhCGLqaWAZZYp7LrevsoHrY8LICO0Q0jtsZMzRm5Cu0VJryVwQS4QYD1n2Zqdd32z_2orGVus8nloz9BnGy6JCZSq6oCRdvh0-GVY7E8zl5LoAIcbjRZQK-Ek_qCNzGn-GuakFv3smwlVo7yeekZcKfhpTKYln0MarMjG3AX2yCdkZS14dwS5N0S5TgrT04JF7Xbqct-0AavGjHZQd_DlifZ6cY0yMEve-ASAbsiUb0MlWTTnjYoVfbxvfwh8bNVVFM4trrjT6bqS06qcVgNzAOFbmGbhNwiEcg7IPYuARy3zyp5okekg1NrAMOmyn8RRzOKkWN18zeLTPkcqIbNpw0_L2_3iJSA-DkCw=w1185-h666-no "Firefox Quantum (on Linux), with inbuilt Gray Wisp theme")
+   ![Firefox Quantum (on Linux), with inbuilt Gray Wisp theme](https://i.redd.it/waqjug6p87311.png "Firefox Quantum (on Linux), with inbuilt Gray Wisp theme")
 + Chrome (Android, added to homescreen), with custom background image
 
    ![Chrome (Android, added to homescreen), with custom background image](https://lh3.googleusercontent.com/3jp8SjBHkUt3l6RePSNyjQqCgPjhM0c4q-fKiwiGcRTU5si1xwCEgY5c3-zCVGPNPrxZjlwNLS8ZzvhTSzt0JlRiS-NQDHlIRkOnYLLrhTpymBG-c1BbBTDk112Xnqqhun4gFDlD1Db9C_APHd9asRGUI-rAztBeFRnOUoQupCs7kkPCJbaPjSg8MYD3utZZILJjvdva6tJySH1s-H9oVtDap84_VWo6RNDI6B5BBGz3hlpRBvjZ2zFm7rqHgLUzPbc2JCBLd7GdfdUqPDjUc0r5o8VASBxRD_mOr3BwUj4OLuLafOR5KL6Yy7s4fq25aN7RtsaMN_RmdvZxaOJeDBi7Ies0MJV0cF75PGWkXeGIu3wFrVvRAGpDn9s7ozqF0t_esUvCiX9BqYZq3ZcBJdG4NvS4t4pe_mrlbcCH_Jl3b_3q-7o7Z3TdH6dZNFvdRb8DDCP6vgEbhyd8K4g5ogNp5WREnwyYIthqd6dmEnPDMDkTbebu4XttZlIilk8TdMAqNhYeQmCGpJDsjtIaKy8k3GFKCrsfDkmeNll-avsFr-6uMvbwV9jLtW6UB_gRPlWxA6Los2kpNv5PIJGT8tsRA4UcJZRXwdozlSY=w375-h666-no "Chrome (Android, added to homescreen), with custom background image")
