@@ -11,19 +11,6 @@ default_app = firebase_admin.initialize_app(cred, {
   'databaseURL': 'databaseURL'
 })
 
-def escapeHTML(text):
-  if '&' in text:
-    text.replace('&', '&#38;')
-  if '<' in text:
-    text.replace('<', '&#60;')
-  if '>' in text:
-    text.replace('>', '&#62;')
-  if '"' in text:
-    text.replace('"', '&#34;')
-  if "'" in text:
-    text.replace("'", '&#39;')
-  return text
-
 def create_user(uid, email, location, phone, username, profilePic):
   db.reference('users').child(uid).set({
     'email': str(email),
@@ -61,16 +48,16 @@ def get_email(username):
 def send_feedback(title, message):
     feedback_ref = db.reference('/feedback')
     feedback_ref.push({
-      'title': escapeHTML(title),
-      'message': escapeHTML(message)
+      'title': title,
+      'message': message
     })
     return 'Done!'
 
 def save_time(uid, time, session, scramble, category, plus_two, solve_date):
   db.reference('times/'+str(uid)).child('session'+str(session)).push({
-    'time': escapeHTML(str(time)),
-    'scramble': escapeHTML(scramble),
-    'category': escapeHTML(category),
+    'time': str(time),
+    'scramble': scramble,
+    'category': category,
     'plusTwo': plus_two,
     'solveDate': solve_date
   })
@@ -96,8 +83,8 @@ def delete_session(uid, session):
 
 def send_chat_message(uid, group, message):
   db.reference('/chat/' + str(group)).push({
-    'author': escapeHTML(uid),
-    'message': escapeHTML(message),
+    'author': uid,
+    'message': message,
     'time': str(datetime.datetime.now().time()) + ',' + str(datetime.datetime.now().date())
   })
   notifyUsersInGroup(uid, group, message)

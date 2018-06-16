@@ -333,6 +333,17 @@ if (selectedCategory == null) {
   selectedCategory = '3x3x3';
 }
 
+function escapeHTML(text) {
+  var map = {
+    '&': '&amp;amp;',
+    '<': '&amp;lt;',
+    '>': '&amp;gt;',
+    '"': '&amp;quot;',
+    "'": '&amp;#039;'
+  };
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (reset) {
     if (user) {
@@ -596,9 +607,9 @@ function showTimesFromFirebase() {
       }
       var solveDate = parseInt(solve.val().solveDate);
       $('#session table tbody, #sessionTimesTable table tbody').prepend('\
-        <tr class="mdc-elevation--z6" data-key="'+solve.key+'" data-time="'+formatTime(time)+
-        '" data-scramble="'+solve.val().scramble+'" data-category="'+solve.val().category+
-        '" data-plus-two="'+solve.val().plusTwo+'" data-solve-date="'+new Date(solveDate).toUTCString()+'"><td>'+n+'</td><td>'+pt+
+        <tr class="mdc-elevation--z6" data-key="'+escapeHTML(solve.key)+'" data-time="'+formatTime(time)+
+        '" data-scramble="'+escapeHTML(solve.val().scramble)+'" data-category="'+escapeHTML(solve.val().category)+
+        '" data-plus-two="'+escapeHTML(solve.val().plusTwo)+'" data-solve-date="'+new Date(solveDate).toUTCString()+'"><td>'+n+'</td><td>'+pt+
         '</td><td>'+calcAverage('current', 5)+'</td></tr>\
       ');
       $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
