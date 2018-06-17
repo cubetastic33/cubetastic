@@ -9,6 +9,7 @@ document.querySelector('.statsInfoIcon').addEventListener('click', function (evt
 });
 
 var ctx = $('#solves_graph');
+window.chartObj = false;
 
 document.querySelector('#statsIcon').addEventListener('click', function (evt) {
   statsDialog.lastFocusedTarget = evt.target;
@@ -44,7 +45,10 @@ document.querySelector('#statsIcon').addEventListener('click', function (evt) {
 });
 
 function drawGraphOfSolve(lastNSolves) {
-  var chart = new Chart(ctx, {
+  if (window.chartObj !== false) {
+    window.chartObj.destroy();
+  }
+  window.chartObj = new Chart(ctx, {
     // The type of chart we want to create
     type: 'line',
     // The data for our dataset
@@ -76,7 +80,10 @@ function drawGraphOfSolve(lastNSolves) {
 }
 
 function drawDateTimeGraph() {
-  var chart = new Chart(ctx, {
+  if (window.chartObj !== false) {
+    window.chartObj.destroy();
+  }
+  window.chartObj = new Chart(ctx, {
   // The type of chart we want to create
   type: 'line',
   // The data for our dataset

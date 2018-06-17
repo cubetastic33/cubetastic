@@ -1,8 +1,7 @@
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
-// Initialize the Firebase app in the service worker by passing in the
-// messagingSenderId.
+// Initialize the Firebase app in the service worker by passing in the messagingSenderId.
 firebase.initializeApp({
   'messagingSenderId': '744871672011'
 });
@@ -23,7 +22,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV1.3.0';
+var cacheName = 'cubetasticV1.3.1';
 var filesToCache = [
   '/',
   '/index',
@@ -38,6 +37,7 @@ var filesToCache = [
   'https://fonts.googleapis.com/css?family=Cabin|Saira|Play|Iceberg|Unica+One|Contrail+One|Share+Tech+Mono|Black+Han+Sans|Copse|Noto+Sans|Space+Mono|Titillium+Web',
   'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js',
   'https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js',
   '/css/main.css',
   '/css/timer.css',
   '/images/icons/icon-512x512.png',
@@ -45,6 +45,7 @@ var filesToCache = [
   '/js/main.js',
   '/js/loggedStatus.js',
   '/js/timer.js',
+  '/js/stats.js',
   '/js/tnoodle.js'
 ];
 
