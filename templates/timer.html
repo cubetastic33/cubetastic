@@ -189,7 +189,7 @@
             </div><br>
             <div id="inspectionFormField" class="mdc-form-field">
               <div id="inspectionCheckbox" class="mdc-checkbox">
-                <input type="checkbox" class="mdc-checkbox__native-control" id="enableInspection"/>
+                <input type="checkbox" class="mdc-checkbox__native-control" id="enableInspection">
                 <div class="mdc-checkbox__background">
                   <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
                     <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
@@ -349,6 +349,70 @@
       </div>
       <div class="mdc-dialog__backdrop"></div>
     </aside>
+    <aside id="statsInfoDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="statsInfoDialogLabel">
+      <div class="mdc-dialog__surface">
+        <header class="mdc-dialog__header">
+          <h2 id="statsInfoDialogLabel" class="mdc-dialog__header__title">
+            Statistics
+          </h2>
+        </header>
+        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
+          Firstly, select whether you want to see info about your best solves, or your current solves,
+          or your worst solves, by clicking on the select menu in the very top of the stats box.<br>
+          Now, you can see your averages and singles for the type of stats you selected. If you want
+          to see your average of 12, for example, just type in "12" in the text field after "Average Of".
+          And then, let's say you selected "Best" in the select menu. Now, if you want to see your best
+          single from your last 10 solves, and you've done a total of 25 solves, just enter "15-25" in the
+          text field after "Single From". Same goes for "Worst" also. If you select "Current", and then
+          enter "1-17", you'll get what your 17<sup>th</sup> solve was.
+        </section>
+        <footer class="mdc-dialog__footer">
+          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay</button>
+        </footer>
+      </div>
+      <div class="mdc-dialog__backdrop"></div>
+    </aside>
+    <aside id="statsDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="statsDialogLabel">
+      <div class="mdc-dialog__surface">
+        <header class="mdc-dialog__header">
+          <h2 id="statsDialogLabel" class="mdc-dialog__header__title">
+            Statistics
+          </h2>
+        </header>
+        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
+          <div id="graphDetailSelect" class="mdc-select">
+            <select class="mdc-select__native-control">
+              <option value="solves">
+                Solves
+              </option>
+              <option value="date-time">
+                Date-time
+              </option>
+            </select>
+            <label class="mdc-floating-label">Graph detail</label>
+            <div class="mdc-line-ripple"></div>
+          </div>
+          <div id="solvesGraphIntro">
+            Graph of last
+            <div id="lastNSolvesTextField" class="mdc-text-field">
+              <input type="text" id="lastNSolves" class="mdc-text-field__input" value="50">
+              <div class="mdc-line-ripple"></div>
+            </div>
+            solves
+          </div>
+          <div id="dateTimeGraphIntro">
+            This is a mock graph. Real deal is coming soon!
+          </div>
+          <div id="graphContainer">
+            <canvas id="solves_graph"></canvas>
+          </div>
+        </section>
+        <footer class="mdc-dialog__footer">
+          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay!</button>
+        </footer>
+      </div>
+      <div class="mdc-dialog__backdrop"></div>
+    </aside>
     <div id="timer">
       <div id="leftPanel" class="mdc-elevation--z6">
         <div id="records" class="hide-on-med-and-down mdc-elevation--z6">
@@ -365,6 +429,8 @@
             <span class="statsText">Single from</span>
             <input type="text" id="singleFrom" class="statsTextField" value="all">
             <span class="statsText">:</span>
+            <i class="material-icons statsInfoIcon">help</i>
+            <i id="statsIcon" class="material-icons">insert_chart</i>
             <div id="single" class="statsText"></div>
           </div>
           <div class="statsField">
@@ -628,6 +694,8 @@
     $('#scramble').css('top', $('#time h1').offset().top + $('#time h1').height());
   });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="js/timer.js"></script>
+<script src="js/stats.js"></script>
 <script async src="js/loggedStatus.js"></script>
 </html>

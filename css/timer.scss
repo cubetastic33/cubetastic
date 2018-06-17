@@ -118,20 +118,53 @@ $mdc-theme-on-secondary: #000000;
     color: #000000;
     font-family: Roboto-Medium;
 
-      ~ .statsTextField {
-        width: 2rem;
-        appearance: none;
-        -moz-appearance: none;
-        -webkit-appearance: none;
-        background-color: #00000000;
-        border: none;
-        border-bottom: 1px solid #000000;
-        color: #000000;
-      }
+    ~ .statsTextField {
+      width: 2rem;
+      appearance: none;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      background-color: #00000000;
+      border: none;
+      border-bottom: 1px solid #000000;
+      color: #000000;
+    }
 
-      ~ #singleFrom {
-        width: 4rem;
-      }
+    ~ #singleFrom {
+      width: 3.5rem;
+    }
+  }
+
+  .statsInfoIcon, #statsIcon {
+    cursor: pointer;
+    font-size: 15px;
+  }
+}
+
+#statsDialog .mdc-dialog__body--scrollable {
+  max-height: 67.5vh;
+  position: relative;
+}
+
+#graphContainer {
+  position: relative;
+  height: 50vh;
+}
+
+#graphDetailSelect {
+  position: absolute;
+  top: 1rem;
+  right: 10px;
+}
+
+#dateTimeGraphIntro {
+  padding: 2rem 0;
+}
+
+#lastNSolvesTextField {
+  width: 3rem;
+
+  input {
+    text-align: center;
   }
 }
 
