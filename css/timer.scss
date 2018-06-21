@@ -18,6 +18,7 @@ $mdc-theme-on-secondary: #000000;
 @import "@material/floating-label/mdc-floating-label";
 @import "@material/textfield/mdc-text-field";
 @import "@material/select/mdc-select";
+@import "@material/slider/mdc-slider";
 @import "@material/top-app-bar/mdc-top-app-bar";
 @import "@material/drawer/temporary/mdc-temporary-drawer";
 
@@ -166,6 +167,17 @@ $mdc-theme-on-secondary: #000000;
   input {
     text-align: center;
   }
+}
+
+#lastNHoursSlider {
+  width: 50%;
+}
+
+.noUi-tooltip {
+  display: none;
+}
+.noUi-active .noUi-tooltip {
+  display: block;
 }
 
 #typeOfStats {

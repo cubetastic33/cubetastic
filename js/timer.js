@@ -577,6 +577,8 @@ function calcAverage(type, range) {
   return avg;
 }
 
+allTimes = {};
+
 function showTimesFromFirebase() {
   db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).on('value', function(data) {
     $('#session, #sessionTimesTable').html('\
@@ -595,21 +597,23 @@ function showTimesFromFirebase() {
       var time = solve.val().time;
       if (solve.val().plusTwo == 'true') {
         pt = formatTime(parseInt(time) + 2000) + '+';
-        time = time + 2000;
+        time = parseInt(time) + 2000;
       } else if (solve.val().plusTwo == 'DNF') {
         pt = 'DNF';
         time = time + '(DNF)';
         timesForAvg.push(0);
+        allTimes[solve.val().solveDate] = 0;
       }
       if (solve.val().plusTwo != 'DNF') {
         timesForAvg.push(parseInt(time));
+        allTimes[solve.val().solveDate] = parseInt(time);
         if (pb == '-:--.---' || time < pb) {pb = time}
       }
       var solveDate = parseInt(solve.val().solveDate);
       $('#session table tbody, #sessionTimesTable table tbody').prepend('\
         <tr class="mdc-elevation--z6" data-key="'+escapeHTML(solve.key)+'" data-time="'+formatTime(time)+
         '" data-scramble="'+escapeHTML(solve.val().scramble)+'" data-category="'+escapeHTML(solve.val().category)+
-        '" data-plus-two="'+escapeHTML(solve.val().plusTwo)+'" data-solve-date="'+new Date(solveDate).toUTCString()+'"><td>'+n+'</td><td>'+pt+
+        '" data-plus-two="'+escapeHTML(solve.val().plusTwo)+'" data-solve-date="'+new Date(solveDate).toLocaleString()+'"><td>'+n+'</td><td>'+pt+
         '</td><td>'+calcAverage('current', 5)+'</td></tr>\
       ');
       $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
