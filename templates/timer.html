@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin|Saira|Play|Iceberg|Unica+One|Contrail+One|Share+Tech+Mono|Black+Han+Sans|Copse|Noto+Sans|Space+Mono|Titillium+Web">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.1.0/nouislider.min.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/timer.css">
   <link rel="manifest" href="manifest.json">
@@ -21,9 +22,8 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'UA-112091281-3');
-  </script>
+</script>
 </head>
 <body onload="hideloader()">
   <div id="sk-cube-grid">
@@ -401,7 +401,9 @@
             solves
           </div>
           <div id="dateTimeGraphIntro">
-            This is a mock graph. Real deal is coming soon!
+            Time Range:<br><br>
+            <div id="lastNHoursSlider"></div>
+            <div id="hoursRange"></div>
           </div>
           <div id="graphContainer">
             <canvas id="solves_graph"></canvas>
@@ -582,6 +584,7 @@
 <script async src="js/tnoodle.js"></script>
 <script src="js/main.js"></script>
 <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+<script src="js/nouislider.min.js"></script>
 <script async>
   mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
   mdc.ripple.MDCRipple.attachTo(document.querySelector('#editSessions'));
