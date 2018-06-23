@@ -22,7 +22,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV1.3.2';
+var cacheName = 'cubetasticV1.3.3';
 var filesToCache = [
   '/',
   '/index',
@@ -47,7 +47,37 @@ var filesToCache = [
   '/js/timer.js',
   '/js/nouislider.min.js',
   '/js/stats.js',
-  '/js/tnoodle.js'
+  '/js/tnoodle.js',
+  '/images/bridge_in_the_forest.jpg',
+  '/images/clouds_at_dawn.jpg',
+  '/images/countryside_cabin.jpg',
+  '/images/evening_light_1080x1920.jpg',
+  '/images/evening_light_3840x2160.jpg',
+  '/images/forest_mountain.jpg',
+  '/images/lake_at_dawn.jpg',
+  '/images/mountain_lake.jpg',
+  '/images/mountain_silhouette.jpg',
+  '/images/starry_night.jpg',
+  '/images/stars_timelapse.jpg'
+  '/images/sunset_in_the_forest_1080x1920',
+  '/images/sunset_in_the_forest_7680x4320',
+  '/images/vincent-guth-aurora.jpg',
+  '/images/work_table.jpg',
+  '/images/thumbnails/aurora_vincent_guth_mobile.png',
+  '/images/thumbnails/bridge_in_the_forest.png',
+  '/images/thumbnails/clouds_at_dawn.png',
+  '/images/thumbnails/countryside_cabin.png',
+  '/images/thumbnails/evening_light.png',
+  '/images/thumbnails/evening_light_mobile.png'
+  '/images/thumbnails/forest_mountain.png',
+  '/images/thumbnails/lake_at_dawn.png',
+  '/images/thumbnails/mountain_lake.png',
+  '/images/thumbnails/mountain_silhouette.png',
+  '/images/thumbnails/starry_night_mobile.png',
+  '/images/thumbnails/stars_timelapse.png',
+  '/images/thumbnails/sunset_in_the_forest.png',
+  '/images/thumbnails/sunset_in_the_forest_mobile.png',
+  '/images/thumbnails/work_table.png'
 ];
 
 self.addEventListener('install', function(e) {

@@ -18,7 +18,9 @@ $mdc-theme-on-secondary: #000000;
 @import "@material/floating-label/mdc-floating-label";
 @import "@material/textfield/mdc-text-field";
 @import "@material/select/mdc-select";
+@import "@material/switch/mdc-switch";
 @import "@material/slider/mdc-slider";
+@import "@material/image-list/mdc-image-list";
 @import "@material/top-app-bar/mdc-top-app-bar";
 @import "@material/drawer/temporary/mdc-temporary-drawer";
 
@@ -47,6 +49,27 @@ $mdc-theme-on-secondary: #000000;
 .mdc-checkbox {
   @include mdc-checkbox-container-colors(#757575, #FFFFFF, $mdc-theme-primary);
   @include mdc-checkbox-ink-color($mdc-theme-on-primary);
+}
+
+.mdc-switch {
+  margin: 0.5rem;
+  @include mdc-switch-track-color($mdc-theme-primary);
+  @include mdc-switch-knob-color($mdc-theme-primary);
+}
+
+.my-masonry-image-list {
+  @include mdc-image-list-corner-radius(5px);
+  @include mdc-image-list-masonry-columns(3);
+
+  li:hover {
+    cursor: pointer;
+    -webkit-box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -7px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -7px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.mdc-image-list__supporting a {
+  color: $mdc-theme-primary;
 }
 
 #editTimeBtn, #moreFAB, #mobileSessionFAB {
@@ -141,9 +164,17 @@ $mdc-theme-on-secondary: #000000;
   }
 }
 
+#settingsDialog .mdc-dialog__body--scrollable, #chooseBGImage .mdc-dialog__body--scrollable {
+  max-height: 60vh;
+}
+
 #statsDialog .mdc-dialog__body--scrollable {
   max-height: 67.5vh;
   position: relative;
+}
+
+#chooseBGImage {
+  z-index: 100;
 }
 
 #graphContainer {

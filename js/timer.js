@@ -15,6 +15,7 @@ entireTimerDiv.addEventListener("touchend", handleFullEnd, false);
 
 var solveInfoDialog = new mdc.dialog.MDCDialog(document.querySelector('#solveInfoDialog'));
 var editSessionsDialog = new mdc.dialog.MDCDialog(document.querySelector('#editSessionsDialog'));
+var chooseBGImageDialog = new mdc.dialog.MDCDialog(document.querySelector('#chooseBGImage'));
 var snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
 var typeOfStats = new mdc.select.MDCSelect(document.querySelector('#typeOfStats'));
 var mobileTypeOfStats = new mdc.select.MDCSelect(document.querySelector('#mobileTypeOfStats'));
@@ -47,9 +48,12 @@ $(window).keydown(function(e) {
       if (startDelayTimer == false) {
         var d = new Date();
         startDelayTimer = d.getTime();
-      } else {
+      }
+      if (startDelayTimer != false) {
         var date = new Date();
-        if (date.getTime() - startDelayTimer >= 700) {
+        var delayLength = $('#enableLongPress').prop('checked') ? 700 : 0;
+        delayLength = (delayLength == 700 && $('#enableInspection').prop('checked') && selectedCategory != '3x3x3 bld') ? 0 : 700
+        if (date.getTime() - startDelayTimer >= delayLength) {
           $('#green').attr('class', 'green');
         }
       }
@@ -103,7 +107,7 @@ $(window).keyup(function(e) {
     startDelayTimer = false;
     if ((stopped == false) && ($('#green').hasClass('green') == true)) {
       //Start the timer.
-      if (($('#enableInspection').prop('checked') == true) && (inspectionClearance === false)) {
+      if (($('#enableInspection').prop('checked') == true) && (inspectionClearance === false) && (selectedCategory != '3x3x3 bld')) {
         inspection();
         if ($('#hideelements').prop('checked') == true) {
           $('#records, #session, .button-group, #scrambleImage, .mdc-fab').hide();
@@ -512,7 +516,7 @@ function calcSingle(type, range) {
         if (type === 'current') {
           single = timesForAvg[parseInt(range.split('-')[1]) - 1];
         } else if (type === 'best') {
-          var finalTimesForAvg = timesForAvg.filter(function(item) { 
+          var finalTimesForAvg = timesForAvg.filter(function(item) {
             return item !== 0;
           });
           single = Array.min(finalTimesForAvg.slice((parseInt(range.split('-')[0])-1), parseInt(range.split('-')[1])));
@@ -529,12 +533,12 @@ function calcSingle(type, range) {
     if (type === 'current') {
       single = timesForAvg[timesForAvg.length - 1];
     } else if (type === 'best') {
-      var finalTimesForAvg = timesForAvg.filter(function(item) { 
+      var finalTimesForAvg = timesForAvg.filter(function(item) {
         return item !== 0;
       });
       single = Array.min(finalTimesForAvg);
     } else if (type === 'worst') {
-      var finalTimesForAvg = timesForAvg.filter(function(item) { 
+      var finalTimesForAvg = timesForAvg.filter(function(item) {
         return item !== 0;
       });
       single = Array.max(finalTimesForAvg);
@@ -1036,6 +1040,7 @@ if (localStorage.getItem('colorsMethod') == null) {
   localStorage.setItem('font', 'Play');
   localStorage.setItem('showscrambleimage', 'hide-on-small-only');
   localStorage.setItem('inspectionEnabled', false);
+  localStorage.setItem('enableLongPress', false);
   localStorage.setItem('hideelements', true);
   localStorage.setItem('bgImage', 'None');
   localStorage.setItem('bgcolor', '#000000');
@@ -1049,6 +1054,7 @@ if (localStorage.getItem('colorsMethod') == null) {
 var font = localStorage.getItem('font');
 var showscrambleimage = localStorage.getItem('showscrambleimage');
 var inspectionEnabled = $.parseJSON(localStorage.getItem('inspectionEnabled'));
+var enableLongPress = $.parseJSON(localStorage.getItem('enableLongPress'));
 var hideelements = $.parseJSON(localStorage.getItem('hideelements'));
 var bgImage = localStorage.getItem('bgImage');
 var colorsMethod = localStorage.getItem('colorsMethod');
@@ -1104,6 +1110,7 @@ if (bgImage != 'None') {
 
 $('#font').val(font);
 $('#enableInspection').prop('checked', inspectionEnabled);
+$('#enableLongPress').prop('checked', enableLongPress);
 if ($('#scrambleImage').css('display') == 'none') {
   $('#showscrambleimage').prop('checked', false);
 } else {
@@ -1185,6 +1192,11 @@ $('#enableInspection').change(function() {
   inspectionEnabled = $(this).prop('checked');
 });
 
+$('#enableLongPress').change(function() {
+  localStorage.setItem('enableLongPress', $(this).prop('checked'));
+  enableLongPress = $(this).prop('checked');
+});
+
 $('#showscrambleimage').change(function() {
   console.log('eh98hfe9w8hf98hefw89hy');
   if ($(this).prop('checked') == true) {
@@ -1206,6 +1218,8 @@ selectBGImage.listen('change', function() {
     localStorage.setItem('bgImage', selectBGImage.value);
     bgImage = 'None';
     $('#timer').css('background-image', '');
+  } else if (selectBGImage.value === 'Choose') {
+    chooseBGImageDialog.show();
   } else {
     var imageURL = prompt('Enter image URL');
     console.log(imageURL);
@@ -1220,6 +1234,14 @@ selectBGImage.listen('change', function() {
       $('#bgImage').val('None');
     }
   }
+});
+
+$('#chooseBGImage .mdc-image-list li').click(function() {
+  localStorage.setItem('bgImage', $(this).attr('data-image'));
+  bgImage = $(this).attr('data-image');
+  $('#timer').css('background-image', 'url('+ bgImage +')');
+  $('#bgImage').val('Custom');
+  chooseBGImageDialog.close();
 });
 
 $('input[type=radio][name=colorsMethod]').change(function() {

@@ -5,7 +5,7 @@ var lastNSolvesTextField = new mdc.textField.MDCTextField(document.querySelector
 var slider = document.getElementById('lastNHoursSlider');
 
 noUiSlider.create(slider, {
-	start: [1, 24],
+	start: [7, 22],
   step: 1,
 	connect: true,
   margin: 1,
@@ -110,13 +110,12 @@ function drawDateTimeGraph() {
   var yesterdaysTimes = Array(24).fill('-');
   var todaysTimes = Array(24).fill('-');
   todaysTimes[0] = yesterdaysTimes[0] = todaysTimes[23] = yesterdaysTimes[23] = 0;
+  var latestDate = new Date();
+  timesForHourlyAvg[latestDate.getDate()-1] = {};
+  timesForHourlyAvg[latestDate.getDate()] = {};
   for (var i = 0; i < Object.keys(allTimes).length; i++) {
     var date = new Date(parseInt(Object.keys(allTimes)[i]));
-    var latestDate = new Date();
-    if (date.getDate() === latestDate.getDate() || date.getDate() === (latestDate.getDate() - 1)) {
-      if (timesForHourlyAvg[date.getDate()] == null) {
-        timesForHourlyAvg[date.getDate()] = {};
-      }
+    if (date.getDate() === latestDate.getDate() || date.getDate() === (latestDate.getDate()-1)) {
       if (timesForHourlyAvg[date.getDate()][date.getHours()] == null) {
         timesForHourlyAvg[date.getDate()][date.getHours()] = [];
       }
@@ -151,7 +150,6 @@ function drawDateTimeGraph() {
       todaysTimes[parseInt(Object.keys(timesForHourlyAvg[Object.keys(timesForHourlyAvg)[1]])[i])] = parseInt(avg)/1000;
     }
   }
-  console.log(yesterdaysTimes, todaysTimes);
   if (todaysTimes[parseInt(slider.noUiSlider.get()[0])-1] == '-') {
     todaysTimes[parseInt(slider.noUiSlider.get()[0])-1] = [0];
   }
