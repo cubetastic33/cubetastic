@@ -22,7 +22,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV1.3.3';
+var cacheName = 'cubetasticV1.3.4';
 var filesToCache = [
   '/',
   '/index',
@@ -58,7 +58,7 @@ var filesToCache = [
   '/images/mountain_lake.jpg',
   '/images/mountain_silhouette.jpg',
   '/images/starry_night.jpg',
-  '/images/stars_timelapse.jpg'
+  '/images/stars_timelapse.jpg',
   '/images/sunset_in_the_forest_1080x1920',
   '/images/sunset_in_the_forest_7680x4320',
   '/images/vincent-guth-aurora.jpg',

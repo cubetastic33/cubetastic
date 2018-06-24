@@ -324,6 +324,18 @@
               </div>
               <label for="showscrambleimage">Show Scramble Image</label>
             </div><br>
+            <div id="showRecordStatsFormField" class="mdc-form-field">
+              <div id="showRecordStatsCheckbox" class="mdc-checkbox">
+                <input type="checkbox" class="mdc-checkbox__native-control" id="showRecordStats"/>
+                <div class="mdc-checkbox__background">
+                  <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                  </svg>
+                  <div class="mdc-checkbox__mixedmark"></div>
+                </div>
+              </div>
+              <label for="showRecordStats">Show Records</label>
+            </div><br>
             <div id="hideelementsFormField" class="mdc-form-field">
               <div id="hideelementsCheckbox" class="mdc-checkbox">
                 <input type="checkbox" class="mdc-checkbox__native-control" id="hideelements"/>
@@ -534,8 +546,8 @@
         <div id="records" class="hide-on-med-and-down mdc-elevation--z6">
           <div id="typeOfStats" class="mdc-select mdc-select--box">
             <select class="mdc-select__native-control">
-              <option value="best" selected>Best</option>
-              <option value="current">Current</option>
+              <option value="best">Best</option>
+              <option value="current" selected>Current</option>
               <option value="worst">Worst</option>
             </select>
             <label class="mdc-floating-label">Type</label>
@@ -619,7 +631,32 @@
       </div>
       <div id="previousScramble" class="hide"></div>
       <div id="scramble">Generating Scramble...</div>
-      <div id="scrambleImage"></div>
+      <div id="rightPanel" class="mdc-elevation--z6">
+        <div id="scrambleImage"></div>
+        <div id="recordStats" class="hide-on-med-and-down">
+          <div class="mdc-elevation--z6">
+            <b>PB : </b><div class="pb">-:--.---</div><br>
+          </div>
+          <div class="mdc-elevation--z6">
+            <b>Avg of 5: </b><div class="ao5">-:--.---</div><br>
+          </div>
+          <div class="mdc-elevation--z6">
+            <b>Avg of 12: </b><div class="ao12">-:--.---</div><br>
+          </div>
+          <div class="mdc-elevation--z6">
+            <b>Avg of 50: </b><div class="ao50">-:--.---</div><br>
+          </div>
+          <div class="mdc-elevation--z6">
+            <b>Avg of 100: </b><div class="ao100">-:--.---</div><br>
+          </div>
+          <div class="mdc-elevation--z6">
+            <b>Avg of 250: </b><div class="ao250">-:--.---</div><br>
+          </div>
+          <div class="mdc-elevation--z6">
+            <b>Avg of 1000: </b><div class="ao1000">-:--.---</div>
+          </div>
+        </div>
+      </div>
     </div>
     <button id="mobileSessionFAB" class="mdc-fab material-icons hide-on-large-only" aria-label="Show Session Times">
       <span class="mdc-fab__icon">assessment</span>
@@ -780,12 +817,12 @@
   const selectBGImage = new mdc.select.MDCSelect(document.querySelector('#selectBGImage'));
 
   //Checkboxes
-  /*const inspectionCheckbox = new mdc.checkbox.MDCCheckbox(document.querySelector('#inspectionCheckbox'));
-  const inspectionFormField = new mdc.formField.MDCFormField(document.querySelector('#inspectionFormField'));
-  inspectionFormField.input = inspectionCheckbox;*/
   const scrambleImgCheckbox = new mdc.checkbox.MDCCheckbox(document.querySelector('#scrambleImgCheckbox'));
   const scrambleImgFormField = new mdc.formField.MDCFormField(document.querySelector('#scrambleImgFormField'));
   scrambleImgFormField.input = scrambleImgCheckbox;
+  const showRecordStatsCheckbox = new mdc.checkbox.MDCCheckbox(document.querySelector('#showRecordStatsCheckbox'));
+  const showRecordStatsFormField = new mdc.formField.MDCFormField(document.querySelector('#showRecordStatsFormField'));
+  showRecordStatsFormField.input = showRecordStatsCheckbox;
   const hideelementsCheckbox = new mdc.checkbox.MDCCheckbox(document.querySelector('#hideelementsCheckbox'));
   const hideelementsFormField = new mdc.formField.MDCFormField(document.querySelector('#hideelementsFormField'));
   hideelementsFormField.input = hideelementsCheckbox;

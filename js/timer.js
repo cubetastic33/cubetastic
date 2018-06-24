@@ -583,6 +583,16 @@ function calcAverage(type, range) {
 
 allTimes = {};
 
+function updateRecordsStats() {
+  $('#recordStats .pb').text(calcSingle('best', 'all'));
+  $('#recordStats .ao5').text(calcAverage('best', 5));
+  $('#recordStats .ao12').text(calcAverage('best', 12));
+  $('#recordStats .ao50').text(calcAverage('best', 50));
+  $('#recordStats .ao100').text(calcAverage('best', 100));
+  $('#recordStats .ao250').text(calcAverage('best', 250));
+  $('#recordStats .ao1000').text(calcAverage('best', 1000));
+}
+
 function showTimesFromFirebase() {
   db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).on('value', function(data) {
     $('#session, #sessionTimesTable').html('\
@@ -633,6 +643,7 @@ function showTimesFromFirebase() {
         $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
         $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
       });
+      updateRecordsStats();
       initContextMenu();
       initMobileContextMenu();
     });
@@ -1039,6 +1050,7 @@ if (localStorage.getItem('colorsMethod') == null) {
   localStorage.setItem('colortheme', 'Gray Wisp');
   localStorage.setItem('font', 'Play');
   localStorage.setItem('showscrambleimage', 'hide-on-small-only');
+  localStorage.setItem('showRecordStats', 'hide');
   localStorage.setItem('inspectionEnabled', false);
   localStorage.setItem('enableLongPress', false);
   localStorage.setItem('hideelements', true);
@@ -1053,6 +1065,7 @@ if (localStorage.getItem('colorsMethod') == null) {
 
 var font = localStorage.getItem('font');
 var showscrambleimage = localStorage.getItem('showscrambleimage');
+var showRecordStats = localStorage.getItem('showRecordStats');
 var inspectionEnabled = $.parseJSON(localStorage.getItem('inspectionEnabled'));
 var enableLongPress = $.parseJSON(localStorage.getItem('enableLongPress'));
 var hideelements = $.parseJSON(localStorage.getItem('hideelements'));
@@ -1080,6 +1093,7 @@ var replaceshadow = $.parseJSON(localStorage.getItem('replaceshadow'));
 
 $('#time h1').css('font-family', font);
 $('#scrambleImage').attr('class', showscrambleimage);
+$('#recordStats').attr('class', showRecordStats);
 $('#timer').css({
   'background-color': bgcolor,
   'color': textcolor
@@ -1116,6 +1130,7 @@ if ($('#scrambleImage').css('display') == 'none') {
 } else {
   $('#showscrambleimage').prop('checked', true);
 }
+$('#showRecordStats').prop('checked', showRecordStats === '');
 $('#hideelements').prop('checked', hideelements);
 $('#bgImage').val(bgImage);
 if (bgImage != 'None') {
@@ -1206,6 +1221,17 @@ $('#showscrambleimage').change(function() {
     localStorage.setItem('showscrambleimage', 'hide');
     $('#scrambleImage').attr('class', 'hide');
   }
+});
+
+$('#showRecordStats').change(function() {
+  if ($(this).prop('checked')) {
+    localStorage.setItem('showRecordStats', '');
+    showRecordStats = '';
+  } else {
+    localStorage.setItem('showRecordStats', 'hide');
+    showRecordStats = 'hide';
+  }
+  $('#recordStats').attr('class', showRecordStats);
 });
 
 $('#hideelements').change(function() {
