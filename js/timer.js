@@ -596,12 +596,12 @@ allTimes = {};
 function updateRecordsStats() {
   $('#recordStats .pb').text(calcSingle('best', 'all'));
   $('#recordStats .mo3').text(formatTime(timesForAvg.slice(-3).reduce(add, 0)/3));
-  $('#recordStats .ao5').text(calcAverage('best', 5));
-  $('#recordStats .ao12').text(calcAverage('best', 12));
-  $('#recordStats .ao50').text(calcAverage('best', 50));
-  $('#recordStats .ao100').text(calcAverage('best', 100));
-  $('#recordStats .ao250').text(calcAverage('best', 250));
-  $('#recordStats .ao1000').text(calcAverage('best', 1000));
+  $('#recordStats .ao5').text(calcAverage('current', 5));
+  $('#recordStats .ao12').text(calcAverage('current', 12));
+  $('#recordStats .ao50').text(calcAverage('current', 50));
+  $('#recordStats .ao100').text(calcAverage('current', 100));
+  $('#recordStats .ao250').text(calcAverage('current', 250));
+  $('#recordStats .ao1000').text(calcAverage('current', 1000));
 }
 
 function showTimesFromFirebase() {
