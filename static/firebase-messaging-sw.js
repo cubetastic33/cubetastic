@@ -68,7 +68,7 @@ var filesToCache = [
   '/images/thumbnails/clouds_at_dawn.png',
   '/images/thumbnails/countryside_cabin.png',
   '/images/thumbnails/evening_light.png',
-  '/images/thumbnails/evening_light_mobile.png'
+  '/images/thumbnails/evening_light_mobile.png',
   '/images/thumbnails/forest_mountain.png',
   '/images/thumbnails/lake_at_dawn.png',
   '/images/thumbnails/mountain_lake.png',
