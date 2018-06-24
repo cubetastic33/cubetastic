@@ -554,17 +554,27 @@ function calcSingle(type, range) {
 
 function calcAverage(type, range) {
   range = parseInt(range);
+  remove = Math.ceil(parseInt(range)*5/100);
   var avg = '-:--.---';
   if (type === 'current') {
     if (timesForAvg.length >= range) {
-      avg = (timesForAvg.slice(-1*range).reduce(add, 0) - Array.min(timesForAvg.slice(-1*range)) - Array.max(timesForAvg.slice(-1*range)))/(range-2);
+      var localTimes = timesForAvg.slice(-1*range);
+      for (var i = 1; i <= remove; i++) {
+        localTimes.splice(localTimes.indexOf(Array.min(localTimes)), 1);
+        localTimes.splice(localTimes.indexOf(Array.max(localTimes)), 1);
+      }
+      avg = localTimes.reduce(add, 0)/localTimes.length;
     }
   } else {
     if (timesForAvg.length >= range) {
       averages = [];
       for (var i=(range-1); i<timesForAvg.length; i++) {
-        var currentArray = timesForAvg.slice(i-(range-1), i+1);
-        var avgOfCurrent = (currentArray.reduce(add, 0) - Array.min(currentArray) - Array.max(currentArray))/(range-2);
+        var localTimes = timesForAvg.slice(i-(range-1), i+1);
+        for (var n = 1; n <= remove; n++) {
+          localTimes.splice(localTimes.indexOf(Array.min(localTimes)), 1);
+          localTimes.splice(localTimes.indexOf(Array.max(localTimes)), 1);
+        }
+        var avgOfCurrent = localTimes.reduce(add, 0)/localTimes.length;
         averages.push(avgOfCurrent);
       }
 
@@ -585,6 +595,7 @@ allTimes = {};
 
 function updateRecordsStats() {
   $('#recordStats .pb').text(calcSingle('best', 'all'));
+  $('#recordStats .mo3').text(formatTime(timesForAvg.slice(-3).reduce(add, 0)/3));
   $('#recordStats .ao5').text(calcAverage('best', 5));
   $('#recordStats .ao12').text(calcAverage('best', 12));
   $('#recordStats .ao50').text(calcAverage('best', 50));
