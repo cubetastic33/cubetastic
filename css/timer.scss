@@ -103,7 +103,8 @@ $mdc-theme-on-secondary: #000000;
 */
 
 #timer {
-  background-size: 100%;
+  background-size: cover;
+  background-position: center;
   text-align: center;
   min-height: calc(100vh - 64px);
   padding-top: 5rem;
