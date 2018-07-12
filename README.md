@@ -20,7 +20,7 @@ The main features of this timer are:
 + Scrambles are supported for almost all the WCA puzzles.
 + Follows Material Design.
 + High level of customization - you can make it look the way you want!
-+ Inspection is in Beta now, so it is disabled by default. To enable it, go to the settings menu. (Note: there might be bugs, as it is still in Beta). Please inform me of any bugs you find, in the [contact me](https://cubetastic.herokuapp.com/contactMe) page of the website!
++ You can choose to have inspection time!
 
 However, please note that the TNoodle scrambles for bigger puzzles like 4x4, 5x5, etc. can take some time to generate. If you have any queries, or feature request, or feedback, please tell me in the [contact me](https://cubetastic.herokuapp.com/contactMe) page of the website. Here are some images in different browsers:
 
