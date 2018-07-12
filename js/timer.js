@@ -1,10 +1,10 @@
 //Timer code
 
+var greenTimeout = false;
 var stopped = false;
 var timerRunning = false;
 var timerStartTime = 0;
-var startDelayTimer = false;
-var inspectionClearance = false;
+var inspectionCompleted = false;
 
 var entireTimerDiv = document.getElementById('timer');
 var el = document.getElementById('time');
@@ -21,143 +21,117 @@ var typeOfStats = new mdc.select.MDCSelect(document.querySelector('#typeOfStats'
 var mobileTypeOfStats = new mdc.select.MDCSelect(document.querySelector('#mobileTypeOfStats'));
 
 $(window).keydown(function(e) {
-  if (timerRunning == true) {
-    //Stop the timer
+  if (e.which === 32) {
+    //Prevent the page from scrolling whenever the user presses the spacebar
+    e.preventDefault();
+  }
+  if (timerRunning === true) {
+    //The timer is running; stop it
     clearInterval(startedTimer);
     stopped = true;
     timerRunning = false;
     clearInterval(startedBlinking);
     saveTime($('#time h1').text(), $('#selectSession + div ul').attr('data-selected'), $('#previousScramble').html().split('Scramble: ')[1], $('#selectCategory').text(), false);
-  }
-  if (typeof inspectionTimeout != 'undefined') {
-    clearTimeout(inspectionTimeout);
-    inspectionClearance = false;
-  }
-  if (e.keyCode == 32) {
-    //This will fire every time the user presses the spacebar
-    e.preventDefault();
-    //This is so that the page doesn't scroll
-    if ((timerRunning == false) && (stopped == false)) {
-      //Stop inspection if running
-      if (typeof inspectionTimeout != 'undefined') {
-        inspectionClearance = true;
-        inspectionTimeout = undefined;
-      }
-      //Start the timer
-      $('#red').attr('class', 'red');
-      if (startDelayTimer == false) {
-        var d = new Date();
-        startDelayTimer = d.getTime();
-      }
-      if (startDelayTimer != false) {
-        var date = new Date();
-        var delayLength = $('#enableLongPress').prop('checked') ? 700 : 0;
-        delayLength = (delayLength == 700 && $('#enableInspection').prop('checked') && selectedCategory != '3x3x3 bld') ? 0 : 700
-        if (date.getTime() - startDelayTimer >= delayLength) {
-          $('#green').attr('class', 'green');
-        }
-      }
+  } else if (e.which === 32 && !e.originalEvent.repeat) {
+    //The timer is not running - show red div then green div
+    $('#red').attr('class', 'red');
+    if (typeof inspectionTimeout != 'undefined') {
+      inspectionCompleted = true;
+    }
+    if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+      //Inspection needs to finish before starting the timer, so show green div
+      $('#green').attr('class', 'green');
+    } else {
+      var delayLength = $('#enableLongPress').prop('checked') ? 700 : 0;
+      delayLength = (delayLength == 700 && $('#enableInspection').prop('checked') && selectedCategory != '3x3x3 bld') ? 0 : delayLength;
+      greenTimeout = setTimeout(() => {$('#green').attr('class', 'green')}, delayLength);
     }
   }
 });
 
 function handleFullStart(e) {
-  if (timerRunning == true) {
-    //Stop the timer
+  if (timerRunning === true) {
+    //The timer is running; stop it
     clearInterval(startedTimer);
     stopped = true;
     timerRunning = false;
     clearInterval(startedBlinking);
     saveTime($('#time h1').text(), $('#selectSession + div ul').attr('data-selected'), $('#previousScramble').html().split('Scramble: ')[1], $('#selectCategory').text(), false);
-  }
-  if (typeof inspectionTimeout != 'undefined') {
-    clearTimeout(inspectionTimeout);
-    inspectionClearance = false;
+  } else {
+    if (typeof inspectionTimeout != 'undefined') {
+      inspectionCompleted = true;
+    }
   }
 }
 
 function handleStart(e) {
   e.preventDefault();
-  if ((timerRunning == false) && (stopped == false)) {
-    //Stop inspection if running
-    if (typeof inspectionTimeout != 'undefined') {
-      inspectionClearance = true;
-      inspectionTimeout = undefined;
-    }
-    //Start the timer
+  if (timerRunning === false && stopped === false) {
+    //The timer is not running - show red div then green div
     $('#red').attr('class', 'red');
-    if (startDelayTimer == false) {
-      var d = new Date();
-      startDelayTimer = d.getTime();
-      window.showGreenTimeout = setTimeout(showGreen, 700);
+    if (typeof inspectionTimeout != 'undefined') {
+      inspectionCompleted = true;
     }
-  }
-}
-
-function showGreen() {
-  if (startDelayTimer != false) {
-    $('#green').attr('class', 'green');
+    if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+      //Inspection needs to finish before starting the timer, so show green div
+      $('#green').attr('class', 'green');
+    } else {
+      var delayLength = $('#enableLongPress').prop('checked') ? 700 : 0;
+      delayLength = (delayLength == 700 && $('#enableInspection').prop('checked') && selectedCategory != '3x3x3 bld') ? 0 : delayLength;
+      greenTimeout = setTimeout(() => {$('#green').attr('class', 'green')}, delayLength);
+    }
   }
 }
 
 $(window).keyup(function(e) {
-  if (e.keyCode == 32) {
-    //Spacebar is pressed
-    e.preventDefault();
-    startDelayTimer = false;
-    if ((stopped == false) && ($('#green').hasClass('green') == true)) {
-      //Start the timer.
-      if (($('#enableInspection').prop('checked') == true) && (inspectionClearance === false) && (selectedCategory != '3x3x3 bld')) {
-        inspection();
-        if ($('#hideelements').prop('checked') == true) {
-          $('#records, #session, .button-group, #scrambleImage, .mdc-fab').hide();
-        }
-      } else {
-        if (typeof inspectionTimeout != 'undefined') {
-          clearTimeout(inspectionTimeout);
-        }
-        var date = new Date();
-        timerStartTime = date.getTime().toString();
-        window.startedTimer = setInterval(timer, 10);
-        inspectionClearance = false;
-        $('#red').attr('class', '');
-        $('#green').attr('class', '');
-        window.startedBlinking = setInterval(blink, 200);
-        $('#previousScramble').html($('#scramble').html());
-        $('#scramble').html('');
-        if ($('#hideelements').prop('checked') == true) {
-          $('#records, #session, .button-group, #scrambleImage, .mdc-fab').hide();
-        }
+  if (e.which === 32 && $('#green').attr('class') === 'green' && stopped === false) {
+    //Start the timer; user released space bar after delayLength, and the timer was not stopped in this keypress
+    if (typeof inspectionTimeout != 'undefined') {
+      clearTimeout(inspectionTimeout);
+      inspectionTimeout = undefined;
+    }
+    if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+      //Start inspection
+      inspection();
+      if ($('#hideelements').prop('checked') == true) {
+        $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
       }
     } else {
-      if ($('#hideelements').prop('checked') == true) {
-        $('#records, #session, .button-group, #scrambleImage, .mdc-fab').show();
-        $('#installFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
-      }
+      var date = new Date();
+      timerStartTime = date.getTime().toString();
+      window.startedTimer = setInterval(timer, 10);
+      stopped = false;
       $('#red').attr('class', '');
       $('#green').attr('class', '');
-      if (stopped == true) {
-        showScramble(category[selectedCategory]);
-      }
-      stopped = false;
+      window.startedBlinking = setInterval(blink, 200);
     }
-  } else {
+    inspectionCompleted = false;
+    $('#previousScramble').html($('#scramble').html());
+    $('#scramble').html('');
     if ($('#hideelements').prop('checked') == true) {
-      $('#records, #session, .button-group , #scrambleImage, .mdc-fab').show();
+      $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
+    }
+  } else if (e.which === 32 && stopped === false) {
+    //Reset the colors; user released space bar before delayLength, and the timer was not stopped in this keypress
+    clearTimeout(greenTimeout);
+    $('#red').attr('class', '');
+    $('#green').attr('class', '');
+  } else if (stopped === true) {
+    //Timer has just been stopped.
+    if ($('#hideelements').prop('checked') == true) {
+      $('#records, #session, .button-group , #leftPanel, .mdc-fab').show();
       $('#installFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
     }
     $('#red').attr('class', '');
     $('#green').attr('class', '');
-    if (stopped == true) {
-      showScramble(category[selectedCategory]);
-    }
+    showScramble(category[selectedCategory]);
     stopped = false;
   }
 });
 
 function handleFullEnd(e) {
   if ($('#hideelements').prop('checked') == true) {
-    $('#selectSession, #selectCategory, #editTimeBtn, .mdc-fab').show();
+    $('#selectSession, #selectCategory, #editTimeBtn, #leftPanel, .mdc-fab').show();
     $('#installFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
   }
   $('#red').attr('class', '');
@@ -169,40 +143,47 @@ function handleFullEnd(e) {
 }
 
 function handleEnd(e) {
-  startDelayTimer = false;
-  clearTimeout(showGreenTimeout);
-  if ((stopped == false) && ($('#green').hasClass('green') == true)) {
+  if (stopped === false && $('#green').hasClass('green') === true) {
     //Start the timer.
-    if (($('#enableInspection').prop('checked') == true) && (inspectionClearance === false)) {
+    if (typeof inspectionTimeout != 'undefined') {
+      clearTimeout(inspectionTimeout);
+      inspectionTimeout = undefined;
+    }
+    if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+      //Start inspection
       inspection();
       if ($('#hideelements').prop('checked') == true) {
-        $('.button-group, .mdc-fab').hide();
+        $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
       }
     } else {
       var date = new Date();
       timerStartTime = date.getTime().toString();
       window.startedTimer = setInterval(timer, 10);
-      inspectionClearance = false;
+      stopped = false;
       $('#red').attr('class', '');
       $('#green').attr('class', '');
       window.startedBlinking = setInterval(blink, 200);
-      $('#previousScramble').html($('#scramble').html());
-      $('#scramble').html('');
-      if ($('#hideelements').prop('checked') == true) {
-        console.log('hwiefu0hDHIHIOFWHQhoidhoiefh');
-        $('.button-group, .mdc-fab').hide();
-      }
     }
-  } else {
+    inspectionCompleted = false;
+    $('#previousScramble').html($('#scramble').html());
+    $('#scramble').html('');
     if ($('#hideelements').prop('checked') == true) {
-      $('.button-group, .mdc-fab').show();
+      $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
+    }
+  } else if (stopped === false) {
+    //Reset the colors; user released space bar before delayLength, and the timer was not stopped in this keypress
+    clearTimeout(greenTimeout);
+    $('#red').attr('class', '');
+    $('#green').attr('class', '');
+  } else if (stopped === true) {
+    //Timer has just been stopped.
+    if ($('#hideelements').prop('checked') == true) {
+      $('#records, #session, .button-group , #leftPanel, .mdc-fab').show();
       $('#installFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
     }
     $('#red').attr('class', '');
     $('#green').attr('class', '');
-    if (stopped == true) {
-      showScramble(category[selectedCategory]);
-    }
+    showScramble(category[selectedCategory]);
     stopped = false;
   }
 }
@@ -248,7 +229,7 @@ function inspection(i) {
       inspection(i - 1);
     }, 1000);
   } else if (i > -2) {
-    plus_two = true;
+    window.plus_two = true;
     window.inspectionTimeout = setTimeout(function() {
       $('#time h1').text('+2');
       inspection(i - 1);
@@ -712,6 +693,7 @@ function showTimesFromIndexedDB() {
       cursor.continue();
     }
     document.querySelector('#session').scrollTo(0, 0);
+    updateRecordsStats();
     initContextMenu();
     initMobileContextMenu();
   });

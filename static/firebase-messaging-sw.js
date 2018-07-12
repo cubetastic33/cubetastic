@@ -22,7 +22,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV1.3.5';
+var cacheName = 'cubetasticV1.3.6';
 var filesToCache = [
   '/',
   '/index',
