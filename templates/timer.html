@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.1.0/nouislider.min.css">
+  <link href="https://vjs.zencdn.net/7.1.0/video-js.css" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/timer.css">
   <link rel="manifest" href="manifest.json">
@@ -51,15 +52,10 @@
             <a href="index" class="mdc-list-item">
               <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
             </a>
-            <a href="solve" class="mdc-list-item">
-              Solve
-            </a>
-            <a href="timer" class="mdc-list-item mdc-list-item--activated">
-              Timer
-            </a>
-            <a href="contactMe" class="mdc-list-item">
-              Contact Me
-            </a>
+            <a href="solve" class="mdc-list-item">Solve</a>
+            <a href="timer" class="mdc-list-item mdc-list-item--activated">Timer</a>
+            <a href="collabicube" class="mdc-list-item">Collabicube</a>
+            <a href="contactMe" class="mdc-list-item">Contact Me</a>
           </div>
           <hr class="mdc-list-divider">
           <div class="mdc-list">
@@ -271,11 +267,32 @@
           </h2>
         </header>
         <section class="mdc-dialog__body mdc-dialog__body--scrollable">
-          <nav id="settings-tab-bar" class="mdc-tab-bar">
-            <a class="mdc-tab mdc-tab--active" href="#timer">Timer</a>
-            <a class="mdc-tab" href="#color">Color</a>
-            <span class="mdc-tab-bar__indicator"></span>
-          </nav>
+          <div id="settingsTabBar" class="mdc-tab-bar" role="tablist">
+            <div class="mdc-tab-scroller">
+              <div class="mdc-tab-scroller__scroll-area">
+                <div class="mdc-tab-scroller__scroll-content">
+                  <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
+                    <div class="mdc-tab__content">
+                      <span class="mdc-tab__text-label">Timer</span>
+                    </div>
+                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <div class="mdc-tab__ripple"></div>
+                  </button>
+                  <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
+                    <div class="mdc-tab__content">
+                      <span class="mdc-tab__text-label">Color</span>
+                    </div>
+                    <span class="mdc-tab-indicator">
+                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <div class="mdc-tab__ripple"></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div id="timerSettings">
             <h3>Timer Settings</h3>
             <div id="selectFont" class="mdc-select">
@@ -431,8 +448,8 @@
         <section id="info-dialog-description" class="mdc-dialog__body mdc-dialog__body--scrollable ">
           Welcome to cubetastic timer! This timer has a lot of uses. One of the most striking
           features of this timer, is that <span class="highlight">it uses the official TNoodle scrambling
-          program!</span> You can add it to your homescreen like any other app (click the
-          install icon in the menu for more details), and this website also works offline.<br>
+          program!</span> You can add it to your homescreen like any other app (more details given below),
+          and this website also works offline.<br>
           When you're online, you get even more features like syncing your times. Once you
           sign in to your account, any solve you do after that will get synced. Next time,
           when you are using some other device or browser, you just need to sign in to your
@@ -448,7 +465,11 @@
           </ul>
           This website is also open source, which means you can view and contribute to the
           source code. To do this, click the github icon (a cat) in the footer below.<br>
-          I have used the open source libraries JQuery and MDC Web in this website.
+          <h3>Install PWA</h3>
+          This website is a PWA (Progressive Web App), which means you can add it to your homescreen,
+          and it will work just like any other app, even offline! You can install this (if your browser
+          supports it) by clicking the menu of your browser, and then clicking "Add to homescreen". For
+          more detailed browser - specific instructions, click <a href="/installpwa">here</a>.
         </section>
         <footer class="mdc-dialog__footer">
           <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay</button>
@@ -456,21 +477,81 @@
       </div>
       <div class="mdc-dialog__backdrop"></div>
     </aside>
-    <aside id="installDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="install-dialog-label" aria-describedby="install-dialog-description">
+    <aside id="importInfoDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="importInfoDialogLabel">
       <div class="mdc-dialog__surface">
         <header class="mdc-dialog__header">
-          <h2 id="install-dialog-label" class="mdc-dialog__header__title">
-            Install Cubetastic Timer
+          <h2 id="importInfoDialogLabel" class="mdc-dialog__header__title">
+            How do I import solves?
           </h2>
         </header>
-        <section id="install-dialog-description" class="mdc-dialog__body">
-          This website is a PWA, which means you can add it to your homescreen, and it will work
-          just like any other app, even offline! You can install this (if your browser supports it)
-          by clicking the menu of your browser, and then clicking "Add to homescreen". For more
-          detailed browser - specific instructions, click <a href="/installpwa">here</a>.
+        <section class="mdc-dialog__body">
+          <video id="importInfoVideo" class="video-js vjs-big-play-centered vjs-16-9" controls preload="auto" data-setup="{}">
+            <source src="/videos/cubetastic_import_solves.webm" type='video/webm'>
+            <source src="/videos/cubetastic_import_solves.mp4" type='video/mp4'>
+            <source src="/videos/cubetastic_import_solves.ogg" type='video/ogg'>
+            <p class="vjs-no-js">
+              To view this video please enable JavaScript, and consider upgrading to a web browser that
+              <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+            </p>
+          </video>
         </section>
         <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay</button>
+          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay</button>
+        </footer>
+      </div>
+      <div class="mdc-dialog__backdrop"></div>
+    </aside>
+    <aside id="importDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="importDialogLabel">
+      <div class="mdc-dialog__surface">
+        <header class="mdc-dialog__header">
+          <h2 id="importDialogLabel" class="mdc-dialog__header__title">
+            Import/Export
+          </h2>
+        </header>
+        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
+          <div id="importExportTabBar" class="mdc-tab-bar" role="tablist">
+            <div class="mdc-tab-scroller">
+              <div class="mdc-tab-scroller__scroll-area">
+                <div class="mdc-tab-scroller__scroll-content">
+                  <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
+                    <div class="mdc-tab__content">
+                      <span class="mdc-tab__text-label">Import</span>
+                    </div>
+                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <div class="mdc-tab__ripple"></div>
+                  </button>
+                  <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
+                    <div class="mdc-tab__content">
+                      <span class="mdc-tab__text-label">Export</span>
+                    </div>
+                    <span class="mdc-tab-indicator">
+                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <div class="mdc-tab__ripple"></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="import">
+            Right now, only importing solves from the specified timers is supported. Please <b>do not</b> try to import
+            from other timers, because it might cause errors!<i id="importInfo" class="material-icons" title="how?">help</i><br>
+            Note: Make sure you import as .csv, and <b>not</b> as .txt or .json.<br><br>
+            <button id="csTimer" class="mdc-button mdc-button--outlined exception">Import from csTimer</button>
+            <button id="TNT" class="mdc-button mdc-button--outlined exception">Import from TNoodleTimer</button>
+            <button id="comingSoon" class="mdc-button mdc-button--outlined exception">+ Coming Soon!</button>
+            <input type="file" id="chooseImportFile" accept=".csv">
+            <div id="importedSample"></div>
+          </div>
+          <div id="export">
+            Under construction
+          </div>
+        </section>
+        <footer class="mdc-dialog__footer">
+          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
+          <button type="button" class="mdc-button mdc-button--unelevated mdc-dialog__footer__button" disabled>Done</button>
         </footer>
       </div>
       <div class="mdc-dialog__backdrop"></div>
@@ -627,7 +708,6 @@
         <div id="time" class="hasH1">
           <h1>0:00.000</h1>
         </div>
-        <button id="editTimeBtn" class="mdc-fab mdc-fab--mini"><i class="material-icons">edit</i></button>
       </div>
       <div id="previousScramble" class="hide"></div>
       <div id="scramble">Generating Scramble...</div>
@@ -664,17 +744,17 @@
     <button id="mobileSessionFAB" class="mdc-fab material-icons hide-on-large-only" aria-label="Show Session Times">
       <span class="mdc-fab__icon">assessment</span>
     </button>
-    <button id="feedbackFAB" class="mdc-fab mdc-fab--mini material-icons" aria-label="Feedback">
+    <button id="feedbackFAB" class="mdc-fab mdc-fab--mini material-icons" title="Feedback" aria-label="Feedback">
       <span class="mdc-fab__icon">feedback</span>
     </button>
-    <button id="settingsFAB" class="mdc-fab mdc-fab--mini material-icons" aria-label="Settings">
+    <button id="settingsFAB" class="mdc-fab mdc-fab--mini material-icons" title="Settings" aria-label="Settings">
       <span class="mdc-fab__icon">settings</span>
     </button>
-    <button id="infoFAB" class="mdc-fab mdc-fab--mini material-icons" aria-label="Information">
+    <button id="infoFAB" class="mdc-fab mdc-fab--mini material-icons" title="Info" aria-label="Information">
       <span class="mdc-fab__icon">info</span>
     </button>
-    <button id="installFAB" class="mdc-fab mdc-fab--mini material-icons" aria-label="Install">
-      <span class="mdc-fab__icon">file_download</span>
+    <button id="importFAB" class="mdc-fab mdc-fab--mini material-icons" title="Import/Export" aria-label="Import/Export">
+      <span class="mdc-fab__icon">import_export</span>
     </button>
     <button id="moreFAB" class="mdc-fab material-icons" aria-label="More">
       <span class="mdc-fab__icon">more_horiz</span>
@@ -718,14 +798,14 @@
 <script async>
   if (navigator.serviceWorker.controller) {
     console.log('Active service worker found, no need to register');
-  } else {
+  }/* else {
     //Register the ServiceWorker
     navigator.serviceWorker.register('firebase-messaging-sw.js', {
       scope: './'
     }).then(function(reg) {
       console.log('Service worker has been registered for scope:'+ reg.scope);
     });
-  }
+  }*/
 </script>
 <script async>
   function hideloader() {
@@ -755,18 +835,19 @@
   document.querySelector('#mobileSessionFAB').addEventListener('click', () => sessionDrawer.open = true);
 
   $('#moreFAB').click(function() {
-    $('#installFAB, #infoFAB, #settingsFAB, #feedbackFAB').slideToggle(300);
+    $('#importFAB, #infoFAB, #settingsFAB, #feedbackFAB').slideToggle(300);
   });
 
   //Dialogs
-  var installDialog = new mdc.dialog.MDCDialog(document.querySelector('#installDialog'));
+  var importDialog = new mdc.dialog.MDCDialog(document.querySelector('#importDialog'));
+  var importInfoDialog = new mdc.dialog.MDCDialog(document.querySelector('#importInfoDialog'));
   var infoDialog = new mdc.dialog.MDCDialog(document.querySelector('#infoDialog'));
   var settingsDialog = new mdc.dialog.MDCDialog(document.querySelector('#settingsDialog'));
 
   //FABs
-  document.querySelector('#installFAB').addEventListener('click', function (evt) {
-    installDialog.lastFocusedTarget = evt.target;
-    installDialog.show();
+  document.querySelector('#importFAB').addEventListener('click', function (evt) {
+    importDialog.lastFocusedTarget = evt.target;
+    importDialog.show();
   });
   document.querySelector('#infoFAB').addEventListener('click', function (evt) {
     infoDialog.lastFocusedTarget = evt.target;
@@ -799,12 +880,18 @@
   categoryMenu.quickOpen = true;
 
   //Tabs
-  var settingsTabBar = window.settingsTabBar = new mdc.tabs.MDCTabBar(document.querySelector('#settings-tab-bar'));
-  settingsTabBar.tabs.forEach(function(tab) {
-    tab.preventDefaultOnClick = true;
+  var importExportTabBar = new mdc.tabBar.MDCTabBar(document.querySelector('#importExportTabBar'));
+  window.settingsTabBar = new mdc.tabBar.MDCTabBar(document.querySelector('#settingsTabBar'));
+  importExportTabBar.listen('MDCTabBar:activated', function ({detail: {index: nthChildIndex}}) {
+    if (nthChildIndex === 0) {
+      $('#import').show();
+      $('#export').hide();
+    } else if (nthChildIndex === 1) {
+      $('#import').hide();
+      $('#export').show();
+    }
   });
-  settingsTabBar.listen('MDCTabBar:change', function ({detail: tabs}) {
-    var nthChildIndex = tabs.activeTabIndex;
+  settingsTabBar.listen('MDCTabBar:activated', function ({detail: {index: nthChildIndex}}) {
     if (nthChildIndex === 0) {
       $('#timerSettings').show();
       $('#colorSettings').hide();
@@ -843,16 +930,17 @@
 
   window.onunload = function() {};
   window.addEventListener('load', function() {
-    $('#editTimeBtn').css('right', $('#time h1').offset().left - 40);
     $('#scramble').css('top', $('#time h1').offset().top + $('#time h1').height());
   });
   $(window).resize(function() {
-    $('#editTimeBtn').css('right', $('#time h1').offset().left - 40);
     $('#scramble').css('top', $('#time h1').offset().top + $('#time h1').height());
   });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://vjs.zencdn.net/7.1.0/video.js"></script>
 <script src="js/timer.js"></script>
 <script src="js/stats.js"></script>
+<script src="js/papaparse.min.js"></script>
+<script async src="js/importTimes.js"></script>
 <script async src="js/loggedStatus.js"></script>
 </html>

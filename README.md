@@ -1,7 +1,7 @@
 # Cubetastic
 
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/cubetastic33/cubetastic/blob/master/LICENSE)
-![Version](https://img.shields.io/badge/version-1.3.6-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-1.3.8-brightgreen.svg)
 
 Hello everyone, and welcome to cubetastic. Here, you can find the official source code of my website. Click [here](https://cubetastic.herokuapp.com) to go to the website itself.
 
@@ -15,6 +15,7 @@ The main features of this timer are:
 + You can seperate your solves into sessions, and rename the sessions the way you want.
 + It saves the date and time of your solves
 + Analyze best, worst, and current averages & singles.
++ Import your solves from other timers.
 + View a graph of your solves to see how you're improving
 + Find the average of virtually any number of solves
 + Scrambles are supported for almost all the WCA puzzles.

@@ -6,7 +6,7 @@ from pyfcm import FCMNotification
 push_service = FCMNotification(api_key='api_key')
 
 #Firebase Initialization
-cred = credentials.Certificate('static/certificate.json')
+cred = credentials.Certificate('path/to/certificate')
 default_app = firebase_admin.initialize_app(cred, {
   'databaseURL': 'databaseURL'
 })
@@ -54,22 +54,28 @@ def send_feedback(title, message):
     return 'Done!'
 
 def save_time(uid, time, session, scramble, category, plus_two, solve_date):
-  db.reference('times/'+str(uid)).child('session'+str(session)).push({
-    'time': str(time),
-    'scramble': scramble,
-    'category': category,
-    'plusTwo': plus_two,
-    'solveDate': solve_date
-  })
+  db.reference('times/'+str(uid)).child('session'+str(session)).push('%s|%s|%s|%s|%s' % (category, time, scramble, plus_two, solve_date))
   return 'saved time'
 
-def plus_two_solve(uid, session, key, plus_two):
-  db.reference('times/'+str(uid)+'/session'+str(session)+'/'+str(key)).child('plusTwo').set(plus_two)
-  return plus_two
+def upload_solves(uid, solves):
+  for solve in solves[2:len(solves)]:
+    #Structure of solve:
+    #[time, scramble, +2, solve date, comment]
+    if len(solve) > 4:
+      db.reference('times/'+uid).child('session'+str(solves[0])).push('%s|%s|%s|%s|%s|%s' % (solves[1], solve[0], solve[1], solve[2], solve[3], solve[4]))
+    else:
+      db.reference('times/'+uid).child('session'+str(solves[0])).push('%s|%s|%s|%s|%s' % (solves[1], solve[0], solve[1], solve[2], solve[3]))
+  return 'Done!'
 
-def dnf_solve(uid, session, key):
-  db.reference('times/'+str(uid)+'/session'+str(session)+'/'+str(key)).child('plusTwo').set('DNF')
-  return 'Successfully set solve as DNF'
+def penalize_solve(uid, session, key, penalty):
+  solve = db.reference('times/'+uid+'/session'+str(session)+'/'+str(key)).get().split('|')
+  if solve[3] == '0':
+    solve[3] = str(penalty)
+    db.reference('times/'+uid+'/session'+str(session)+'/'+str(key)).set('|'.join(solve))
+  else:
+    solve[3] = '0'
+    db.reference('times/'+uid+'/session'+str(session)+'/'+str(key)).set('|'.join(solve))
+  return 'Done!'
 
 def delete_solve(uid, session, key):
   if db.reference('times/'+str(uid)+'/session'+str(session)).child(str(key)).get() != None:

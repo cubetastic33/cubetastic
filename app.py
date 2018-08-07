@@ -34,21 +34,19 @@ def saveTime():
   solve_date = request.form.getlist('solve_date')[0]
   return database_interactions.save_time(uid, time, session, scramble, category, plus_two, solve_date)
 
-@app.route('/plusTwoSolve', methods=['POST'])
-def plusTwoSolve():
+@app.route('/uploadSolves', methods=['POST'])
+def uploadSolves():
+  uid = request.form.getlist('uid')[0]
+  solves = json.loads(request.form.getlist('solves')[0])
+  return database_interactions.upload_solves(uid, solves)
+
+@app.route('/penalizeSolve', methods=['POST'])
+def penalizeSolve():
   uid = request.form.getlist('uid')[0]
   session = request.form.getlist('session')[0]
   key = request.form.getlist('key')[0]
-  plus_two = request.form.getlist('plus_two')[0]
-  return database_interactions.plus_two_solve(uid, session, key, plus_two)
-
-
-@app.route('/DNFSolve', methods=['POST'])
-def DNFSolve():
-  uid = request.form.getlist('uid')[0]
-  session = request.form.getlist('session')[0]
-  key = request.form.getlist('key')[0]
-  return database_interactions.dnf_solve(uid, session, key)
+  penalty = request.form.getlist('penalty')[0]
+  return database_interactions.penalize_solve(uid, session, key, penalty)
 
 @app.route('/deleteSolve', methods=['POST'])
 def deleteSolve():
@@ -161,6 +159,10 @@ def send_css(path):
 def send_images(path):
   return send_from_directory('images', path)
 
+@app.route('/videos/<path:path>')
+def send_videos(path):
+  return send_from_directory('videos', path)
+
 @app.route('/fonts/<path:path>')
 def send_fonts(path):
   return send_from_directory('fonts', path)
@@ -182,4 +184,4 @@ def sitemap_xml():
   return send_from_directory('static', 'sitemap.xml')
 
 if __name__ == '__main__':
-  app.run(debug = True, port=1515)
+  app.run(debug = True)

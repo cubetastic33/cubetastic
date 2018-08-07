@@ -22,7 +22,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV1.3.6';
+var cacheName = 'cubetasticV1.3.8';
 var filesToCache = [
   '/',
   '/index',
@@ -38,6 +38,8 @@ var filesToCache = [
   'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js',
   'https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js',
+  'https://vjs.zencdn.net/7.1.0/video-js.css',
+  'https://vjs.zencdn.net/7.1.0/video.js',
   '/css/main.css',
   '/css/timer.css',
   '/images/icons/icon-512x512.png',
@@ -48,6 +50,8 @@ var filesToCache = [
   '/js/nouislider.min.js',
   '/js/stats.js',
   '/js/tnoodle.js',
+  '/js/papaparse.min.js',
+  '/js/importTimes.js',
   '/images/bridge_in_the_forest.jpg',
   '/images/clouds_at_dawn.jpg',
   '/images/countryside_cabin.jpg',
@@ -112,12 +116,4 @@ self.addEventListener('fetch', function(e) {
       return response || fetch(e.request);
     })
   );
-});
-
-//This is an event that can be fired from your page to tell the SW to update the offline page
-self.addEventListener('refreshOffline', function(response) {
-  return caches.open('cubetastic-offline').then(function(cache) {
-    console.log('Offline page updated from refreshOffline event: '+ response.url);
-    return cache.put(offlinePage, response);
-  });
 });

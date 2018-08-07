@@ -5,6 +5,7 @@ var stopped = false;
 var timerRunning = false;
 var timerStartTime = 0;
 var inspectionCompleted = false;
+var plus_two = false;
 
 var entireTimerDiv = document.getElementById('timer');
 var el = document.getElementById('time');
@@ -31,7 +32,7 @@ $(window).keydown(function(e) {
     stopped = true;
     timerRunning = false;
     clearInterval(startedBlinking);
-    saveTime($('#time h1').text(), $('#selectSession + div ul').attr('data-selected'), $('#previousScramble').html().split('Scramble: ')[1], $('#selectCategory').text(), false);
+    saveTime($('#time h1').text(), $('#selectSession + div ul').attr('data-selected'), $('#previousScramble').html().split('Scramble: ')[1], $('#selectCategory').text(), window.plus_two);
   } else if (e.which === 32 && !e.originalEvent.repeat) {
     //The timer is not running - show red div then green div
     $('#red').attr('class', 'red');
@@ -106,8 +107,10 @@ $(window).keyup(function(e) {
       window.startedBlinking = setInterval(blink, 200);
     }
     inspectionCompleted = false;
-    $('#previousScramble').html($('#scramble').html());
-    $('#scramble').html('');
+    if ($('#scramble').html() !== '') {
+      $('#previousScramble').html($('#scramble').html());
+      $('#scramble').html('');
+    }
     if ($('#hideelements').prop('checked') == true) {
       $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
     }
@@ -120,7 +123,7 @@ $(window).keyup(function(e) {
     //Timer has just been stopped.
     if ($('#hideelements').prop('checked') == true) {
       $('#records, #session, .button-group , #leftPanel, .mdc-fab').show();
-      $('#installFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
+      $('#importFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
     }
     $('#red').attr('class', '');
     $('#green').attr('class', '');
@@ -131,8 +134,8 @@ $(window).keyup(function(e) {
 
 function handleFullEnd(e) {
   if ($('#hideelements').prop('checked') == true) {
-    $('#selectSession, #selectCategory, #editTimeBtn, #leftPanel, .mdc-fab').show();
-    $('#installFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
+    $('#selectSession, #selectCategory, #leftPanel, .mdc-fab').show();
+    $('#importFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
   }
   $('#red').attr('class', '');
   $('#green').attr('class', '');
@@ -179,7 +182,7 @@ function handleEnd(e) {
     //Timer has just been stopped.
     if ($('#hideelements').prop('checked') == true) {
       $('#records, #session, .button-group , #leftPanel, .mdc-fab').show();
-      $('#installFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
+      $('#importFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
     }
     $('#red').attr('class', '');
     $('#green').attr('class', '');
@@ -250,6 +253,7 @@ function saveTime(time, session, scramble, category, plusTwo) {
   if (firebase.auth().currentUser) {
     //Convert string to int
     time = (parseInt(time.split(':')[0])*60000) + (parseInt(time.split(':')[1].split('.')[0])*1000) + parseInt(time.split('.')[1]);
+    plusTwo = {'false': '0', 'true': '2'}[plusTwo.toString()];
     $.ajax({
       type: 'POST',
       url: '/saveTime',
@@ -597,31 +601,75 @@ function showTimesFromFirebase() {
     var n = 0;
     window.timesForAvg = [];
     var pb = '-:--.---';
-    data.forEach(function(solve) {
-      n++;
-      var pt = formatTime(solve.val().time);
-      var time = solve.val().time;
-      if (solve.val().plusTwo == 'true') {
-        pt = formatTime(parseInt(time) + 2000) + '+';
-        time = parseInt(time) + 2000;
-      } else if (solve.val().plusTwo == 'DNF') {
-        pt = 'DNF';
-        time = time + '(DNF)';
-        timesForAvg.push(0);
-        allTimes[solve.val().solveDate] = 0;
+    data.forEach(function(snapshot) {
+      if (typeof snapshot.val() === 'string') {
+        //Updated version
+        n++;
+        var solve = snapshot.val().split('|');
+        solve[1] = parseInt(solve[1]);
+        solve[3] = $.parseJSON(solve[3])
+        solve[4] = parseInt(solve[4]);
+        if (solve.length > 6) {
+          solve[5] = solve.slice(5).join('|');
+          solve = solve.slice(0, 6);
+        }
+        //Now, solve is in the format of [category, time, scramble, penalty, solveDate, (opt)comment]
+        console.log(solve);
+        var time = solve[1];
+        var dt = formatTime(solve[1]);
+        var comment = solve[5] || '';
+        if (solve[3] === 2) {
+          time += 2000;
+          dt = formatTime(time) + '+';
+        } else if (solve[3] === 1) {
+          dt = 'DNF';
+          time += '(DNF)';
+          timesForAvg.push(0);
+          allTimes[solve[4]] = 0;
+        }
+        if (solve[3] !== 1) {
+          timesForAvg.push(time);
+          allTimes[solve[4]] = time;
+          if (pb == '-:--.---' || time < pb) {pb = time}
+        }
+        $('#session table tbody, #sessionTimesTable table tbody').prepend('\
+          <tr class="mdc-elevation--z6" data-key="'+escapeHTML(snapshot.key)+'" data-time="'+formatTime(time)+
+          '" data-scramble="'+escapeHTML(solve[2])+'" data-category="'+escapeHTML(solve[0])+
+          '" data-penalty="'+escapeHTML(solve[3].toString())+'" data-solve-date="'+new Date(solve[4]).toLocaleString()+
+          '" data-comment="'+comment+'"><td>'+n+'</td><td>'+dt+
+          '</td><td>'+calcAverage('current', 5)+'</td></tr>\
+        ');
+      } else {
+        //Old Version
+        n++;
+        var pt = formatTime(snapshot.val().time);
+        var time = snapshot.val().time;
+        var comment = '';
+        if (snapshot.val().plusTwo == 'true') {
+          pt = formatTime(parseInt(time) + 2000) + '+';
+          time = parseInt(time) + 2000;
+        } else if (snapshot.val().plusTwo == 'DNF') {
+          pt = 'DNF';
+          time = time + '(DNF)';
+          timesForAvg.push(0);
+          allTimes[snapshot.val().solveDate] = 0;
+        }
+        if (snapshot.val().plusTwo != 'DNF') {
+          timesForAvg.push(parseInt(time));
+          allTimes[snapshot.val().solveDate] = parseInt(time);
+          if (pb == '-:--.---' || time < pb) {pb = time}
+        } if (snapshot.val().comment) {
+          comment = snapshot.val().comment;
+        }
+        var solveDate = parseInt(snapshot.val().solveDate);
+        $('#session table tbody, #sessionTimesTable table tbody').prepend('\
+          <tr class="mdc-elevation--z6" data-key="'+escapeHTML(snapshot.key)+'" data-time="'+formatTime(time)+
+          '" data-scramble="'+escapeHTML(snapshot.val().scramble)+'" data-category="'+escapeHTML(snapshot.val().category)+
+          '" data-plus-two="'+escapeHTML(snapshot.val().plusTwo.toString())+'" data-solve-date="'+new Date(solveDate).toLocaleString()+
+          '" data-comment="'+comment+'"><td>'+n+'</td><td>'+pt+
+          '</td><td>'+calcAverage('current', 5)+'</td></tr>\
+        ');
       }
-      if (solve.val().plusTwo != 'DNF') {
-        timesForAvg.push(parseInt(time));
-        allTimes[solve.val().solveDate] = parseInt(time);
-        if (pb == '-:--.---' || time < pb) {pb = time}
-      }
-      var solveDate = parseInt(solve.val().solveDate);
-      $('#session table tbody, #sessionTimesTable table tbody').prepend('\
-        <tr class="mdc-elevation--z6" data-key="'+escapeHTML(solve.key)+'" data-time="'+formatTime(time)+
-        '" data-scramble="'+escapeHTML(solve.val().scramble)+'" data-category="'+escapeHTML(solve.val().category)+
-        '" data-plus-two="'+escapeHTML(solve.val().plusTwo)+'" data-solve-date="'+new Date(solveDate).toLocaleString()+'"><td>'+n+'</td><td>'+pt+
-        '</td><td>'+calcAverage('current', 5)+'</td></tr>\
-      ');
       $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
       $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
       $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
@@ -661,6 +709,7 @@ function showTimesFromIndexedDB() {
         n++;
         var pt = '';
         var time = cursor.value.time;
+        var comment = '';
         if (cursor.value.plusTwo) {
           time = time.split(':')[0] + ':' + (parseInt(time.split(':')[1].split('.')[0])+2).toString() + '.' + time.split('.')[1];
           pt = '+';
@@ -670,10 +719,15 @@ function showTimesFromIndexedDB() {
         } else {
           timesForAvg.push(0);
         }
+        console.log({'true': '2', 'false': '0'}[(cursor.value.plusTwo).toString()]);
+        if (cursor.value.comment) {
+          comment = cursor.value.comment;
+        }
         $('#session table tbody, #sessionTimesTable table tbody').prepend('\
           <tr class="mdc-elevation--z6" data-key="'+cursor.primaryKey+'" data-time="'+cursor.value.time+
           '" data-scramble="'+cursor.value.scramble+'" data-category="'+cursor.value.category+
-          '" data-plus-two="'+cursor.value.plusTwo+'" data-solve-date="'+new Date(cursor.value.solveDate)+'"><td>'+n+'</td><td>'+time+pt+
+          '" data-penalty="'+{'true': '2', 'false': '0'}[(cursor.value.plusTwo).toString()]+'" data-solve-date="'+new Date(cursor.value.solveDate)+
+          '" data-comment="'+comment+'"><td>'+n+'</td><td>'+time+pt+
           '</td><td>'+calcAverage('current', 5)+'</td></tr>\
         ');
         $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
@@ -731,23 +785,20 @@ function deleteTimeFromIndexedDb(primaryKey) {
   }
 }
 
-function plusTwoTimeFromFirebase(key) {
-  db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')+'/'+key).once('value', function(data) {
-    //Inside the selected session
-    var plusTwo = !JSON.parse(data.val().plusTwo);
-    $.ajax({
-      type: 'POST',
-      url: '/plusTwoSolve',
-      data: {
-        uid: firebase.auth().currentUser.uid,
-        session: $('#selectSession + div ul').attr('data-selected'),
-        key: key,
-        plus_two: plusTwo
-      },
-      success: function(result) {
-        console.log(result);
-      }
-    });
+function penalizeTimeFromFirebase(key, type) {
+  //If type is 1, then DNF; if type is 2, then +2
+  $.ajax({
+    type: 'POST',
+    url: '/penalizeSolve',
+    data: {
+      uid: firebase.auth().currentUser.uid,
+      session: $('#selectSession + div ul').attr('data-selected'),
+      key: key,
+      penalty: type
+    },
+    success: function(result) {
+      console.log(result);
+    }
   });
 }
 
@@ -760,24 +811,6 @@ function plusTwoTimeFromIndexedDB(primaryKey) {
       showTimesFromIndexedDB();
     };
   };
-}
-
-function DNFTimeFromFirebase(key) {
-  if (confirm('Are you sure you want to set this solve as DNF? It cannot be undone.')) {
-    $.ajax({
-      type: 'POST',
-      url: '/DNFSolve',
-      data: {
-        uid: firebase.auth().currentUser.uid,
-        session: $('#selectSession + div ul').attr('data-selected'),
-        key: key
-      },
-      success: function(result) {
-        console.log(result);
-        snackbar.show({message: 'Successfully set solve as DNF.'});
-      }
-    });
-  }
 }
 
 function DNFTimeFromIndexedDB(primaryKey) {
@@ -821,7 +854,6 @@ function deleteSessionFromIndexedDB() {
       if (cursor) {
         if (cursor.key == $('#selectSession + div ul').attr('data-selected')) {
           cursor.delete();
-          snackbar.show({message: 'Successfully deleted time', timeout: 200});
           showTimesFromIndexedDB();
         }
         cursor.continue();
@@ -869,7 +901,7 @@ $(window).keyup(function(e) {
     //shift + 2 => toggle last solve as +2
     var primaryKey = $('#session table tbody tr:first-child').attr('data-key');
     if (firebase.auth().currentUser) {
-      plusTwoTimeFromFirebase(primaryKey);
+      penalizeTimeFromFirebase(primaryKey, 2);
     } else {
       plusTwoTimeFromIndexedDB(parseInt(primaryKey));
     }
@@ -877,7 +909,7 @@ $(window).keyup(function(e) {
     //shift + D => set last solve as DNF
     var primaryKey = $('#session table tbody tr:first-child').attr('data-key');
     if (firebase.auth().currentUser) {
-      DNFTimeFromFirebase(primaryKey);
+      penalizeTimeFromFirebase(primaryKey, 1);
     } else {
       DNFTimeFromIndexedDB(parseInt(primaryKey));
     }
@@ -904,8 +936,9 @@ function initContextMenu() {
     var time = $(this).attr('data-time');
     var scramble = $(this).attr('data-scramble');
     var category = $(this).attr('data-category');
-    var plusTwo = $(this).attr('data-plus-two');
+    var penalty = $(this).attr('data-penalty');
     var solveDate = $(this).attr('data-solve-date');
+    var comment = $(this).attr('data-comment').length > 0 ? $(this).attr('data-comment') : false;
     e.preventDefault();
     $('#contextMenu').css({
       'display': 'block',
@@ -917,10 +950,13 @@ function initContextMenu() {
       $('#solveInfo').html('\
         <b>Category: </b>'+category+'<br>\
         <b>Solve Time: </b>'+time+'\
-        <b>+2: </b>'+plusTwo+'<br>\
+        <b>Penalty: </b>'+['None', 'DNF', '+2'][parseInt(penalty)]+'<br>\
         <b>Scramble: </b>'+scramble+'<br>\
         <b>Solve Date: </b>'+solveDate+'<br>\
       ');
+      if (comment !== false) {
+        $('#solveInfo').append('<b>Comment: </b>'+comment+'<br>');
+      }
       $('#contextMenu').hide();
     });
     $('#deleteTime').off('click').click(function() {
@@ -934,7 +970,7 @@ function initContextMenu() {
     $('#togglePlusTwo').off('click').click(function() {
       $('#contextMenu').hide();
       if (firebase.auth().currentUser) {
-        plusTwoTimeFromFirebase(primaryKey);
+        penalizeTimeFromFirebase(primaryKey, 2);
       } else {
         plusTwoTimeFromIndexedDB(parseInt(primaryKey));
       }
@@ -942,7 +978,7 @@ function initContextMenu() {
     $('#setAsDNF').off('click').click(function() {
       $('#contextMenu').hide();
       if (firebase.auth().currentUser) {
-        DNFTimeFromFirebase(primaryKey);
+        penalizeTimeFromFirebase(primaryKey, 1);
       } else {
         DNFTimeFromIndexedDB(parseInt(primaryKey));
       }
@@ -964,8 +1000,9 @@ function initMobileContextMenu() {
     var time = $(this).attr('data-time');
     var scramble = $(this).attr('data-scramble');
     var category = $(this).attr('data-category');
-    var plusTwo = $(this).attr('data-plus-two');
+    var penalty = $(this).attr('data-penalty');
     var solveDate = $(this).attr('data-solve-date');
+    var comment = $(this).attr('data-comment').length > 0 ? $(this).attr('data-comment') : false;
     e.preventDefault();
     $('#contextMenu').css({
       'display': 'block',
@@ -977,10 +1014,13 @@ function initMobileContextMenu() {
       $('#solveInfo').html('\
         <b>Category: </b>'+category+'<br>\
         <b>Solve Time: </b>'+time+'\
-        <b>+2: </b>'+plusTwo+'<br>\
+        <b>Penalty: </b>'+['None', 'DNF', '+2'][parseInt(penalty)]+'<br>\
         <b>Scramble: </b>'+scramble+'<br>\
         <b>Solve Date: </b>'+solveDate+'<br>\
       ');
+      if (comment !== false) {
+        $('#solveInfo').append('<b>Comment: </b>'+comment+'<br>');
+      }
       $('#contextMenu').hide();
     });
     $('#deleteTime').off('click').click(function() {
@@ -994,7 +1034,7 @@ function initMobileContextMenu() {
     $('#togglePlusTwo').off('click').click(function() {
       $('#contextMenu').hide();
       if (firebase.auth().currentUser) {
-        plusTwoTimeFromFirebase(primaryKey);
+        penalizeTimeFromFirebase(primaryKey, 2);
       } else {
         plusTwoTimeFromIndexedDB(parseInt(primaryKey));
       }
@@ -1002,7 +1042,7 @@ function initMobileContextMenu() {
     $('#setAsDNF').off('click').click(function() {
       $('#contextMenu').hide();
       if (firebase.auth().currentUser) {
-        DNFTimeFromFirebase(primaryKey);
+        penalizeTimeFromFirebase(primaryKey, 1);
       } else {
         DNFTimeFromIndexedDB(parseInt(primaryKey));
       }
@@ -1091,7 +1131,7 @@ $('#timer').css({
   'background-color': bgcolor,
   'color': textcolor
 });
-$('.mdc-button--outlined').css({
+$('.mdc-button--outlined:not(.exception)').css({
   'border-color': textcolor,
   'color': textcolor
 });
@@ -1100,10 +1140,10 @@ $('#records').css('background-color', recordsbgcolor);
 $('#session').css('background-color', sessionbgcolor);
 $('#scrambleImage').css('background-color', scrambleimagebgcolor);
 if (replaceshadow == true) {
-  $('#records, #session, tr').css('border', '1px solid white');
+  $('#records, #session, #session tr').css('border', '1px solid white');
   $('#records, #session tr').removeClass('mdc-elevation--z6');
 } else {
-  $('#records, #session, tr').css('border', '');
+  $('#records, #session, #session tr').css('border', '');
   $('#records, #session tr').addClass('mdc-elevation--z6');
 }
 
@@ -1171,7 +1211,7 @@ function updateTheme() {
     'background-color': allThemes[colortheme][0],
     'color': allThemes[colortheme][1]
   });
-  $('.mdc-button--outlined').css({
+  $('.mdc-button--outlined:not(.exception)').css({
     'border-color': allThemes[colortheme][1],
     'color': allThemes[colortheme][1]
   });
@@ -1180,10 +1220,10 @@ function updateTheme() {
   $('#session').css('background-color', allThemes[colortheme][3]);
   $('#scrambleImage').css('background-color', allThemes[colortheme][4]);
   if (allThemes[colortheme][5] == true) {
-    $('#records, #session, tr').css('border', '1px solid white');
+    $('#records, #session, #session tr').css('border', '1px solid white');
     $('#records, #session tr').removeClass('mdc-elevation--z4');
   } else {
-    $('#records, #session, tr').css('border', '');
+    $('#records, #session, #session tr').css('border', '');
     $('#records, #session tr').addClass('mdc-elevation--z4');
   }
 }
@@ -1192,7 +1232,6 @@ selectFont.listen('change', function() {
   localStorage.setItem('font', selectFont.value);
   font = selectFont.value;
   $('#time h1').css('font-family', font);
-  $('#editTimeBtn').css('right', $('#time h1').offset().left - 40);
 });
 
 $('#enableInspection').change(function() {
@@ -1298,7 +1337,7 @@ $('#textcolor').change(function() {
   localStorage.setItem('textcolor', $(this).val());
   textcolor = $(this).val();
   $('#timer, #records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', textcolor);
-  $('.mdc-button--outlined').css({
+  $('.mdc-button--outlined:not(.exception)').css({
     'border-color': textcolor,
     'color': textcolor
   });
@@ -1326,10 +1365,10 @@ $('#replaceshadow').change(function() {
   localStorage.setItem('replaceshadow', $(this).prop('checked'));
   replaceshadow = $(this).prop('checked');
   if (replaceshadow == true) {
-    $('#records, #session, tr').css('border', '1px solid white');
+    $('#records, #session, #session tr').css('border', '1px solid white');
     $('#records, #session tr').removeClass('mdc-elevation--z4');
   } else {
-    $('#records, #session, tr').css('border', '');
+    $('#records, #session, #session tr').css('border', '');
     $('#records, #session tr').addClass('mdc-elevation--z4');
   }
 });
@@ -1355,20 +1394,3 @@ function resetColorSettings() {
   $('#replaceShadow').prop('disabled', true);
   $('#theme').val(colortheme);
 }
-
-//Edit time manually
-
-$('#editTimeBtn').click(function() {
-  if ($('#time').hasClass('hasH1') == true) {
-    $('#time').html('\
-      <input type="text" placeholder="coming soon!">\
-    ');
-    $('#time').attr('class', 'hasInput');
-  } else {
-    $('#time').html('<h1>0:00.000</h1>');
-    $('#time h1').css('font-family', font);
-    $('#editTimeBtn').css('right', $('#time h1').offset().left - 40);
-    $('#scramble').css('top', $('#time h1').offset().top + $('#time h1').height());
-    $('#time').attr('class', 'hasH1');
-  }
-});
