@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, send_from_directory, jsonify
+import json
 import database_interactions
 
 app = Flask(__name__, static_url_path='/')
@@ -18,10 +19,6 @@ def solve_html():
 @app.route('/timer')
 def timer():
   return render_template('timer.html')
-
-@app.route('/timer.html')
-def timer_html():
-  return render_template('oldtimer.html')
 
 @app.route('/saveTime', methods=['POST'])
 def saveTime():
@@ -60,6 +57,12 @@ def deleteSession():
   uid = request.form.getlist('uid')[0]
   session = request.form.getlist('session')[0]
   return database_interactions.delete_session(uid, session)
+
+@app.route('/saveSettings', methods=['POST'])
+def saveSettings():
+  uid = request.form.getlist('uid')[0]
+  settings = request.form.getlist('settings')[0]
+  return database_interactions.save_settings(uid, settings)
 
 @app.route('/installpwa')
 def installpwa():
@@ -162,6 +165,10 @@ def send_images(path):
 @app.route('/videos/<path:path>')
 def send_videos(path):
   return send_from_directory('videos', path)
+
+@app.route('/audio/<path:path>')
+def send_audio(path):
+  return send_from_directory('audio', path)
 
 @app.route('/fonts/<path:path>')
 def send_fonts(path):

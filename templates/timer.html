@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.1.0/nouislider.min.css">
-  <link href="https://vjs.zencdn.net/7.1.0/video-js.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://vjs.zencdn.net/7.1.0/video-js.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/timer.css">
   <link rel="manifest" href="manifest.json">
@@ -289,6 +289,15 @@
                     </span>
                     <div class="mdc-tab__ripple"></div>
                   </button>
+                  <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
+                    <div class="mdc-tab__content">
+                      <span class="mdc-tab__text-label">Reminders</span>
+                    </div>
+                    <span class="mdc-tab-indicator">
+                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                    </span>
+                    <div class="mdc-tab__ripple"></div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -320,7 +329,16 @@
               </div>
               <label for="enableInspection">Inspection</label>
             </div><br>
-            <div id="inspectionFormField" class="mdc-form-field">
+            <div id="audioCuesFormField" class="mdc-form-field">
+              <div class="mdc-switch">
+                <input type="checkbox" id="enableAudioCues" class="mdc-switch__native-control" role="switch">
+                <div class="mdc-switch__background">
+                  <div class="mdc-switch__knob"></div>
+                </div>
+              </div>
+              <label for="enableAudioCues">Audio Cues</label>
+            </div><br>
+            <div id="longPressFormField" class="mdc-form-field">
               <div class="mdc-switch">
                 <input type="checkbox" id="enableLongPress" class="mdc-switch__native-control" role="switch">
                 <div class="mdc-switch__background">
@@ -374,6 +392,7 @@
               <label class="mdc-floating-label">Background Image</label>
               <div class="mdc-line-ripple"></div>
             </div>
+            <div id="syncSettings"></div>
           </div>
           <div id="colorSettings">
             <h3>Color Settings</h3>
@@ -431,6 +450,45 @@
             </div><br>
             <button id="resetColorSettings" class="mdc-button">Reset Color Settings</button>
           </div>
+          <div id="remindersSettings">
+            <h3>Reminders</h3>
+            <div id="toggleRemindersFormField" class="mdc-form-field">
+              <label for="toggleReminders">Reminders</label>
+              <div class="mdc-switch">
+                <input type="checkbox" id="toggleReminders" class="mdc-switch__native-control" role="switch">
+                <div class="mdc-switch__background">
+                  <div class="mdc-switch__knob"></div>
+                </div>
+              </div>
+            </div><br>
+            <div class="mdc-form-field">
+              <div class="mdc-radio">
+                <input class="mdc-radio__native-control" type="radio" id="visualReminder" value="visual" name="reminderType">
+                <div class="mdc-radio__background">
+                  <div class="mdc-radio__outer-circle"></div>
+                  <div class="mdc-radio__inner-circle"></div>
+                </div>
+              </div>
+              <label for="visualReminder">Visual Reminder</label>
+            </div>
+            <div class="mdc-form-field">
+              <div class="mdc-radio">
+                <input class="mdc-radio__native-control" type="radio" id="auditoryReminder" value="audial" name="reminderType">
+                <div class="mdc-radio__background">
+                  <div class="mdc-radio__outer-circle"></div>
+                  <div class="mdc-radio__inner-circle"></div>
+                </div>
+              </div>
+              <label for="auditoryReminder">Audial Reminder</label>
+            </div><br>
+            Enter all times in seconds. For example, 1 min 32 sec will be 92.
+            <ul class="mdc-list mdc-list--non-interactive" aria-orientation="vertical">
+              <li id="newReminder" class="mdc-list-item mdc-elevation--z1">
+                <input type="number" id="reminder" placeholder="New Reminder">
+                <i id="newReminderBtn" class="mdc-icon-button mdc-list-item__meta material-icons">add</i>
+              </li>
+            </ul>
+          </div>
         </section>
         <footer class="mdc-dialog__footer">
           <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button mdc-dialog__footer__button--accept">Done</button>
@@ -484,11 +542,21 @@
             How do I import solves?
           </h2>
         </header>
-        <section class="mdc-dialog__body">
+        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
+          <h3>Import from csTimer</h3>
           <video id="importInfoVideo" class="video-js vjs-big-play-centered vjs-16-9" controls preload="auto" data-setup="{}">
             <source src="/videos/cubetastic_import_solves.webm" type='video/webm'>
             <source src="/videos/cubetastic_import_solves.mp4" type='video/mp4'>
             <source src="/videos/cubetastic_import_solves.ogg" type='video/ogg'>
+            <p class="vjs-no-js">
+              To view this video please enable JavaScript, and consider upgrading to a web browser that
+              <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+            </p>
+          </video>
+          <h3>Import from Twisty Timer</h3>
+          <video id="twistyTimerVideo" class="video-js vjs-big-play-centered" controls preload="auto" data-setup="{}">
+            <source src="/videos/cubetastic_import_from_twisty_timer.webm" type="video/webm">
+            <source src="/videos/cubetastic_import_from_twisty_timer.m4v">
             <p class="vjs-no-js">
               To view this video please enable JavaScript, and consider upgrading to a web browser that
               <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
@@ -538,11 +606,12 @@
           <div id="import">
             Right now, only importing solves from the specified timers is supported. Please <b>do not</b> try to import
             from other timers, because it might cause errors!<i id="importInfo" class="material-icons" title="how?">help</i><br>
-            Note: Make sure you import as .csv, and <b>not</b> as .txt or .json.<br><br>
-            <button id="csTimer" class="mdc-button mdc-button--outlined exception">Import from csTimer</button>
-            <button id="TNT" class="mdc-button mdc-button--outlined exception">Import from TNoodleTimer</button>
-            <button id="comingSoon" class="mdc-button mdc-button--outlined exception">+ Coming Soon!</button>
-            <input type="file" id="chooseImportFile" accept=".csv">
+            Note: For csTimer and TNT, make sure you import as .csv, and <b>not</b> as .txt or .json.<br><br>
+            <button id="csTimer" class="mdc-button mdc-button--outlined exception">csTimer</button>
+            <button id="TNT" class="mdc-button mdc-button--outlined exception">TNoodle Timer</button>
+            <button id="twistyTimer" class="mdc-button mdc-button--outlined exception">Twisty Timer</button>
+            <input type="file" id="chooseImportFileCSV" accept=".csv">
+            <input type="file" id="chooseImportFileTXT" accept=".txt">
             <div id="importedSample"></div>
           </div>
           <div id="export">
@@ -622,6 +691,44 @@
       </div>
       <div class="mdc-dialog__backdrop"></div>
     </aside>
+    <aside id="addSolvesDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="addSolvesDialogLabel">
+      <div class="mdc-dialog__surface">
+        <header class="mdc-dialog__header">
+          <h2 id="addSolvesDialogLabel" class="mdc-dialog__header__title">
+            Add Solves
+          </h2>
+        </header>
+        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
+          Note: You can set solves as +2 or DNF <i>after</i> adding them to your session.
+          <ul class="mdc-list mdc-list--two-line mdc-list--non-interactive" aria-orientation="vertical">
+            <li id="newSolve" class="mdc-list-item">
+              <span class="mdc-list-item__text">
+                <span class="mdc-list-item__primary-text"><input type="text" placeholder="21.415"></span>
+                <span class="mdc-list-item__secondary-text"><div>Category: <select id="newSolveCategory">
+                  <option value="3x3x3">3x3x3</option>
+                  <option value="2x2x2">2x2x2</option>
+                  <option value="3x3x3 bld">3x3x3 bld</option>
+                  <option value="Pyraminx">Pyraminx</option>
+                  <option value="4x4x4">4x4x4</option>
+                  <option value="5x5x5">5x5x5</option>
+                  <option value="6x6x6">6x6x6</option>
+                  <option value="7x7x7">7x7x7</option>
+                  <option value="Megaminx">Megaminx</option>
+                  <option value="Skweb">Skweb</option>
+                  <option value="Square 1">Square 1</option>
+                </select></div><div> | </div><div><label>Scramble (opt):</label><input type="text" placeholder="R' F R B' R2 D' F U' F' R2 U' L2 B2 D R2 U L2 F2 D B2"></div></span>
+              </span>
+              <i id="newSolveBtn" class="mdc-icon-button mdc-list-item__meta material-icons">add</i>
+            </li>
+          </ul>
+        </section>
+        <footer class="mdc-dialog__footer">
+          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
+          <button type="button" id="addSolvesBtn" class="mdc-button mdc-button--unelevated mdc-dialog__footer__button">Add</button>
+        </footer>
+      </div>
+      <div class="mdc-dialog__backdrop"></div>
+    </aside>
     <div id="timer">
       <div id="leftPanel" class="mdc-elevation--z6">
         <div id="records" class="hide-on-med-and-down mdc-elevation--z6">
@@ -679,6 +786,14 @@
       </div>
       <div id="red"></div>
       <div id="green"></div>
+      <audio id="8Seconds">
+        <source src="/audio/8_seconds.ogg" type="audio/ogg">
+        <source src="/audio/8_seconds.mp3" type="audio/mp3">
+      </audio>
+      <audio id="12Seconds">
+        <source src="/audio/12_seconds.ogg" type="audio/ogg">
+        <source src="/audio/12_seconds.mp3" type="audio/mp3">
+      </audio>
       <div id="categoryButtonGroup" class="button-group">
         <div id="selectCategoryDivision" class="mdc-menu-anchor button-group-left">
           <button id="selectCategory" class="mdc-button mdc-button--outlined">3x3x3</button>
@@ -785,6 +900,7 @@
     <li id="setAsDNF">Set as DNF</li>
     <li id="deleteTime">Delete Time</li>
     <li id="deleteSession">Delete Session</li>
+    <li id="addSolves">Add Solves</li>
   </ul>
   <div class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
     <div class="mdc-snackbar__text"></div>
@@ -798,14 +914,14 @@
 <script async>
   if (navigator.serviceWorker.controller) {
     console.log('Active service worker found, no need to register');
-  }/* else {
+  } else {
     //Register the ServiceWorker
     navigator.serviceWorker.register('firebase-messaging-sw.js', {
       scope: './'
     }).then(function(reg) {
       console.log('Service worker has been registered for scope:'+ reg.scope);
     });
-  }*/
+  }
 </script>
 <script async>
   function hideloader() {
@@ -825,6 +941,7 @@
   mdc.ripple.MDCRipple.attachTo(document.querySelector('#refreshScramble'));
   mdc.ripple.MDCRipple.attachTo(document.querySelector('#mobileSessionFAB'));
   mdc.ripple.MDCRipple.attachTo(document.querySelector('#moreFAB'));
+  mdc.ripple.MDCRipple.attachTo(document.querySelector('#newSolveBtn'));
   mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar'));
   mdc.textField.MDCTextField.attachTo(document.querySelector('#sessionNameInput'));
 
@@ -895,9 +1012,15 @@
     if (nthChildIndex === 0) {
       $('#timerSettings').show();
       $('#colorSettings').hide();
+      $('#remindersSettings').hide();
     } else if (nthChildIndex === 1) {
       $('#timerSettings').hide();
       $('#colorSettings').show();
+      $('#remindersSettings').hide();
+    } else if (nthChildIndex === 2) {
+      $('#timerSettings').hide();
+      $('#colorSettings').hide();
+      $('#remindersSettings').show();
     }
   });
 
@@ -938,9 +1061,10 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://vjs.zencdn.net/7.1.0/video.js"></script>
-<script src="js/timer.js"></script>
-<script src="js/stats.js"></script>
-<script src="js/papaparse.min.js"></script>
-<script async src="js/importTimes.js"></script>
-<script async src="js/loggedStatus.js"></script>
+<script src="/js/talkify.js"></script>
+<script src="/js/timer.js"></script>
+<script src="/js/stats.js"></script>
+<script src="/js/papaparse.min.js"></script>
+<script async src="/js/importTimes.js"></script>
+<script async src="/js/loggedStatus.js"></script>
 </html>

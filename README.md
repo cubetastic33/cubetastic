@@ -1,7 +1,7 @@
 # Cubetastic
 
-[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://github.com/cubetastic33/cubetastic/blob/master/LICENSE)
-![Version](https://img.shields.io/badge/version-1.3.8-brightgreen.svg)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://gitlab.com/cubetastic/cubetastic/blob/master/LICENSE)
+![Version](https://img.shields.io/badge/version-1.4.5-brightgreen.svg)
 
 Hello everyone, and welcome to cubetastic. Here, you can find the official source code of my website. Click [here](https://cubetastic.herokuapp.com) to go to the website itself.
 
@@ -15,13 +15,13 @@ The main features of this timer are:
 + You can seperate your solves into sessions, and rename the sessions the way you want.
 + It saves the date and time of your solves
 + Analyze best, worst, and current averages & singles.
-+ Import your solves from other timers.
 + View a graph of your solves to see how you're improving
 + Find the average of virtually any number of solves
 + Scrambles are supported for almost all the WCA puzzles.
 + Follows Material Design.
 + High level of customization - you can make it look the way you want!
 + You can choose to have inspection time!
++ Add reminders that can help you during your solves (like for bld solves, you can set a reminder when you want to finish memorising)
 
 However, please note that the TNoodle scrambles for bigger puzzles like 4x4, 5x5, etc. can take some time to generate. If you have any queries, or feature request, or feedback, please tell me in the [contact me](https://cubetastic.herokuapp.com/contactMe) page of the website. Here are some images in different browsers:
 

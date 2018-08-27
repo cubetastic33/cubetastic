@@ -6,6 +6,7 @@ var timerRunning = false;
 var timerStartTime = 0;
 var inspectionCompleted = false;
 var plus_two = false;
+var finishedReminders = [];
 
 var entireTimerDiv = document.getElementById('timer');
 var el = document.getElementById('time');
@@ -17,35 +18,40 @@ entireTimerDiv.addEventListener("touchend", handleFullEnd, false);
 var solveInfoDialog = new mdc.dialog.MDCDialog(document.querySelector('#solveInfoDialog'));
 var editSessionsDialog = new mdc.dialog.MDCDialog(document.querySelector('#editSessionsDialog'));
 var chooseBGImageDialog = new mdc.dialog.MDCDialog(document.querySelector('#chooseBGImage'));
+var addSolvesDialog = new mdc.dialog.MDCDialog(document.querySelector('#addSolvesDialog'));
 var snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
 var typeOfStats = new mdc.select.MDCSelect(document.querySelector('#typeOfStats'));
 var mobileTypeOfStats = new mdc.select.MDCSelect(document.querySelector('#mobileTypeOfStats'));
 
+var player = new talkify.Html5Player();
+
 $(window).keydown(function(e) {
-  if (e.which === 32) {
-    //Prevent the page from scrolling whenever the user presses the spacebar
-    e.preventDefault();
-  }
-  if (timerRunning === true) {
-    //The timer is running; stop it
-    clearInterval(startedTimer);
-    stopped = true;
-    timerRunning = false;
-    clearInterval(startedBlinking);
-    saveTime($('#time h1').text(), $('#selectSession + div ul').attr('data-selected'), $('#previousScramble').html().split('Scramble: ')[1], $('#selectCategory').text(), window.plus_two);
-  } else if (e.which === 32 && !e.originalEvent.repeat) {
-    //The timer is not running - show red div then green div
-    $('#red').attr('class', 'red');
-    if (typeof inspectionTimeout != 'undefined') {
-      inspectionCompleted = true;
+  if (!$(e.target).is(':input')) {
+    if (e.which === 32) {
+      //Prevent the page from scrolling whenever the user presses the spacebar
+      e.preventDefault();
     }
-    if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
-      //Inspection needs to finish before starting the timer, so show green div
-      $('#green').attr('class', 'green');
-    } else {
-      var delayLength = $('#enableLongPress').prop('checked') ? 700 : 0;
-      delayLength = (delayLength == 700 && $('#enableInspection').prop('checked') && selectedCategory != '3x3x3 bld') ? 0 : delayLength;
-      greenTimeout = setTimeout(() => {$('#green').attr('class', 'green')}, delayLength);
+    if (timerRunning === true) {
+      //The timer is running; stop it
+      clearInterval(startedTimer);
+      stopped = true;
+      timerRunning = false;
+      clearInterval(startedBlinking);
+      saveTime($('#time h1').text(), $('#selectSession + div ul').attr('data-selected'), $('#previousScramble').html().split('Scramble: ')[1], $('#selectCategory').text(), window.plus_two);
+    } else if (e.which === 32 && !e.originalEvent.repeat) {
+      //The timer is not running - show red div then green div
+      $('#red').attr('class', 'red');
+      if (typeof inspectionTimeout != 'undefined') {
+        inspectionCompleted = true;
+      }
+      if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+        //Inspection needs to finish before starting the timer, so show green div
+        $('#green').attr('class', 'green');
+      } else {
+        var delayLength = $('#enableLongPress').prop('checked') ? 700 : 0;
+        delayLength = (delayLength == 700 && $('#enableInspection').prop('checked') && selectedCategory != '3x3x3 bld') ? 0 : delayLength;
+        greenTimeout = setTimeout(() => {$('#green').attr('class', 'green')}, delayLength);
+      }
     }
   }
 });
@@ -85,50 +91,53 @@ function handleStart(e) {
 }
 
 $(window).keyup(function(e) {
-  if (e.which === 32 && $('#green').attr('class') === 'green' && stopped === false) {
-    //Start the timer; user released space bar after delayLength, and the timer was not stopped in this keypress
-    if (typeof inspectionTimeout != 'undefined') {
-      clearTimeout(inspectionTimeout);
-      inspectionTimeout = undefined;
-    }
-    if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
-      //Start inspection
-      inspection();
+  if (!$(e.target).is(':input')) {
+    if (e.which === 32 && $('#green').attr('class') === 'green' && stopped === false) {
+      //Start the timer; user released space bar after delayLength, and the timer was not stopped in this keypress
+      if (typeof inspectionTimeout != 'undefined') {
+        clearTimeout(inspectionTimeout);
+        inspectionTimeout = undefined;
+      }
+      if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+        //Start inspection
+        inspection();
+        if ($('#hideelements').prop('checked') == true) {
+          $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
+        }
+      } else {
+        var date = new Date();
+        timerStartTime = date.getTime().toString();
+        window.startedTimer = setInterval(timer, 10);
+        stopped = false;
+        $('#red').attr('class', '');
+        $('#green').attr('class', '');
+        window.startedBlinking = setInterval(blink, 200);
+      }
+      inspectionCompleted = false;
+      if ($('#scramble').html() !== '') {
+        $('#previousScramble').html($('#scramble').html());
+        $('#scramble').html('');
+      }
       if ($('#hideelements').prop('checked') == true) {
         $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
       }
-    } else {
-      var date = new Date();
-      timerStartTime = date.getTime().toString();
-      window.startedTimer = setInterval(timer, 10);
-      stopped = false;
+    } else if (e.which === 32 && stopped === false) {
+      //Reset the colors; user released space bar before delayLength, and the timer was not stopped in this keypress
+      clearTimeout(greenTimeout);
       $('#red').attr('class', '');
       $('#green').attr('class', '');
-      window.startedBlinking = setInterval(blink, 200);
+    } else if (stopped === true) {
+      //Timer has just been stopped.
+      if ($('#hideelements').prop('checked') == true) {
+        $('#records, #session, .button-group , #leftPanel, .mdc-fab').show();
+        $('#importFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
+      }
+      $('#red').attr('class', '');
+      $('#green').attr('class', '');
+      finishedReminders = [];
+      showScramble(category[selectedCategory]);
+      stopped = false;
     }
-    inspectionCompleted = false;
-    if ($('#scramble').html() !== '') {
-      $('#previousScramble').html($('#scramble').html());
-      $('#scramble').html('');
-    }
-    if ($('#hideelements').prop('checked') == true) {
-      $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
-    }
-  } else if (e.which === 32 && stopped === false) {
-    //Reset the colors; user released space bar before delayLength, and the timer was not stopped in this keypress
-    clearTimeout(greenTimeout);
-    $('#red').attr('class', '');
-    $('#green').attr('class', '');
-  } else if (stopped === true) {
-    //Timer has just been stopped.
-    if ($('#hideelements').prop('checked') == true) {
-      $('#records, #session, .button-group , #leftPanel, .mdc-fab').show();
-      $('#importFAB, #infoFAB, #settingsFAB, #feedbackFAB').hide();
-    }
-    $('#red').attr('class', '');
-    $('#green').attr('class', '');
-    showScramble(category[selectedCategory]);
-    stopped = false;
   }
 });
 
@@ -168,8 +177,10 @@ function handleEnd(e) {
       window.startedBlinking = setInterval(blink, 200);
     }
     inspectionCompleted = false;
-    $('#previousScramble').html($('#scramble').html());
-    $('#scramble').html('');
+    if ($('#scramble').html() !== '') {
+      $('#previousScramble').html($('#scramble').html());
+      $('#scramble').html('');
+    }
     if ($('#hideelements').prop('checked') == true) {
       $('#records, #session, .button-group, #leftPanel, .mdc-fab').hide();
     }
@@ -202,20 +213,33 @@ function blink() {
 }
 
 function printTime(minutes, seconds, milliseconds) {
-  $('#time h1').html(minutes + ':' + seconds + '.' + milliseconds);
+  if (minutes > 60) {
+    minutes = `${Math.floor(minutes/60)}:${minutes-(60*Math.floor(minutes/60))}`;
+  }
+  $('#time h1').html(`${minutes}:${seconds}.${milliseconds}`);
 }
 
 function timer() {
   if (stopped == false) {
     timerRunning = true;
     var d = new Date();
-    var minutes = parseInt((d.getTime() - timerStartTime)/60000);
-    var seconds = '00' + (parseInt(((d.getTime() - timerStartTime)%60000)/1000)).toString();
+    var minutes = parseInt((d.getTime() - timerStartTime) / 60000);
+    var seconds = '00' + (parseInt(((d.getTime() - timerStartTime) % 60000) / 1000)).toString();
     seconds = seconds.substr((seconds.length - 2), (seconds.length));
-    var milliseconds = '000' + ((d.getTime() - timerStartTime)%1000).toString();
+    var milliseconds = '000' + ((d.getTime() - timerStartTime) % 1000).toString();
     milliseconds = milliseconds.substr((milliseconds.length - 3), (milliseconds.length));
     window.lastTime = minutes + ':' + seconds + '.' + milliseconds.substr(0, 3);
     printTime(minutes, seconds, milliseconds.substr(0, 3));
+    var settings = localStorage.getItem('settings').split('|');
+    settings[18] = settings[18].split(';');
+    if ($('#toggleReminders').prop('checked') === true && settings[18].includes((parseInt(minutes) * 60 + parseInt(seconds)).toString()) && finishedReminders.includes((parseInt(minutes) * 60 + parseInt(seconds)).toString()) === false) {
+      if (parseInt(minutes) > 0) {
+        player.forceLanguage('en-GB').playText(minutes.toString() + `minute${parseInt(minutes)===1?'':'s'}${parseInt(seconds)===0?'':(', '+seconds.toString()+`second${parseInt(seconds)===1?'':'s'}`)}`);
+      } else {
+        player.forceLanguage('en-GB').playText(seconds.toString() + `second${parseInt(seconds)===1?'':'s'}`);
+      }
+      finishedReminders.push((parseInt(minutes) * 60 + parseInt(seconds)).toString());
+    }
   }
 }
 
@@ -239,6 +263,11 @@ function inspection(i) {
     }, 1000);
   } else if (i == -2) {
     $('#time h1').text('DNF');
+  }
+  if (i === 2 && $('#enableAudioCues').prop('checked') === true) {
+    document.getElementById('12Seconds').play();
+  } else if (i === 7 && $('#enableAudioCues').prop('checked') === true) {
+    document.getElementById('8Seconds').play();
   }
 }
 
@@ -487,10 +516,13 @@ Array.min = function( array ){
 function add(a, b) {return a + b}
 
 function formatTime(milliseconds) {
-  if (Math.floor(milliseconds/60000) == 0) {
-    return (milliseconds%60000-milliseconds%1000)/1000+'.'+('000'+parseInt(milliseconds%1000)).substr(-3);
+  if (Math.floor(milliseconds / 60000) === 0) {
+    return (milliseconds % 60000 - milliseconds % 1000) / 1000 + '.' + ('000' + parseInt(milliseconds % 1000)).substr(-3);
+  } else if (Math.floor(milliseconds / 3600000) === 0) {
+    return `${Math.floor(milliseconds/60000)}:${(milliseconds%60000-milliseconds%1000)/1000}.${('000'+parseInt(milliseconds%1000)).substr(-3)}`;
+  } else {
+    return `${Math.floor(milliseconds/3600000)}:${Math.floor(milliseconds/60000)-(60*Math.floor(milliseconds/3600000))}:${(milliseconds%60000-milliseconds%1000)/1000}.${('000'+parseInt(milliseconds%1000)).substr(-3)}`;
   }
-  return Math.floor(milliseconds/60000)+':'+(milliseconds%60000-milliseconds%1000)/1000+'.'+('000'+parseInt(milliseconds%1000)).substr(-3);
 }
 
 function calcSingle(type, range) {
@@ -590,7 +622,8 @@ function updateRecordsStats() {
 }
 
 function showTimesFromFirebase() {
-  db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).on('value', function(data) {
+  db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).on('value', (snapshot) => {
+    var limit = Array.max([100, $('#session table tbody tr').length]);
     $('#session, #sessionTimesTable').html('\
       <table>\
         <thead><tr class="mdc-elevation--z6"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>\
@@ -598,12 +631,12 @@ function showTimesFromFirebase() {
         </tbody>\
       </table>\
     ');
-    var n = 0;
-    window.timesForAvg = [];
-    var pb = '-:--.---';
-    data.forEach(function(snapshot) {
-      if (typeof snapshot.val() === 'string') {
-        //Updated version
+    db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).limitToLast(limit).once('value', function(data) {
+      console.log(snapshot.numChildren());
+      var n = snapshot.numChildren()-data.numChildren();
+      window.timesForAvg = [];
+      var pb = '-:--.---';
+      data.forEach(function(snapshot) {
         n++;
         var solve = snapshot.val().split('|');
         solve[1] = parseInt(solve[1]);
@@ -614,7 +647,6 @@ function showTimesFromFirebase() {
           solve = solve.slice(0, 6);
         }
         //Now, solve is in the format of [category, time, scramble, penalty, solveDate, (opt)comment]
-        console.log(solve);
         var time = solve[1];
         var dt = formatTime(solve[1]);
         var comment = solve[5] || '';
@@ -639,53 +671,81 @@ function showTimesFromFirebase() {
           '" data-comment="'+comment+'"><td>'+n+'</td><td>'+dt+
           '</td><td>'+calcAverage('current', 5)+'</td></tr>\
         ');
-      } else {
-        //Old Version
-        n++;
-        var pt = formatTime(snapshot.val().time);
-        var time = snapshot.val().time;
-        var comment = '';
-        if (snapshot.val().plusTwo == 'true') {
-          pt = formatTime(parseInt(time) + 2000) + '+';
-          time = parseInt(time) + 2000;
-        } else if (snapshot.val().plusTwo == 'DNF') {
-          pt = 'DNF';
-          time = time + '(DNF)';
-          timesForAvg.push(0);
-          allTimes[snapshot.val().solveDate] = 0;
-        }
-        if (snapshot.val().plusTwo != 'DNF') {
-          timesForAvg.push(parseInt(time));
-          allTimes[snapshot.val().solveDate] = parseInt(time);
-          if (pb == '-:--.---' || time < pb) {pb = time}
-        } if (snapshot.val().comment) {
-          comment = snapshot.val().comment;
-        }
-        var solveDate = parseInt(snapshot.val().solveDate);
-        $('#session table tbody, #sessionTimesTable table tbody').prepend('\
-          <tr class="mdc-elevation--z6" data-key="'+escapeHTML(snapshot.key)+'" data-time="'+formatTime(time)+
-          '" data-scramble="'+escapeHTML(snapshot.val().scramble)+'" data-category="'+escapeHTML(snapshot.val().category)+
-          '" data-plus-two="'+escapeHTML(snapshot.val().plusTwo.toString())+'" data-solve-date="'+new Date(solveDate).toLocaleString()+
-          '" data-comment="'+comment+'"><td>'+n+'</td><td>'+pt+
-          '</td><td>'+calcAverage('current', 5)+'</td></tr>\
-        ');
-      }
-      $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
-      $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
-      $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
-      $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
-      document.querySelector('#session').scrollTo(0, 0);
-      $('#typeOfStats select, #singleFrom, #averageOf').off('change').change(function() {
         $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
         $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
-      });
-      $('#mobileTypeOfStats select, #mobileSingleFrom, #mobileAverageOf').off('change').change(function() {
         $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
         $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+        document.querySelector('#session').scrollTo(0, 0);
+        $('#typeOfStats select, #singleFrom, #averageOf').off('change').change(function() {
+          $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
+          $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+        });
+        $('#mobileTypeOfStats select, #mobileSingleFrom, #mobileAverageOf').off('change').change(function() {
+          $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
+          $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+        });
+        $('#session, #sessionDrawer>nav>div').off('scroll').scroll(() => {
+          if (($('#session').prop('scrollHeight') - $('#session').prop('scrollTop') === $('#session').prop('clientHeight')) ||
+          ($('#sessionDrawer>nav>div').prop('scrollHeight') - $('#sessionDrawer>nav>div').prop('scrollTop') === $('#sessionDrawer>nav>div').prop('clientHeight'))) {
+            //User has scrolled to bottom, load more solves
+            var lastSolveKey = $('#session table tbody tr:last-child').attr('data-key');
+            console.log(document.querySelector('#session table tbody tr:last-child'));
+            db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected'))
+            .orderByKey().endAt(lastSolveKey).limitToLast(11).on('value', (datasnapshot) => {
+              console.log(snapshot.numChildren());
+              i = n-$('#session table tbody tr').length-10;
+              datasnapshot.forEach((child) => {
+                i++;
+                if (child.key != lastSolveKey) {
+                  var solve = child.val().split('|');
+                  solve[1] = parseInt(solve[1]);
+                  solve[3] = $.parseJSON(solve[3])
+                  solve[4] = parseInt(solve[4]);
+                  if (solve.length > 6) {
+                    solve[5] = solve.slice(5).join('|');
+                    solve = solve.slice(0, 6);
+                  }
+                  //Now, solve is in the format of [category, time, scramble, penalty, solveDate, (opt)comment]
+                  var time = solve[1];
+                  var dt = formatTime(solve[1]);
+                  var comment = solve[5] || '';
+                  if (solve[3] === 2) {
+                    time += 2000;
+                    dt = formatTime(time) + '+';
+                  } else if (solve[3] === 1) {
+                    dt = 'DNF';
+                    time += '(DNF)';
+                    timesForAvg.unshift(0);
+                    allTimes[solve[4]] = 0;
+                  }
+                  if (solve[3] !== 1) {
+                    timesForAvg.unshift(time);
+                    allTimes[solve[4]] = time;
+                    if (pb == '-:--.---' || time < pb) {pb = time}
+                  }
+                  $('#session table tr[data-key="'+lastSolveKey+'"], #sessionTimesTable table tr[data-key="'+lastSolveKey+'"]').after('\
+                    <tr class="mdc-elevation--z6" data-key="'+escapeHTML(child.key)+'" data-time="'+formatTime(time)+
+                    '" data-scramble="'+escapeHTML(solve[2])+'" data-category="'+escapeHTML(solve[0])+
+                    '" data-penalty="'+escapeHTML(solve[3].toString())+'" data-solve-date="'+new Date(solve[4]).toLocaleString()+
+                    '" data-comment="'+comment+'"><td>'+i+'</td><td>'+dt+
+                    '</td><td>-:--.---</td></tr>\
+                  ');
+                  $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
+                  $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+                  $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
+                  $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+                }
+              });
+              updateRecordsStats();
+              initContextMenu();
+              initMobileContextMenu();
+            });
+          }
+        });
+        updateRecordsStats();
+        initContextMenu();
+        initMobileContextMenu();
       });
-      updateRecordsStats();
-      initContextMenu();
-      initMobileContextMenu();
     });
   });
 }
@@ -865,7 +925,45 @@ function deleteSessionFromIndexedDB() {
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     showTimesFromFirebase();
+    $('#syncSettings').html(`
+      <button id="saveSettingsToAccount" class="mdc-button">
+        <i class="material-icons mdc-button__icon" aria-hidden="true">save</i>Save settings to account
+      </button><br>
+      <button id="syncSettingsFromAccount" class="mdc-button">
+        <i class="material-icons mdc-button__icon" aria-hidden="true">sync</i>Sync settings from account
+      </button>
+    `);
+    $('#saveSettingsToAccount').click(() => {
+      $.ajax({
+        type: 'POST',
+        url: '/saveSettings',
+        data: {
+          uid: firebase.auth().currentUser.uid,
+          settings: localStorage.getItem('settings')
+        },
+        success: function(result) {
+          console.log(result);
+          snackbar.show({message: result});
+        }
+      });
+    });
+    $('#syncSettingsFromAccount').click(() => {
+      db.ref('/users/'+firebase.auth().currentUser.uid+'/settings').once('value', (syncedSettings) => {
+        console.log(syncedSettings.val());
+        if (syncedSettings.val()) {
+          //Sync settings
+          localStorage.setItem('settings', syncedSettings.val());
+          updateSettings();
+          updateSettingsUI();
+          snackbar.show({message: 'Done'});
+        } else {
+          //No settings were found
+          snackbar.show({message: 'No settings were found.'});
+        }
+      });
+    });
   } else {
+    $('#syncSettings').empty();
     if (!('indexedDB' in window)) {
       console.log('This browser doesn\'t support IndexedDB');
     } else {
@@ -1058,6 +1156,177 @@ function initMobileContextMenu() {
   });
 }
 
+$('#addSolves').click(() => {
+  $('#contextMenu').hide();
+  addSolvesDialog.show();
+});
+
+function verifyTimeAndScramble(time, scramble) {
+  //Verify time
+  if (/^[+\-0-9:\.]+$/.test(time) === true) {
+    if (time.includes(':') === true) {
+      if (time.split(':')[0].length > 2) {
+        return 'Make sure time is in format minutes:seconds.milliseconds';
+      } else if (time.split(':')[1].includes('.') === false) {
+        return 'Make sure time is in format minutes:seconds.milliseconds';
+      } else {
+        if (time.split(':')[1].split('.')[0].length !== 2) {
+          return 'Make sure time is in format minutes:seconds.milliseconds';
+        }
+      }
+    } else {
+      if (time.includes('.') === false) {
+        return 'Make sure time is in format seconds.milliseconds';
+      } else if (time.split('.')[0].length > 2) {
+        return 'Make sure time is in format seconds.milliseconds';
+      } else if (time.split('.')[1].length > 3) {
+        return 'Make sure time is in format minutes:seconds.milliseconds';
+      }
+    }
+  } else {
+    return 'Make sure the time contains only numbers, colons, and decimal points.';
+  }
+  //Verify scramble
+  if (scramble.length > 0) {
+    //If user has specified a scramble
+    if (scramble.match(/[`~!@#$₹%^&*\|;[\]{}qetiopasghjkcvnmQTIOPAGHJKCVN]+/)) {
+      return 'Make sure your scramble contains only conventional notations.';
+    } else if (scramble.length > 420) {
+      return 'The scramble is too long!';
+    }
+    if (['3x3x3', '2x2x2', '3x3x3 bld', 'Skewb'].includes($('#newSolveCategory').val())) {
+      if (/^[RLUDFBMSE '2wrludfbxyz]+$/.test(scramble) === false) {
+        return 'Make sure you have selected the correct category for your scramble';
+      }
+    }
+  }
+  return true;
+}
+
+$('#newSolveBtn').click(() => {
+  if ($('#newSolve .mdc-list-item__primary-text input').val().length > 0) {
+    //Check the time and scramble if they have illegal characters
+    var clean = verifyTimeAndScramble($('#newSolve .mdc-list-item__primary-text input').val(), $('#newSolve .mdc-list-item__secondary-text input').val());
+    if (clean === true) {
+      $('#newSolve').after(`
+        <li class="mdc-list-item">
+          <span class="mdc-list-item__text">
+            <span class="mdc-list-item__primary-text">${$('#addSolvesDialog ul li').length}. ${$('#newSolve .mdc-list-item__primary-text input').val()}</span>
+            <span class="mdc-list-item__secondary-text">Category: ${$('#newSolve .mdc-list-item__secondary-text select').val()} | Scramble: ${$('#newSolve .mdc-list-item__secondary-text input').val()}</span>
+          </span>
+          <i class="removeNewSolve mdc-icon-button mdc-list-item__meta material-icons" onclick="removeNewSolve(this)">clear</i>
+        </li>
+      `);
+      $('#newSolve .mdc-list-item__primary-text input').val('');
+      $('#newSolve .mdc-list-item__secondary-text input').val('');
+    } else {
+      snackbar.show({message: clean, multiline: true});
+    }
+  }
+});
+
+function removeNewSolve(element) {
+  element.parentNode.parentNode.removeChild(element.parentNode);
+  $($('#addSolvesDialog ul li').get().reverse()).each((i, elem) => {
+    if (i < ($('#addSolvesDialog ul li').length - 1)) {
+      $(elem).find('.mdc-list-item__primary-text').html(i+1 + '. ' + ($(elem).find('.mdc-list-item__primary-text').html()).split('. ')[1]);
+    }
+  });
+}
+
+function convertToSeconds(time) {
+  if (time.includes(':') === true) {
+    return (parseInt(time.split(':')[0])*60)+parseFloat(time.split(':')[1]);
+  } else {
+    return parseFloat(time);
+  }
+}
+
+$('#addSolvesBtn').click(() => {
+  if ($('#addSolvesDialog ul li').length > 1) {
+    var solves = [$('#selectSession + div ul').attr('data-selected'), $('#newSolveCategory').val()];
+    $($('#addSolvesDialog ul li').get().reverse()).each((i, elem) => {
+      if (i < ($('#addSolvesDialog ul li').length - 1)) {
+        //Populate solves with data from each elem except the "new solve" elem, which is the last one.
+        var time = $(elem).find('.mdc-list-item__primary-text').html().split('. ')[1];
+        var scramble = $(elem).find('.mdc-list-item__secondary-text').html().split('Scramble: ')[1];
+        var d = new Date();
+        solves.push([convertToSeconds(time)*1000, scramble, 0, d.getTime()]);
+      }
+    });
+    $('#addSolvesDialog section').html(`
+      <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">
+        <div class="mdc-linear-progress__buffering-dots"></div>
+        <div class="mdc-linear-progress__buffer"></div>
+        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+          <span class="mdc-linear-progress__bar-inner"></span>
+        </div>
+        <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+          <span class="mdc-linear-progress__bar-inner"></span>
+        </div>
+      </div>
+    `);
+    $('#addSolvesDialog footer button').prop('disabled', true);
+    $.ajax({
+      type: 'POST',
+      url: '/uploadSolves',
+      data: {
+        uid: firebase.auth().currentUser.uid,
+        solves: JSON.stringify(solves)
+      },
+      success: function(result) {
+        console.log(result);
+        if (result === 'Done!') {
+          $('#addSolvesDialog section').html(`
+            Note: You can set solves as +2 or DNF <i>after</i> adding them to your session.
+            <ul class="mdc-list mdc-list--two-line mdc-list--non-interactive" aria-orientation="vertical">
+              <li id="newSolve" class="mdc-list-item">
+                <span class="mdc-list-item__text">
+                  <span class="mdc-list-item__primary-text"><input type="text" placeholder="21.415"></span>
+                  <span class="mdc-list-item__secondary-text"><div>Category: <select id="newSolveCategory">
+                    <option value="3x3x3">3x3x3</option>
+                    <option value="2x2x2">2x2x2</option>
+                    <option value="3x3x3 bld">3x3x3 bld</option>
+                    <option value="Pyraminx">Pyraminx</option>
+                    <option value="4x4x4">4x4x4</option>
+                    <option value="5x5x5">5x5x5</option>
+                    <option value="6x6x6">6x6x6</option>
+                    <option value="7x7x7">7x7x7</option>
+                    <option value="Megaminx">Megaminx</option>
+                    <option value="Skweb">Skweb</option>
+                    <option value="Square 1">Square 1</option>
+                  </select></div><div> | </div><div><label>Scramble (opt):</label><input type="text" placeholder="R' F R B' R2 D' F U' F' R2 U' L2 B2 D R2 U L2 F2 D B2"></div></span>
+                </span>
+                <i id="newSolveBtn" class="mdc-icon-button mdc-list-item__meta material-icons">add</i>
+              </li>
+            </ul>
+          `);
+          mdc.ripple.MDCRipple.attachTo(document.querySelector('#newSolveBtn'));
+          $('#addSolvesDialog footer button').prop('disabled', false);
+          $('#newSolveBtn').click(() => {
+            if ($('#newSolve .mdc-list-item__primary-text input').val().length > 0) {
+              $('#newSolve').after(`
+                <li class="mdc-list-item">
+                  <span class="mdc-list-item__text">
+                    <span class="mdc-list-item__primary-text">${$('#addSolvesDialog ul li').length}. ${$('#newSolve .mdc-list-item__primary-text input').val()}</span>
+                    <span class="mdc-list-item__secondary-text">Category: ${$('#newSolve .mdc-list-item__secondary-text select').val()} | Scramble: ${$('#newSolve .mdc-list-item__secondary-text input').val()}</span>
+                  </span>
+                  <i class="removeNewSolve mdc-icon-button mdc-list-item__meta material-icons" onclick="removeNewSolve(this)">clear</i>
+                </li>
+              `);
+            }
+            $('#newSolve .mdc-list-item__primary-text input').val('');
+            $('#newSolve .mdc-list-item__secondary-text input').val('');
+          });
+          addSolvesDialog.close();
+        }
+      }
+    });
+  } else {
+    snackbar.show({message: 'Make sure you have added at least 1 solve using the + button!', multiline: true});
+  }
+});
+
 $(window).mousedown(function(e) {
   if ((!document.querySelector('#contextMenu').contains(e.target)) && (!document.querySelector('#session').contains(e.target))) {
     $('#contextMenu').hide();
@@ -1078,240 +1347,95 @@ var transparent = ['#FFFFFF', '#000000', '#00000000', '#00000000', '#00000000', 
 
 var allThemes = {'Gray Wisp': graywisp, 'Dark': dark, 'Chloris Gray': chlorisgray, 'Transparent': transparent};
 
-if (localStorage.getItem('colorsMethod') == null) {
-  localStorage.setItem('colorsMethod', 'theme');
-  localStorage.setItem('colortheme', 'Gray Wisp');
-  localStorage.setItem('font', 'Play');
-  localStorage.setItem('showscrambleimage', 'hide-on-small-only');
-  localStorage.setItem('showRecordStats', 'hide');
-  localStorage.setItem('inspectionEnabled', false);
-  localStorage.setItem('enableLongPress', false);
-  localStorage.setItem('hideelements', true);
-  localStorage.setItem('bgImage', 'None');
-  localStorage.setItem('bgcolor', '#000000');
-  localStorage.setItem('textcolor', '#ffffff');
-  localStorage.setItem('recordsbgcolor', '#000000');
-  localStorage.setItem('sessionbgcolor', '#000000');
-  localStorage.setItem('scrambleimagebgcolor', '#000000');
-  localStorage.setItem('replaceshadow', false);
+//Settings:
+//'colorsMethod|colortheme|font|showscrambleimage|showRecordStats|inspectionEnabled|audioCues|enableLongPress|hideelements|
+//bgImage|bgcolor|textcolor|recordsbgcolor|sessionbgcolor|scrambleimagebgcolor|replaceshadow|enableReminders|reminderType|reminders'
+
+if (localStorage.getItem('settings') == null) {
+  localStorage.setItem('settings', [
+    localStorage.getItem('colorsMethod') || 'theme', localStorage.getItem('colortheme') || 'Gray Wisp',
+    localStorage.getItem('font') || 'Play', localStorage.getItem('showscrambleimage') || 'hide-on-small-only',
+    localStorage.getItem('showRecordStats') || 'hide', localStorage.getItem('inspectionEnabled') || 'false',
+    localStorage.getItem('audioCues') || 'false', localStorage.getItem('enableLongPress') || 'true',
+    localStorage.getItem('hideelements') || 'true', localStorage.getItem('bgImage') || 'None',
+    localStorage.getItem('bgcolor') || '#000000', localStorage.getItem('textcolor') || '#ffffff',
+    localStorage.getItem('recordsbgcolor') || '#000000', localStorage.getItem('sessionbgcolor') || '#000000',
+    localStorage.getItem('scrambleimagebgcolor') || '#000000', localStorage.getItem('replaceshadow') || 'false',
+    'false', 'audial', ''
+  ].join('|'));
 }
 
-var font = localStorage.getItem('font');
-var showscrambleimage = localStorage.getItem('showscrambleimage');
-var showRecordStats = localStorage.getItem('showRecordStats');
-var inspectionEnabled = $.parseJSON(localStorage.getItem('inspectionEnabled'));
-var enableLongPress = $.parseJSON(localStorage.getItem('enableLongPress'));
-var hideelements = $.parseJSON(localStorage.getItem('hideelements'));
-var bgImage = localStorage.getItem('bgImage');
-var colorsMethod = localStorage.getItem('colorsMethod');
-var colortheme = localStorage.getItem('colortheme');
-
-if (colorsMethod == 'theme') {
-  localStorage.setItem('bgcolor', allThemes[colortheme][0]);
-  localStorage.setItem('textcolor', allThemes[colortheme][1]);
-  localStorage.setItem('recordsbgcolor', allThemes[colortheme][2]);
-  localStorage.setItem('sessionbgcolor', allThemes[colortheme][3]);
-  localStorage.setItem('scrambleimagebgcolor', allThemes[colortheme][4]);
-  localStorage.setItem('replaceshadow', allThemes[colortheme][5]);
+if (localStorage.getItem('settings').split('|')[0] == 'theme') {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[10] = allThemes[settings[1]][0];
+  settings[11] = allThemes[settings[1]][1];
+  settings[12] = allThemes[settings[1]][2];
+  settings[13] = allThemes[settings[1]][3];
+  settings[14] = allThemes[settings[1]][4];
+  settings[15] = allThemes[settings[1]][5];
+  localStorage.setItem('settings', settings.join('|'));
 }
 
-var bgcolor = localStorage.getItem('bgcolor');
-var textcolor = localStorage.getItem('textcolor');
-var recordsbgcolor = localStorage.getItem('recordsbgcolor');
-var sessionbgcolor = localStorage.getItem('sessionbgcolor');
-var scrambleimagebgcolor = localStorage.getItem('scrambleimagebgcolor');
-var replaceshadow = $.parseJSON(localStorage.getItem('replaceshadow'));
-
-//Apply settings
-
-$('#time h1').css('font-family', font);
-$('#scrambleImage').attr('class', showscrambleimage);
-$('#recordStats').attr('class', showRecordStats);
-$('#timer').css({
-  'background-color': bgcolor,
-  'color': textcolor
-});
-$('.mdc-button--outlined:not(.exception)').css({
-  'border-color': textcolor,
-  'color': textcolor
-});
-$('#records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', textcolor);
-$('#records').css('background-color', recordsbgcolor);
-$('#session').css('background-color', sessionbgcolor);
-$('#scrambleImage').css('background-color', scrambleimagebgcolor);
-if (replaceshadow == true) {
-  $('#records, #session, #session tr').css('border', '1px solid white');
-  $('#records, #session tr').removeClass('mdc-elevation--z6');
-} else {
-  $('#records, #session, #session tr').css('border', '');
-  $('#records, #session tr').addClass('mdc-elevation--z6');
-}
-
-if (bgImage != 'None') {
-  $('#timer').css('background-image', 'url('+ bgImage +')');
-} else {
-  $('#timer').css('background-image', '');
-}
-
-//Update settings selectors
-
-$('#font').val(font);
-$('#enableInspection').prop('checked', inspectionEnabled);
-$('#enableLongPress').prop('checked', enableLongPress);
-if ($('#scrambleImage').css('display') == 'none') {
-  $('#showscrambleimage').prop('checked', false);
-} else {
-  $('#showscrambleimage').prop('checked', true);
-}
-$('#showRecordStats').prop('checked', showRecordStats === '');
-$('#hideelements').prop('checked', hideelements);
-$('#bgImage').val(bgImage);
-if (bgImage != 'None') {
-  $('#bgImage').val('Custom');
-}
-$('#theme').val(colortheme);
-$('input[type=radio][name=colorsMethod]').val([colorsMethod]);
-$('#bgcolor').val(bgcolor);
-$('#textcolor').val(textcolor);
-$('#recordsbgcolor').val(recordsbgcolor);
-$('#sessionbgcolor').val(sessionbgcolor);
-$('#scrambleimagebgcolor').val(scrambleimagebgcolor);
-$('#replaceshadow').prop('checked', replaceshadow);
-if (colorsMethod == 'theme') {
-  $('#selectTheme').attr('class', 'mdc-select');
-  $('#theme').prop('disabled', false);
-  $('.customColorsLabel').attr('class', 'customColorsLabel disabledLabel');
-  $('#colorSettings input[type=color]').prop('disabled', true);
-  $('#replaceShadow').prop('disabled', true);
-} else {
-  $('.customColorsLabel').attr('class', 'customColorsLabel');
-  $('#colorSettings input[type=color]').prop('disabled', false);
-  $('#replaceShadow').prop('disabled', false);
-  $('#selectTheme').attr('class', 'mdc-select mdc-select--disabled');
-  $('#theme').prop('disabled', true);
-}
-
-//Handle settings changes
-
-function updateTheme() {
-  localStorage.setItem('bgcolor', allThemes[colortheme][0]);
-  localStorage.setItem('textcolor', allThemes[colortheme][1]);
-  localStorage.setItem('recordsbgcolor', allThemes[colortheme][2]);
-  localStorage.setItem('sessionbgcolor', allThemes[colortheme][3]);
-  localStorage.setItem('scrambleimagebgcolor', allThemes[colortheme][4]);
-  localStorage.setItem('replaceshadow', allThemes[colortheme][5]);
-  $('#bgcolor').val(allThemes[colortheme][0]);
-  $('#textcolor').val(allThemes[colortheme][1]);
-  $('#recordsbgcolor').val(allThemes[colortheme][2]);
-  $('#sessionbgcolor').val(allThemes[colortheme][3]);
-  $('#scrambleimagebgcolor').val(allThemes[colortheme][4]);
-  $('#replaceshadow').prop('checked', allThemes[colortheme][5]);
-
+function updateSettings() {
+  var settings = localStorage.getItem('settings').split('|');
+  console.log(settings);
+  $('#time h1').css('font-family', settings[2]);
+  $('#scrambleImage').attr('class', settings[3]);
+  $('#recordStats').attr('class', settings[4]);
   $('#timer').css({
-    'background-color': allThemes[colortheme][0],
-    'color': allThemes[colortheme][1]
+    'background-color': settings[10],
+    'color': settings[11]
   });
   $('.mdc-button--outlined:not(.exception)').css({
-    'border-color': allThemes[colortheme][1],
-    'color': allThemes[colortheme][1]
+    'border-color': settings[11],
+    'color': settings[11]
   });
-  $('#records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', allThemes[1]);
-  $('#records').css('background-color', allThemes[colortheme][2]);
-  $('#session').css('background-color', allThemes[colortheme][3]);
-  $('#scrambleImage').css('background-color', allThemes[colortheme][4]);
-  if (allThemes[colortheme][5] == true) {
-    $('#records, #session, #session tr').css('border', '1px solid white');
-    $('#records, #session tr').removeClass('mdc-elevation--z4');
+  $('#records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', settings[11]);
+  $('#records').css('background-color', settings[12]);
+  $('#session').css('background-color', settings[13]);
+  $('#scrambleImage').css('background-color', settings[14]);
+  if (settings[15] == 'true') {
+    $('#records, #session, #session tr, #recordStats>div').css('border', '1px solid white');
+    $('#records, #session tr, #recordStats>div').removeClass('mdc-elevation--z6');
   } else {
-    $('#records, #session, #session tr').css('border', '');
-    $('#records, #session tr').addClass('mdc-elevation--z4');
+    $('#records, #session, #session tr, #recordStats>div').css('border', '');
+    $('#records, #session tr, #recordStats>div').addClass('mdc-elevation--z6');
+  }
+  if (settings[9] != 'None') {
+    $('#timer').css('background-image', 'url('+settings[9]+')');
+  } else {
+    $('#timer').css('background-image', '');
   }
 }
 
-selectFont.listen('change', function() {
-  localStorage.setItem('font', selectFont.value);
-  font = selectFont.value;
-  $('#time h1').css('font-family', font);
-});
-
-$('#enableInspection').change(function() {
-  localStorage.setItem('inspectionEnabled', $(this).prop('checked'));
-  inspectionEnabled = $(this).prop('checked');
-});
-
-$('#enableLongPress').change(function() {
-  localStorage.setItem('enableLongPress', $(this).prop('checked'));
-  enableLongPress = $(this).prop('checked');
-});
-
-$('#showscrambleimage').change(function() {
-  console.log('eh98hfe9w8hf98hefw89hy');
-  if ($(this).prop('checked') == true) {
-    localStorage.setItem('showscrambleimage', '');
-    $('#scrambleImage').attr('class', '');
+function updateSettingsUI() {
+  var settings = localStorage.getItem('settings').split('|');
+  $('#font').val(settings[2]);
+  $('#enableInspection').prop('checked', $.parseJSON(settings[5]));
+  $('#enableAudioCues').prop('checked', $.parseJSON(settings[6]));
+  $('#enableLongPress').prop('checked', $.parseJSON(settings[7]));
+  if ($('#scrambleImage').css('display') == 'none') {
+    $('#showscrambleimage').prop('checked', false);
   } else {
-    localStorage.setItem('showscrambleimage', 'hide');
-    $('#scrambleImage').attr('class', 'hide');
+    $('#showscrambleimage').prop('checked', true);
   }
-});
-
-$('#showRecordStats').change(function() {
-  if ($(this).prop('checked')) {
-    localStorage.setItem('showRecordStats', '');
-    showRecordStats = '';
-  } else {
-    localStorage.setItem('showRecordStats', 'hide');
-    showRecordStats = 'hide';
-  }
-  $('#recordStats').attr('class', showRecordStats);
-});
-
-$('#hideelements').change(function() {
-  localStorage.setItem('hideelements', $(this).prop('checked'));
-  hideelements = $(this).prop('checked');
-});
-
-selectBGImage.listen('change', function() {
-  if (selectBGImage.value === 'None') {
-    localStorage.setItem('bgImage', selectBGImage.value);
-    bgImage = 'None';
-    $('#timer').css('background-image', '');
-  } else if (selectBGImage.value === 'Choose') {
-    chooseBGImageDialog.show();
-  } else {
-    var imageURL = prompt('Enter image URL');
-    console.log(imageURL);
-    if (imageURL != null) {
-      localStorage.setItem('bgImage', imageURL);
-      bgImage = imageURL;
-      $('#timer').css('background-image', 'url('+ bgImage +')');
-    } else {
-      localStorage.setItem('bgImage', 'None');
-      bgImage = 'None';
-      $('#timer').css('background-image', '');
-      $('#bgImage').val('None');
-    }
-  }
-});
-
-$('#chooseBGImage .mdc-image-list li').click(function() {
-  localStorage.setItem('bgImage', $(this).attr('data-image'));
-  bgImage = $(this).attr('data-image');
-  $('#timer').css('background-image', 'url('+ bgImage +')');
-  $('#bgImage').val('Custom');
-  chooseBGImageDialog.close();
-});
-
-$('input[type=radio][name=colorsMethod]').change(function() {
-  localStorage.setItem('colorsMethod', $(this).val());
-  colorsMethod = $(this).val();
-  if (colorsMethod == 'theme') {
+  $('#showRecordStats').prop('checked', settings[4] === '');
+  $('#hideelements').prop('checked', $.parseJSON(settings[8]));
+  $('#bgImage').val(settings[9] === 'None' ? settings[9] : 'Custom');
+  $('#theme').val(settings[1]);
+  $('input[type=radio][name=colorsMethod]').val([settings[0]]);
+  $('#bgcolor').val(settings[10]);
+  $('#textcolor').val(settings[11]);
+  $('#recordsbgcolor').val(settings[12]);
+  $('#sessionbgcolor').val(settings[13]);
+  $('#scrambleimagebgcolor').val(settings[14]);
+  $('#replaceshadow').prop('checked', $.parseJSON(settings[15]));
+  if (settings[0] == 'theme') {
     $('#selectTheme').attr('class', 'mdc-select');
     $('#theme').prop('disabled', false);
     $('.customColorsLabel').attr('class', 'customColorsLabel disabledLabel');
     $('#colorSettings input[type=color]').prop('disabled', true);
     $('#replaceShadow').prop('disabled', true);
-    updateTheme();
   } else {
     $('.customColorsLabel').attr('class', 'customColorsLabel');
     $('#colorSettings input[type=color]').prop('disabled', false);
@@ -1319,78 +1443,244 @@ $('input[type=radio][name=colorsMethod]').change(function() {
     $('#selectTheme').attr('class', 'mdc-select mdc-select--disabled');
     $('#theme').prop('disabled', true);
   }
-});
-
-$('#theme').change(function() {
-  localStorage.setItem('colortheme', $(this).val());
-  colortheme = $(this).val();
-  updateTheme();
-});
-
-$('#bgcolor').change(function() {
-  localStorage.setItem('bgcolor', $(this).val());
-  bgcolor = $(this).val();
-  $('#timer').css('background-color', bgcolor);
-});
-
-$('#textcolor').change(function() {
-  localStorage.setItem('textcolor', $(this).val());
-  textcolor = $(this).val();
-  $('#timer, #records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', textcolor);
-  $('.mdc-button--outlined:not(.exception)').css({
-    'border-color': textcolor,
-    'color': textcolor
+  $('#toggleReminders').prop('checked', $.parseJSON(settings[16]));
+  $('input:radio[value="'+settings[17]+'"]').prop('checked', true);
+  settings[18].split(';').forEach((reminder) => {
+    if (reminder.length > 0) {
+      $('#newReminder').after(`
+        <li class="mdc-list-item mdc-elevation--z1">
+          ${reminder}
+          <i class="mdc-icon-button mdc-list-item__meta material-icons" data-reminder="${reminder}" onclick="removeReminder(this)">clear</i>
+        </li>
+      `);
+    }
   });
+}
+
+updateSettings();
+updateSettingsUI();
+
+//Listen for settings changes
+
+selectFont.listen('change', () => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[2] = selectFont.value;
+  localStorage.setItem('settings', settings.join('|'));
+  $('#time h1').css('font-family', settings[2]);
 });
 
-$('#recordsbgcolor').change(function() {
-  localStorage.setItem('recordsbgcolor', $(this).val());
-  recordsbgcolor = $(this).val();
-  $('#records').css('background-color', recordsbgcolor);
+$('#enableInspection').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[5] = $('#enableInspection').prop('checked');
+  localStorage.setItem('settings', settings.join('|'));
 });
 
-$('#sessionbgcolor').change(function() {
-  localStorage.setItem('sessionbgcolor', $(this).val());
-  sessionbgcolor = $(this).val();
-  $('#session').css('background-color', sessionbgcolor);
+$('#enableAudioCues').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[6] = $('#enableAudioCues').prop('checked');
+  localStorage.setItem('settings', settings.join('|'));
 });
 
-$('#scrambleimagebgcolor').change(function() {
-  localStorage.setItem('scrambleimagebgcolor', $(this).val());
-  scrambleimagebgcolor = $(this).val();
-  $('#scrambleImage').css('background-color', scrambleimagebgcolor);
+$('#enableLongPress').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[7] = $('#enableLongPress').prop('checked');
+  localStorage.setItem('settings', settings.join('|'));
 });
 
-$('#replaceshadow').change(function() {
-  localStorage.setItem('replaceshadow', $(this).prop('checked'));
-  replaceshadow = $(this).prop('checked');
-  if (replaceshadow == true) {
-    $('#records, #session, #session tr').css('border', '1px solid white');
-    $('#records, #session tr').removeClass('mdc-elevation--z4');
+$('#showscrambleimage').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  if ($('#showscrambleimage').prop('checked') === true) {
+    settings[3] = '';
   } else {
-    $('#records, #session, #session tr').css('border', '');
-    $('#records, #session tr').addClass('mdc-elevation--z4');
+    settings[3] = 'hide';
+  }
+  localStorage.setItem('settings', settings.join('|'));
+  $('#scrambleImage').attr('class', settings[3]);
+});
+
+$('#showRecordStats').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  if ($('#showRecordStats').prop('checked') === true) {
+    settings[4] = '';
+  } else {
+    settings[4] = 'hide';
+  }
+  localStorage.setItem('settings', settings.join('|'));
+  $('#recordStats').attr('class', settings[4]);
+});
+
+$('#hideelements').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[8] = $(this).prop('checked');
+  localStorage.setItem('settings', settings.join('|'));
+});
+
+selectBGImage.listen('change', () => {
+  var settings = localStorage.getItem('settings').split('|');
+  if (selectBGImage.value === 'None') {
+    settings[9] = selectBGImage.value;
+    localStorage.setItem('settings', settings.join('|'));
+    $('#timer').css('background-image', '');
+  } else if (selectBGImage.value === 'Choose') {
+    chooseBGImageDialog.show();
+  } else {
+    var imageURL = prompt('Enter image URL');
+    console.log(imageURL);
+    if (imageURL !== null) {
+      settings[9] = imageURL;
+      localStorage.setItem('settings', settings.join('|'));
+      console.log(imageURL);
+      $('#timer').css('background-image', 'url('+imageURL+')');
+    } else {
+      settings[9] = 'None';
+      localStorage.setItem('settings', settings.join('|'));
+      $('#timer').css('background-image', '');
+      $('#bgImage').val('None');
+    }
   }
 });
 
-$('#resetColorSettings').click(function() {
+$('#chooseBGImage .mdc-image-list li').click(function() {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[9] = $(this).attr('data-image');
+  localStorage.setItem('settings', settings.join('|'));
+  $('#timer').css('background-image', 'url('+settings[9]+')');
+  $('#bgImage').val('Custom');
+  chooseBGImageDialog.close();
+});
+
+$('input:radio[name=colorsMethod]').change(function() {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[0] = $(this).val();
+  localStorage.setItem('settings', settings.join('|'));
+  if (settings[0] === 'theme') {
+    $('#selectTheme').attr('class', 'mdc-select');
+    $('#theme').prop('disabled', false);
+    $('.customColorsLabel').attr('class', 'customColorsLabel disabledLabel');
+    $('#colorSettings input[type=color]').prop('disabled', true);
+    $('#replaceShadow').prop('disabled', true);
+  } else {
+    $('.customColorsLabel').attr('class', 'customColorsLabel');
+    $('#colorSettings input[type=color]').prop('disabled', false);
+    $('#replaceShadow').prop('disabled', false);
+    $('#selectTheme').attr('class', 'mdc-select mdc-select--disabled');
+    $('#theme').prop('disabled', true);
+  }
+  updateSettings();
+});
+
+selectTheme.listen('change', () => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[1] = selectTheme.value;
+  settings[10] = allThemes[settings[1]][0];
+  settings[11] = allThemes[settings[1]][1];
+  settings[12] = allThemes[settings[1]][2];
+  settings[13] = allThemes[settings[1]][3];
+  settings[14] = allThemes[settings[1]][4];
+  settings[15] = allThemes[settings[1]][5];
+  localStorage.setItem('settings', settings.join('|'));
+  updateSettings();
+  updateSettingsUI();
+});
+
+$('#bgcolor').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[10] = $('#bgcolor').val();
+  localStorage.setItem('settings', settings.join('|'));
+  $('#timer').css('background-color', settings[10]);
+});
+
+$('#textcolor').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[11] = $('#textcolor').val();
+  localStorage.setItem('settings', settings.join('|'));
+  $('.mdc-button--outlined:not(.exception)').css({
+    'border-color': settings[11],
+    'color': settings[11]
+  });
+  $('#timer, #records .statsText, #records .statsTextField, #typeOfStats select, #typeOfStats label').css('color', settings[11]);
+});
+
+$('#recordsbgcolor').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[12] = $('#recordsbgcolor').val();
+  localStorage.setItem('settings', settings.join('|'));
+  $('#records').css('background-color', settings[12]);
+});
+
+$('#sessionbgcolor').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[13] = $('#sessionbgcolor').val();
+  localStorage.setItem('settings', settings.join('|'));
+  $('#session').css('background-color', settings[13]);
+});
+
+$('#scrambleimagebgcolor').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[14] = $('#scrambleimagebgcolor').val();
+  localStorage.setItem('settings', settings.join('|'));
+  $('#scrambleImage').css('background-color', settings[14]);
+});
+
+$('#replaceshadow').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[15] = $('#replaceshadow').prop('checked');
+  localStorage.setItem('settings', settings.join('|'));
+  if (settings[15] === true) {
+    $('#records, #session, #session tr, #recordStats>div').css('border', '1px solid white');
+    $('#records, #session tr, #recordStats>div').removeClass('mdc-elevation--z6');
+  } else {
+    $('#records, #session, #session tr, #recordStats>div').css('border', '');
+    $('#records, #session tr, #recordStats>div').addClass('mdc-elevation--z6');
+  }
+});
+
+$('#resetColorSettings').click(() => {
   var confirm = prompt('Type in "reset" to reset the color settings');
   if (confirm === 'reset') {
-    resetColorSettings();
+    var settings = localStorage.getItem('settings').split('|');
+    settings[0] = 'theme';
+    settings[1] = 'Gray Wisp';
+    localStorage.setItem('settings', settings.join('|'));
+    updateSettings();
+    updateSettingsUI();
   }
 });
 
-function resetColorSettings() {
-  localStorage.setItem('colorsMethod', 'theme');
-  localStorage.setItem('colortheme', 'Gray Wisp');
-  colortheme = 'Gray Wisp';
-  updateTheme();
-  //Update settings selectors
-  $('input[type=radio][name=colorsMethod]').val(['theme']);
-  $('#selectTheme').attr('class', 'mdc-select');
-  $('#theme').prop('disabled', false);
-  $('.customColorsLabel').attr('class', 'customColorsLabel disabledLabel');
-  $('#colorSettings input[type=color]').prop('disabled', true);
-  $('#replaceShadow').prop('disabled', true);
-  $('#theme').val(colortheme);
+//Reminders
+$('#toggleReminders').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[16] = $('#toggleReminders').prop('checked');
+  localStorage.setItem('settings', settings.join('|'));
+});
+$('input:radio[name="reminderType"]').change(() => {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[17] = $('input:radio[name="reminderType"]:checked').val();
+  localStorage.setItem('settings', settings.join('|'));
+});
+
+$('#newReminderBtn').click(() => {
+  if ($('#reminder').val().length > 0) {
+    $('#newReminder').after(`
+      <li class="mdc-list-item mdc-elevation--z1">
+        ${$('#reminder').val()}
+        <i class="mdc-icon-button mdc-list-item__meta material-icons" data-reminder="${$('#reminder').val()}" onclick="removeReminder(this)">clear</i>
+      </li>
+    `);
+    var settings = localStorage.getItem('settings').split('|');
+    settings[18] = settings[18].length === 0 ? [] : settings[18].split(';');
+    settings[18].push($('#reminder').val());
+    settings[18] = settings[18].join(';');
+    localStorage.setItem('settings', settings.join('|'));
+  }
+});
+
+function removeReminder(element) {
+  var settings = localStorage.getItem('settings').split('|');
+  settings[18] = settings[18].split(';');
+  settings[18].splice(settings[18].indexOf($(element).attr('data-reminder')), 1);
+  settings[18] = settings[18].join(';');
+  console.log(settings[18]);
+  localStorage.setItem('settings', settings.join('|'));
+  element.parentNode.parentNode.removeChild(element.parentNode);
 }

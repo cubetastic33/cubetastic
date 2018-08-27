@@ -22,24 +22,20 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV1.3.8';
+var cacheName = 'cubetasticV1.4.5';
 var filesToCache = [
   '/',
   '/index',
   '/solve',
   '/timer',
   '/installpwa',
-  '/contactMe',
   '/signin',
-  '/signup',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://fonts.googleapis.com/css?family=Acme|Cabin|Play|Saira|Oswald',
   'https://fonts.googleapis.com/css?family=Cabin|Saira|Play|Iceberg|Unica+One|Contrail+One|Share+Tech+Mono|Black+Han+Sans|Copse|Noto+Sans|Space+Mono|Titillium+Web',
   'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js',
   'https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js',
   'https://vjs.zencdn.net/7.1.0/video-js.css',
-  'https://vjs.zencdn.net/7.1.0/video.js',
   '/css/main.css',
   '/css/timer.css',
   '/images/icons/icon-512x512.png',
@@ -48,10 +44,11 @@ var filesToCache = [
   '/js/loggedStatus.js',
   '/js/timer.js',
   '/js/nouislider.min.js',
-  '/js/stats.js',
   '/js/tnoodle.js',
-  '/js/papaparse.min.js',
-  '/js/importTimes.js',
+  '/audio/8_seconds.ogg',
+  '/audio/8_seconds.mp3',
+  '/audio/12_seconds.ogg',
+  '/audio/12_seconds.mp3',
   '/images/bridge_in_the_forest.jpg',
   '/images/clouds_at_dawn.jpg',
   '/images/countryside_cabin.jpg',

@@ -1,137 +1,194 @@
-import datetime
-import firebase_admin
-from firebase_admin import credentials, auth, db
-from pyfcm import FCMNotification
+from flask import Flask, render_template, request, send_from_directory, jsonify
+import json
+import database_interactions
 
-push_service = FCMNotification(api_key='api_key')
+app = Flask(__name__, static_url_path='/')
 
-#Firebase Initialization
-cred = credentials.Certificate('path/to/certificate')
-default_app = firebase_admin.initialize_app(cred, {
-  'databaseURL': 'databaseURL'
-})
+@app.route('/')
+def index():
+  return render_template('index.html')
 
-def create_user(uid, email, location, phone, username, profilePic):
-  db.reference('users').child(uid).set({
-    'email': str(email),
-    'location': str(location),
-    'phone': str(phone),
-    'profilePic': str(profilePic),
-    'username': str(username)
-  })
-  return 'created user ' + str(username) + '.'
+@app.route('/index')
+def index_html():
+  return render_template('index.html')
 
-def user_exists(uid, username):
-  users = db.reference('users').get()
-  usernameExists = []
-  uidExists = []
-  for user in users:
-    usernameExists.append(users[user]['username'] == username)
-    uidExists.append(user)
-  usernameExists = True in usernameExists
-  return {'name': str(usernameExists), 'uid': uidExists}
+@app.route('/solve')
+def solve_html():
+  return render_template('solve.html')
 
-def username_exists(username):
-  users = db.reference('users').get()
-  usernameExists = []
-  for user in users:
-    usernameExists.append(users[user]['username'] == username)
-  return 'True' if True in usernameExists else 'False'
+@app.route('/timer')
+def timer():
+  return render_template('timer.html')
 
-def get_email(username):
-  users = db.reference('users').get()
-  for user in users:
-    #Check if username = user's username
-    if users[user]['username'] == username:
-      return users[user]['email']
+@app.route('/saveTime', methods=['POST'])
+def saveTime():
+  uid = request.form.getlist('uid')[0]
+  time = request.form.getlist('time')[0]
+  session = request.form.getlist('session')[0]
+  scramble = request.form.getlist('scramble')[0]
+  category = request.form.getlist('category')[0]
+  plus_two = request.form.getlist('plus_two')[0]
+  solve_date = request.form.getlist('solve_date')[0]
+  return database_interactions.save_time(uid, time, session, scramble, category, plus_two, solve_date)
 
-def send_feedback(title, message):
-    feedback_ref = db.reference('/feedback')
-    feedback_ref.push({
-      'title': title,
-      'message': message
-    })
-    return 'Done!'
+@app.route('/uploadSolves', methods=['POST'])
+def uploadSolves():
+  uid = request.form.getlist('uid')[0]
+  solves = json.loads(request.form.getlist('solves')[0])
+  return database_interactions.upload_solves(uid, solves)
 
-def save_time(uid, time, session, scramble, category, plus_two, solve_date):
-  db.reference('times/'+str(uid)).child('session'+str(session)).push('%s|%s|%s|%s|%s' % (category, time, scramble, plus_two, solve_date))
-  return 'saved time'
+@app.route('/penalizeSolve', methods=['POST'])
+def penalizeSolve():
+  uid = request.form.getlist('uid')[0]
+  session = request.form.getlist('session')[0]
+  key = request.form.getlist('key')[0]
+  penalty = request.form.getlist('penalty')[0]
+  return database_interactions.penalize_solve(uid, session, key, penalty)
 
-def upload_solves(uid, solves):
-  for solve in solves[2:len(solves)]:
-    #Structure of solve:
-    #[time, scramble, +2, solve date, comment]
-    if len(solve) > 4:
-      db.reference('times/'+uid).child('session'+str(solves[0])).push('%s|%s|%s|%s|%s|%s' % (solves[1], solve[0], solve[1], solve[2], solve[3], solve[4]))
-    else:
-      db.reference('times/'+uid).child('session'+str(solves[0])).push('%s|%s|%s|%s|%s' % (solves[1], solve[0], solve[1], solve[2], solve[3]))
-  return 'Done!'
+@app.route('/deleteSolve', methods=['POST'])
+def deleteSolve():
+  uid = request.form.getlist('uid')[0]
+  session = request.form.getlist('session')[0]
+  key = request.form.getlist('key')[0]
+  return database_interactions.delete_solve(uid, session, key)
 
-def penalize_solve(uid, session, key, penalty):
-  solve = db.reference('times/'+uid+'/session'+str(session)+'/'+str(key)).get().split('|')
-  if solve[3] == '0':
-    solve[3] = str(penalty)
-    db.reference('times/'+uid+'/session'+str(session)+'/'+str(key)).set('|'.join(solve))
-  else:
-    solve[3] = '0'
-    db.reference('times/'+uid+'/session'+str(session)+'/'+str(key)).set('|'.join(solve))
-  return 'Done!'
+@app.route('/deleteSession', methods=['POST'])
+def deleteSession():
+  uid = request.form.getlist('uid')[0]
+  session = request.form.getlist('session')[0]
+  return database_interactions.delete_session(uid, session)
 
-def delete_solve(uid, session, key):
-  if db.reference('times/'+str(uid)+'/session'+str(session)).child(str(key)).get() != None:
-    db.reference('times/'+str(uid)+'/session'+str(session)).child(str(key)).delete()
-    return 'Deleted solve.'
+@app.route('/saveSettings', methods=['POST'])
+def saveSettings():
+  uid = request.form.getlist('uid')[0]
+  settings = request.form.getlist('settings')[0]
+  return database_interactions.save_settings(uid, settings)
 
-def delete_session(uid, session):
-  if db.reference('times/'+str(uid)+'/session'+str(session)).get() != None:
-    db.reference('times/'+str(uid)+'/session'+str(session)).delete()
-    return 'Deleted session.'
+@app.route('/installpwa')
+def installpwa():
+  return render_template('installpwa.html')
 
-def send_chat_message(uid, group, message):
-  db.reference('/chat/' + str(group)).push({
-    'author': uid,
-    'message': message,
-    'time': str(datetime.datetime.now().time()) + ',' + str(datetime.datetime.now().date())
-  })
-  notifyUsersInGroup(uid, group, message)
-  return 'Success'
+@app.route('/contactMe')
+def contactMe():
+  return render_template('contactMe.html')
 
-def notifyUsersInGroup(uid, requiredGroup, message):
-  fcmTokens = db.reference('fcmTokens').get()
-  username = db.reference('users/'+uid+'/username').get()
-  profilePic = db.reference('users/'+uid+'/profilePic').get()
-  users = db.reference('users').get()
-  for user in users:
-    if users[user]['username'] != username:
-      try:
-        for group in users[user]['chat_groups']:
-          if group == requiredGroup:
-            for fcmToken, fcmTokenUid in fcmTokens.items():
-              if fcmTokenUid == user:
-                message_title = str(username) + ' has sent a message'
-                if len(message) > 50:
-                  message = str(message[0:50]) + '...'
-                push_service.notify_single_device(registration_id=fcmToken, message_title=message_title, message_body=message, message_icon=profilePic)
-                print('Notified ' + str(user))
-      except Exception as e:
-        print('Error '+ str(e))
+@app.route('/sendFeedback', methods=['POST'])
+def sendFeedback():
+  title = request.form.getlist('title')
+  message = request.form.getlist('message')
+  return database_interactions.send_feedback(title[0], message[0])
 
-def update_email_address(uid, email):
-  db.reference('users/' + uid).child('email').set(str(email))
-  return 'updated email to ' + str(email) + '.'
+@app.route('/profile')
+def profile():
+  return render_template('profile.html')
 
-def update_profile_pic(uid, profilePic):
-  db.reference('users/' + uid).child('profilePic').set(str(profilePic))
-  return 'updated profile pic to ' + str(profilePic) + '.'
+@app.route('/updateEmailAddress', methods=['POST'])
+def updateEmailAddress():
+  uid = request.form.getlist('uid')[0]
+  email = request.form.getlist('email')[0]
+  return database_interactions.update_email_address(uid, email)
 
-def update_phone_number(uid, phone):
-  db.reference('users/' + uid).child('phone').set(str(phone))
-  return 'updated number to ' + str(phone) + '.'
+@app.route('/updateProfilePic', methods=['POST'])
+def updateProfilePic():
+  uid = request.form.getlist('uid')[0]
+  profilePic = request.form.getlist('profilePic')[0]
+  return database_interactions.update_profile_pic(uid, profilePic)
 
-def update_location(uid, location):
-  db.reference('users/' + uid).child('location').set(str(location))
-  return 'updated location to ' + str(location) + '.'
+@app.route('/updatePhoneNumber', methods=['POST'])
+def updatePhoneNumber():
+  uid = request.form.getlist('uid')[0]
+  phone = request.form.getlist('phone')[0]
+  return database_interactions.update_phone_number(uid, phone)
 
-def update_bio(uid, bio):
-  db.reference('users/' + uid).child('bio').set(str(bio))
-  return 'updated bio to ' + str(bio) + '.'
+@app.route('/updateLocation', methods=['POST'])
+def updateLocation():
+  uid = request.form.getlist('uid')[0]
+  location = request.form.getlist('location')[0]
+  return database_interactions.update_location(uid, location)
+
+@app.route('/updateBio', methods=['POST'])
+def updateBio():
+  uid = request.form.getlist('uid')[0]
+  bio = request.form.getlist('bio')[0]
+  return database_interactions.update_bio(uid, bio)
+
+@app.route('/signin')
+def signin():
+  return render_template('signin.html')
+
+@app.route('/signup')
+def signup():
+  return render_template('signup.html')
+
+@app.route('/userExists', methods=['POST'])
+def userExists():
+  uid = request.form.getlist('uid')[0]
+  username = request.form.getlist('username')[0]
+  return jsonify(database_interactions.user_exists(uid, username))
+
+@app.route('/usernameExists', methods=['POST'])
+def usernameExists():
+  username = request.form.getlist('username')[0]
+  return database_interactions.username_exists(username)
+
+@app.route('/getEmail', methods=['POST'])
+def getEmail():
+  username = request.form.getlist('username')[0]
+  return database_interactions.get_email(username)
+
+@app.route('/createUser', methods=['POST'])
+def createUser():
+  uid = request.form.getlist('uid')[0]
+  email = request.form.getlist('email')[0]
+  location = request.form.getlist('location')[0]
+  phone = request.form.getlist('phone')[0]
+  photoURL = request.form.getlist('photoURL')[0]
+  username = request.form.getlist('username')[0]
+  return database_interactions.create_user(uid, email, location, phone, username, photoURL)
+
+@app.errorhandler(404)
+def page_not_found(e):
+  return render_template('404.html'), 404
+
+@app.route('/js/<path:path>')
+def send_js(path):
+  return send_from_directory('js', path)
+
+@app.route('/css/<path:path>')
+def send_css(path):
+  return send_from_directory('css', path)
+
+@app.route('/images/<path:path>')
+def send_images(path):
+  return send_from_directory('images', path)
+
+@app.route('/videos/<path:path>')
+def send_videos(path):
+  return send_from_directory('videos', path)
+
+@app.route('/audio/<path:path>')
+def send_audio(path):
+  return send_from_directory('audio', path)
+
+@app.route('/fonts/<path:path>')
+def send_fonts(path):
+  return send_from_directory('fonts', path)
+
+@app.route('/firebase-messaging-sw.js')
+def service_worker():
+  return send_from_directory('static', 'firebase-messaging-sw.js')
+
+@app.route('/manifest.json')
+def manifest():
+  return send_from_directory('static', 'manifest.json')
+
+@app.route('/manifest1.json')
+def manifest1():
+  return send_from_directory('static', 'manifest1.json')
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+  return send_from_directory('static', 'sitemap.xml')
+
+if __name__ == '__main__':
+  app.run(debug = True)
