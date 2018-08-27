@@ -190,7 +190,10 @@ $warning: #F9A825;
 @import "@material/drawer/temporary/mdc-temporary-drawer";
 @import "@material/dialog/mdc-dialog";
 @import "@material/snackbar/mdc-snackbar";
-@import "@material/tabs/mdc-tabs";
+@import "@material/tab-bar/mdc-tab-bar";
+@import "@material/tab-scroller/mdc-tab-scroller";
+@import "@material/tab-indicator/mdc-tab-indicator";
+@import "@material/tab/mdc-tab";
 @import "@material/linear-progress/mdc-linear-progress";
 @import "@material/typography/mdc-typography";
 
