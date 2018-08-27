@@ -1,7 +1,18 @@
+/*const fs = require('fs');
+fs.readFile('../../../Downloads/cstimer.txt', 'utf-8', (err, data) => {
+	data = JSON.parse(data);
+	penalty = data['session2'][10][0][0];
+	time = data['session2'][10][0][1];
+	scramble = data['session2'][10][1];
+	comment = data['session2'][10][2];
+	console.log(`Penalty: ${penalty}\nTime: ${time}\nScramble: ${scramble}\nComment: ${comment}`);
+});
+*/
+
 var importFile = false;
 var importFrom = false;
 
-$('#chooseImportFile').hide();
+$('#chooseImportFileCSV, #chooseImportFileTXT').hide();
 
 $('#importInfo').click(() => {
 	importInfoDialog.show();
@@ -9,12 +20,17 @@ $('#importInfo').click(() => {
 
 $('#csTimer').click(() => {
 	importFrom = 'csTimer';
-	$('#chooseImportFile').click();
+	$('#chooseImportFileCSV').click();
 });
 
 $('#TNT').click(() => {
 	importFrom = 'TNT';
-	$('#chooseImportFile').click();
+	$('#chooseImportFileCSV').click();
+});
+
+$('#twistyTimer').click(() => {
+	importFrom = 'twistyTimer';
+	$('#chooseImportFileTXT').click();
 });
 
 var csTimerPenalty = {'0': 'None', '2000': '+2', '-1': 'DNF'}
@@ -34,7 +50,7 @@ function convertToTime(milliseconds) {
   return Math.floor(milliseconds/60000)+':'+(milliseconds%60000-milliseconds%1000)/1000+'.'+('000'+parseInt(milliseconds%1000)).substr(-3);
 }
 
-$('#chooseImportFile').change((f) => {
+$('#chooseImportFileCSV').change((f) => {
 	$('#importedSample').html(`
 		Imported data:<br>
 		<div id="importedCategory" class="mdc-select mdc-select--box">
@@ -89,7 +105,7 @@ $('#chooseImportFile').change((f) => {
 				if (importFrom === 'csTimer') {
 					$('#importedSample table tbody').append(`
 						<tr>
-							<td>${results['data'][0]['No.']}</td><td>${time}</td><td>${penalty}</td><td>${results['data'][0]['Scramble']}</td><td class="comment">${results['data'][0]['Comment'].substr(0, 50)}</td>
+							<td>${results['data'][0]['No.']}</td><td>${time}</td><td>${penalty}</td><td class="displayScramble">${results['data'][0]['Scramble']}</td><td class="comment">${results['data'][0]['Comment'].substr(0, 50)}</td>
 						</tr>
 					`);
 				} else if (importFrom === 'TNT') {
@@ -105,6 +121,57 @@ $('#chooseImportFile').change((f) => {
 	$('#importDialog .mdc-button--unelevated').prop('disabled', false);
 });
 
+$('#chooseImportFileTXT').change((f) => {
+	$('#importedSample').html(`
+		Imported data:<br>
+		<div id="importedCategory" class="mdc-select mdc-select--box">
+			<select class="mdc-select__native-control">
+				<option value="3x3x3">3x3x3</option>
+				<option value="2x2x2">2x2x2</option>
+				<option value="3x3x3 bld">3x3x3 bld</option>
+				<option value="Pyraminx">Pyraminx</option>
+				<option value="4x4x4">4x4x4</option>
+				<option value="5x5x5">5x5x5</option>
+				<option value="6x6x6">6x6x6</option>
+				<option value="7x7x7">7x7x7</option>
+				<option value="Megaminx">Megaminx</option>
+				<option value="Skweb">Skweb</option>
+				<option value="Square 1">Square 1</option>
+			</select>
+			<label class="mdc-floating-label">Select the category</label>
+			<div class="mdc-line-ripple"></div>
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>No.</th><th>Time</th><th>DNF</th><th>Scramble</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	`);
+	mdc.select.MDCSelect.attachTo(document.querySelector('#importedCategory'));
+	window.importFile = f.target.files[0];
+	var n = 0;
+	Papa.parse(importFile, {
+		delimeter: ';',
+		step: function(results, parser) {
+			if (results['data'][0].length > 1) {
+				n++;
+				var dnf = 'No';
+				console.log(results['data'][0]);
+				if (results['data'][0].length === 4 && results['data'][0][3] === 'DNF') {
+					dnf = 'Yes';
+				}
+				$('#importedSample table tbody').append(`
+					<tr><td>${n}</td><td>${results['data'][0][0]}</td><td>${dnf}</td><td class="displayScramble">${results['data'][0][1]}</td></tr>
+				`);
+			}
+		}
+	});
+	$('#importDialog .mdc-button--unelevated').prop('disabled', false);
+});
+
 $('#importDialog .mdc-button--unelevated').click(function() {
 	if (window.importFile !== false) {
 		//Import the solves
@@ -113,30 +180,46 @@ $('#importDialog .mdc-button--unelevated').click(function() {
 			var solves = [$('#selectSession + div ul').attr('data-selected'), $('#importedCategory select').val()];
 			Papa.parse(importFile, {
 				delimeter: ';',
-				header: true,
 				step: function(results, parser) {
-					if (Object.keys(results['data'][0]).length > 1) {
-						var time = results['data'][0]['Time'];
-						var penalty = 0;
-						if (time.includes('+') === true) {
-							time = ((convertToSeconds(time.split('+')[0]))*100-200)*10;
-							penalty = 2;
-						} else if (time.includes('DNF(') === true) {
-							time = convertToSeconds(time)*1000;
-							penalty = 1;
-						} else if (time === 'DNF') {
-							//This is a DNF solve from TNT
-							time = 0;
-							penalty = 1;
-						} else {
-							time = convertToSeconds(time)*1000;
+					if (importFrom === 'twistyTimer') {
+						console.log('fewfew');
+						if (results['data'][0].length > 1) {
+							var penalty = 0;
+							var time = results['data'][0][0];
+							if (results['data'][0].length === 4 && results['data'][0][3] === 'DNF') {
+								time = convertToSeconds(time)*1000;
+								penalty = 1;
+							} else {
+								time = convertToSeconds(time)*1000;
+							}
+							console.log(time);
+							var d = new Date();
+							solves.push([time, results['data'][0][1], penalty, d.getTime()]);
 						}
-						console.log(time);
-						var d = new Date();
-						if (importFrom === 'csTimer') {
-							solves.push([time, results['data'][0]['Scramble'], penalty, d.getTime(), results['data'][0]['Comment'].substr(0, 50)]);
-						} else if (importFrom === 'TNT') {
-							solves.push([time, 'Imported from TNT', penalty, d.getTime()]);
+					} else {
+						if (Object.keys(results['data'][0]).length > 1) {
+							var time = results['data'][0]['Time'];
+							var penalty = 0;
+							if (time.includes('+') === true) {
+								time = ((convertToSeconds(time.split('+')[0]))*100-200)*10;
+								penalty = 2;
+							} else if (time.includes('DNF(') === true) {
+								time = convertToSeconds(time)*1000;
+								penalty = 1;
+							} else if (time === 'DNF') {
+								//This is a DNF solve from TNT
+								time = 0;
+								penalty = 1;
+							} else {
+								time = convertToSeconds(time)*1000;
+							}
+							console.log(time);
+							var d = new Date();
+							if (importFrom === 'csTimer') {
+								solves.push([time, results['data'][0]['Scramble'], penalty, d.getTime(), results['data'][0]['Comment'].substr(0, 50)]);
+							} else if (importFrom === 'TNT') {
+								solves.push([time, 'Imported from TNT', penalty, d.getTime()]);
+							}
 						}
 					}
 				},

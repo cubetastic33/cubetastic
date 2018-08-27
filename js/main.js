@@ -21,9 +21,6 @@ $('#timerDropdownTrigger').hover(function(e) {
   $('#timerDropdown').toggle();
 });
 
-$('#signupDivision #formDiv').submit(signUpUser);
-$('#signinDivision #formDiv').submit(signInUser);
-
 $('#signupDivision #username').keyup(function() {
   if ($(this).val() != '') {
     if ($(this).val().length >= 6) {
@@ -229,13 +226,10 @@ function signOutUser() {
   });
 }
 
-function isFocused() {
-  return document.hasFocus() || document.getElementById('chatIFrame').contentWindow.document.hasFocus();
-}
-
 messaging.onMessage(function(payload) {
-  snackbar.show({message: payload.notification.title, multiline: true, timeout: 4000});
-  if (isFocused() == false) {
+  console.log(payload);
+  snackbar.show({message: payload.notification.title, timeout: 2000});
+  if (document.hasFocus() == false) {
     navigator.serviceWorker.register('firebase-messaging-sw.js', {
       scope: './'
     }).then(function(reg) {
