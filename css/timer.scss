@@ -23,7 +23,6 @@ $mdc-theme-on-secondary: #000000;
 @import "@material/slider/mdc-slider";
 @import "@material/image-list/mdc-image-list";
 @import "@material/top-app-bar/mdc-top-app-bar";
-@import "@material/drawer/temporary/mdc-temporary-drawer";
 
 /*
 	Material Components
@@ -41,6 +40,10 @@ $mdc-theme-on-secondary: #000000;
 
 .mdc-drawer {
 	font-family: Roboto;
+
+	.dummy {
+		display: none;
+	}
 }
 
 .mdc-button--outlined {
@@ -238,7 +241,7 @@ $mdc-theme-on-secondary: #000000;
 }
 
 .statsField {
-	margin: 0.5rem 0;
+	margin: 0.5rem 0 1rem 0;
 
 	.statsText {
 		color: #000000;
@@ -259,10 +262,30 @@ $mdc-theme-on-secondary: #000000;
 			width: 3.5rem;
 		}
 	}
+}
 
-	.statsInfoIcon, #statsIcon {
-		cursor: pointer;
-		font-size: 15px;
+#averageOf {
+	-moz-appearance: textfield;
+	-webkit-appearance: textfield;
+}
+
+#averageOf:hover {
+	-moz-appearance: none;
+	-webkit-appearance: none;
+}
+
+#infoContainer {
+	display: flex;
+	
+	#icons {
+		margin-left: 0.5rem;
+		display: flex;
+		flex-direction: column;
+
+		.statsInfoIcon, #statsIcon {
+			cursor: pointer;
+			font-size: 25px;
+		}
 	}
 }
 
@@ -349,7 +372,7 @@ $mdc-theme-on-secondary: #000000;
 			padding: 1rem 0.5rem;
 		}
 
-		div:not(.mdc-elevation--z6) {
+		div:not(.recordStat) {
 			display: inline-block;
 		}
 	}
@@ -361,7 +384,7 @@ $mdc-theme-on-secondary: #000000;
 
 #records {
 	text-align: left;
-	padding: 5px;
+	padding: 5px 1rem;
 }
 
 #session {
@@ -370,12 +393,16 @@ $mdc-theme-on-secondary: #000000;
 }
 
 #records, #session, table {
-	border-radius: 3px;
+	border-radius: 5px;
 	font-family: Roboto;
 }
 
 #session table {
 	width: 100%;
+
+	.mdc-elevation--z1 {
+		box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+	}
 }
 
 #session table td, #session table th {
@@ -488,7 +515,7 @@ $mdc-theme-on-secondary: #000000;
 }
 
 #moreFAB, #feedbackFAB, #settingsFAB, #infoFAB, #importFAB {
-	position: absolute;
+	position: fixed;
 	right: 10px;
 	bottom: 10px;
 }

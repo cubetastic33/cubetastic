@@ -624,13 +624,13 @@ function updateRecordsStats() {
 function showTimesFromFirebase() {
   db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).on('value', (snapshot) => {
     var limit = Array.max([100, $('#session table tbody tr').length]);
-    $('#session, #sessionTimesTable').html('\
-      <table>\
-        <thead><tr class="mdc-elevation--z6"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>\
-        <tbody>\
-        </tbody>\
-      </table>\
-    ');
+    $('#session, #sessionTimesTable').html(`
+      <table>
+        <thead><tr class="mdc-elevation--z1"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>
+        <tbody>
+        </tbody>
+      </table>
+    `);
     db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).limitToLast(limit).once('value', function(data) {
       console.log(snapshot.numChildren());
       var n = snapshot.numChildren()-data.numChildren();
@@ -665,7 +665,7 @@ function showTimesFromFirebase() {
           if (pb == '-:--.---' || time < pb) {pb = time}
         }
         $('#session table tbody, #sessionTimesTable table tbody').prepend('\
-          <tr class="mdc-elevation--z6" data-key="'+escapeHTML(snapshot.key)+'" data-time="'+formatTime(time)+
+          <tr class="mdc-elevation--z1" data-key="'+escapeHTML(snapshot.key)+'" data-time="'+formatTime(time)+
           '" data-scramble="'+escapeHTML(solve[2])+'" data-category="'+escapeHTML(solve[0])+
           '" data-penalty="'+escapeHTML(solve[3].toString())+'" data-solve-date="'+new Date(solve[4]).toLocaleString()+
           '" data-comment="'+comment+'"><td>'+n+'</td><td>'+dt+
@@ -684,9 +684,9 @@ function showTimesFromFirebase() {
           $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
           $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
         });
-        $('#session, #sessionDrawer>nav>div').off('scroll').scroll(() => {
-          if (($('#session').prop('scrollHeight') - $('#session').prop('scrollTop') === $('#session').prop('clientHeight')) ||
-          ($('#sessionDrawer>nav>div').prop('scrollHeight') - $('#sessionDrawer>nav>div').prop('scrollTop') === $('#sessionDrawer>nav>div').prop('clientHeight'))) {
+        $('#session, #sessionDrawer .mdc-drawer__content').off('scroll').scroll(() => {
+          if ((($('#session').prop('scrollHeight') - $('#session').prop('scrollTop') === $('#session').prop('clientHeight')) && $('#session').prop('scrollHeight') > 0) ||
+          ($('#sessionDrawer .mdc-drawer__content').prop('scrollTop') + $('#sessionDrawer .mdc-drawer__content').innerHeight() >= $('#sessionDrawer .mdc-drawer__content').prop('scrollHeight'))) {
             //User has scrolled to bottom, load more solves
             var lastSolveKey = $('#session table tbody tr:last-child').attr('data-key');
             console.log(document.querySelector('#session table tbody tr:last-child'));
@@ -724,7 +724,7 @@ function showTimesFromFirebase() {
                     if (pb == '-:--.---' || time < pb) {pb = time}
                   }
                   $('#session table tr[data-key="'+lastSolveKey+'"], #sessionTimesTable table tr[data-key="'+lastSolveKey+'"]').after('\
-                    <tr class="mdc-elevation--z6" data-key="'+escapeHTML(child.key)+'" data-time="'+formatTime(time)+
+                    <tr class="mdc-elevation--z1" data-key="'+escapeHTML(child.key)+'" data-time="'+formatTime(time)+
                     '" data-scramble="'+escapeHTML(solve[2])+'" data-category="'+escapeHTML(solve[0])+
                     '" data-penalty="'+escapeHTML(solve[3].toString())+'" data-solve-date="'+new Date(solve[4]).toLocaleString()+
                     '" data-comment="'+comment+'"><td>'+i+'</td><td>'+dt+
@@ -753,13 +753,13 @@ function showTimesFromFirebase() {
 function showTimesFromIndexedDB() {
   var times = database.transaction(['times']).objectStore('times');
   var sessionTimes = times.index('session');
-  $('#session, #sessionTimesTable').html('\
-    <table>\
-      <thead><tr class="mdc-elevation--z6"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>\
-      <tbody>\
-      </tbody>\
-    </table>\
-  ');
+  $('#session, #sessionTimesTable').html(`
+    <table>
+      <thead><tr class="mdc-elevation--z1"><th>S. No</th><th>Time</th><th>Ao5</th></tr></thead>
+      <tbody>
+      </tbody>
+    </table>
+  `);
   var n = 0;
   window.timesForAvg = [];
   sessionTimes.openCursor().addEventListener('success', function(event) {
@@ -784,7 +784,7 @@ function showTimesFromIndexedDB() {
           comment = cursor.value.comment;
         }
         $('#session table tbody, #sessionTimesTable table tbody').prepend('\
-          <tr class="mdc-elevation--z6" data-key="'+cursor.primaryKey+'" data-time="'+cursor.value.time+
+          <tr class="mdc-elevation--z1" data-key="'+cursor.primaryKey+'" data-time="'+cursor.value.time+
           '" data-scramble="'+cursor.value.scramble+'" data-category="'+cursor.value.category+
           '" data-penalty="'+{'true': '2', 'false': '0'}[(cursor.value.plusTwo).toString()]+'" data-solve-date="'+new Date(cursor.value.solveDate)+
           '" data-comment="'+comment+'"><td>'+n+'</td><td>'+time+pt+
@@ -1340,7 +1340,7 @@ $('#contextMenu').on('contextmenu', function() {
 //Settings
 
 //Themes
-var graywisp = ['#E3F2FD', '#263238', '#B0BEC5', '#CFD8DC', '#B0BEC5', false];
+var graywisp = ['#E1F5FE', '#263238', '#F1F1FA', '#F1F1FA', '#F1F1FA', false];
 var dark = ['#212121', '#FFFFFF', '#000000', '#000000', '#000000', true];
 var chlorisgray = ['#212121', '#00e676', '#212121', '#212121', '#424242', false];
 var transparent = ['#FFFFFF', '#000000', '#00000000', '#00000000', '#00000000', false];
@@ -1396,10 +1396,11 @@ function updateSettings() {
   $('#scrambleImage').css('background-color', settings[14]);
   if (settings[15] == 'true') {
     $('#records, #session, #session tr, #recordStats>div').css('border', '1px solid white');
-    $('#records, #session tr, #recordStats>div').removeClass('mdc-elevation--z6');
+    $('#records, #session tr, #recordStats>div').removeClass('mdc-elevation--z1');
   } else {
     $('#records, #session, #session tr, #recordStats>div').css('border', '');
-    $('#records, #session tr, #recordStats>div').addClass('mdc-elevation--z6');
+    $('#session tr, #recordStats>div').addClass('mdc-elevation--z1');
+    $('#records').addClass('mdc-elevation--z6');
   }
   if (settings[9] != 'None') {
     $('#timer').css('background-image', 'url('+settings[9]+')');
@@ -1628,10 +1629,10 @@ $('#replaceshadow').change(() => {
   localStorage.setItem('settings', settings.join('|'));
   if (settings[15] === true) {
     $('#records, #session, #session tr, #recordStats>div').css('border', '1px solid white');
-    $('#records, #session tr, #recordStats>div').removeClass('mdc-elevation--z6');
+    $('#records, #session tr, #recordStats>div').removeClass('mdc-elevation--z1');
   } else {
     $('#records, #session, #session tr, #recordStats>div').css('border', '');
-    $('#records, #session tr, #recordStats>div').addClass('mdc-elevation--z6');
+    $('#records, #session tr, #recordStats>div').addClass('mdc-elevation--z1');
   }
 });
 

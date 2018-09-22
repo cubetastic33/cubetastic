@@ -11,37 +11,37 @@ firebase.auth().onAuthStateChanged(function(user) {
           console.log(error);
         });
         $('#profileLinkInHeader').html('<a href="/signin" class="material-icons mdc-top-app-bar__action-item" aria-label="Sign In" alt="Sign In">account_circle</a>');
-        $('.mdc-drawer__content .mdc-list:last-child').html('\
-          <a href="/signin" class="mdc-list-item" tabindex="-1">Sign In</a>\
-          <a href="/signup" class="mdc-list-item" tabindex="-1">Sign Up</a>\
-        ');
+        $('#sideMenu .mdc-drawer__content .mdc-list:last-child').html(`
+          <a href="/signin" class="mdc-list-item" tabindex="-1">Sign In</a>
+          <a href="/signup" class="mdc-list-item" tabindex="-1">Sign Up</a>
+        `);
         if (window.location.pathname == '/signin') {
-          $('.mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
+          $('#sideMenu .mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
         } else if (window.location.pathname == '/signup') {
-          $('.mdc-drawer__content .mdc-list:last-child a:last-child').addClass('mdc-list-item--activated');
+          $('#sideMenu .mdc-drawer__content .mdc-list:last-child a:last-child').addClass('mdc-list-item--activated');
         }
       } else {
         $('#profileLinkInHeader').html('<img src="' + profilePic + '" class="material-icons mdc-top-app-bar__action-item" onclick="window.location.href=\'/profile\'">');
-        $('.mdc-drawer__content .mdc-list:last-child').html('\
-          <a href="/profile" class="mdc-list-item" tabindex="-1">Profile</a>\
-          <a href="#" class="mdc-list-item" onclick="signOutUser()" tabindex="-1">Sign out</a>\
-        ');
+        $('#sideMenu .mdc-drawer__content .mdc-list:last-child').html(`
+          <a href="/profile" class="mdc-list-item" tabindex="-1">Profile</a>
+          <a href="#" class="mdc-list-item" onclick="signOutUser()" tabindex="-1">Sign out</a>
+        `);
         if (window.location.pathname == '/profile') {
-          $('.mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
+          $('#sideMenu .mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
         }
       }
     });
   } else {
     // No user is signed in.
     $('#profileLinkInHeader').html('<a href="signin" class="material-icons mdc-top-app-bar__action-item" aria-label="Sign In" alt="Sign In">account_circle</a>');
-    $('.mdc-drawer__content .mdc-list:last-child').html('\
+    $('#sideMenu .mdc-drawer__content .mdc-list:last-child').html('\
       <a href="/signin" class="mdc-list-item" tabindex="-1">Sign In</a>\
       <a href="/signup" class="mdc-list-item" tabindex="-1">Sign Up</a>\
     ');
     if (window.location.pathname == '/signin') {
-      $('.mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
+      $('#sideMenu .mdc-drawer__content .mdc-list:last-child a:first-child').addClass('mdc-list-item--activated');
     } else if (window.location.pathname == '/signup') {
-      $('.mdc-drawer__content .mdc-list:last-child a:last-child').addClass('mdc-list-item--activated');
+      $('#sideMenu .mdc-drawer__content .mdc-list:last-child a:last-child').addClass('mdc-list-item--activated');
     }
   }
 });

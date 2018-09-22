@@ -11,7 +11,6 @@
   <link rel="apple-touch-icon" href="images/icons/icon-512x512.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Cabin|Saira|Play|Iceberg|Unica+One|Contrail+One|Share+Tech+Mono|Black+Han+Sans|Copse|Noto+Sans|Space+Mono|Titillium+Web">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/11.1.0/nouislider.min.css">
   <link rel="stylesheet" href="https://vjs.zencdn.net/7.1.0/video-js.css">
   <link rel="stylesheet" href="css/main.css">
@@ -39,22 +38,19 @@
     <div class="sk-cube sk-cube9"></div>
   </div>
   <div id="hidden" style="display: none">
-    <aside class="mdc-drawer mdc-drawer--temporary mdc-typography">
-      <nav class="mdc-drawer__drawer">
-        <header class="mdc-drawer__header  mdc-theme--on-primary mdc-theme--primary-bg">
-          <div class="mdc-drawer__header-content">
-            <img src="/images/icons/icon-152x152.png" alt="cubetastic logo">
-            Cubetastic
-          </div>
-        </header>
-        <nav class="mdc-drawer__content mdc-list-group">
+    <aside id="sideMenu" class="mdc-drawer mdc-drawer--modal">
+      <div class="mdc-drawer__header">
+        <img src="/images/icons/icon-152x152.png" alt="cubetastic logo">
+        <h3 class="mdc-drawer__title">Cubetastic</h3>
+      </div>
+      <div class="mdc-drawer__content">
+        <nav class="mdc-list-group">
           <div class="mdc-list">
             <a href="index" class="mdc-list-item">
               <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
             </a>
             <a href="solve" class="mdc-list-item">Solve</a>
             <a href="timer" class="mdc-list-item mdc-list-item--activated">Timer</a>
-            <a href="collabicube" class="mdc-list-item">Collabicube</a>
             <a href="contactMe" class="mdc-list-item">Contact Me</a>
           </div>
           <hr class="mdc-list-divider">
@@ -63,47 +59,48 @@
             <a href="/signup" class="mdc-list-item" tabindex="-1">Sign Up</a>
           </div>
         </nav>
-      </nav>
+      </div>
     </aside>
-    <aside id="sessionDrawer" class="mdc-drawer mdc-drawer--temporary mdc-typography">
-      <nav class="mdc-drawer__drawer">
-        <div class="mdc-drawer__content">
-          <div id="mobileRecords">
-            <div id="mobileTypeOfStats" class="mdc-select mdc-select--box">
-              <select class="mdc-select__native-control">
-                <option value="best" selected>Best</option>
-                <option value="current">Current</option>
-                <option value="worst">Worst</option>
-              </select>
-              <label class="mdc-floating-label">Type</label>
-              <div class="mdc-line-ripple"></div>
-            </div>
-            <div class="statsField">
-              <span class="statsText">Single from</span>
-              <input type="text" id="mobileSingleFrom" class="statsTextField" value="all">
-              <span class="statsText">:</span>
-              <div id="mobileSingle" class="statsText"></div>
-            </div>
-            <div class="statsField">
-              <span class="statsText">Average of</span>
-              <input type="number" id="mobileAverageOf" class="statsTextField" min="3" value="5">
-              <span class="statsText">:</span>
-              <div id="mobileAverage" class="statsText"></div>
-            </div>
+    <div class="mdc-drawer-scrim"></div>
+    <aside id="sessionDrawer" class="mdc-drawer mdc-drawer--modal">
+      <div class="mdc-drawer__content">
+        <nav class="mdc-list dummy"></nav>
+        <div id="mobileRecords">
+          <div id="mobileTypeOfStats" class="mdc-select mdc-select--box">
+            <select class="mdc-select__native-control">
+              <option value="best" selected>Best</option>
+              <option value="current">Current</option>
+              <option value="worst">Worst</option>
+            </select>
+            <label class="mdc-floating-label">Type</label>
+            <div class="mdc-line-ripple"></div>
           </div>
-          <h3>Session Times</h3>
-          <div id="sessionTimesTable">
-            <table>
-              <thead>
-                <tr class="mdc-elevation--z3"><th>S. No.</th><th>Time</th><th>Ao5</th></tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
+          <div class="statsField">
+            <span class="statsText">Single from</span>
+            <input type="text" id="mobileSingleFrom" class="statsTextField" value="all">
+            <span class="statsText">:</span>
+            <div id="mobileSingle" class="statsText"></div>
+          </div>
+          <div class="statsField">
+            <span class="statsText">Average of</span>
+            <input type="number" id="mobileAverageOf" class="statsTextField" min="3" value="5">
+            <span class="statsText">:</span>
+            <div id="mobileAverage" class="statsText"></div>
           </div>
         </div>
-      </nav>
+        <h3>Session Times</h3>
+        <div id="sessionTimesTable">
+          <table>
+            <thead>
+              <tr class="mdc-elevation--z3"><th>S. No.</th><th>Time</th><th>Ao5</th></tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </aside>
+    <div class="mdc-drawer-scrim"></div>
     <aside id="editSessionsDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="editSessionsLabel">
       <div class="mdc-dialog__surface">
         <header class="mdc-dialog__header">
@@ -730,7 +727,7 @@
       <div class="mdc-dialog__backdrop"></div>
     </aside>
     <div id="timer">
-      <div id="leftPanel" class="mdc-elevation--z6">
+      <div id="leftPanel">
         <div id="records" class="hide-on-med-and-down mdc-elevation--z6">
           <div id="typeOfStats" class="mdc-select mdc-select--box">
             <select class="mdc-select__native-control">
@@ -741,22 +738,28 @@
             <label class="mdc-floating-label">Type</label>
             <div class="mdc-line-ripple"></div>
           </div>
-          <div class="statsField">
-            <span class="statsText">Single from</span>
-            <input type="text" id="singleFrom" class="statsTextField" value="all">
-            <span class="statsText">:</span>
-            <i class="material-icons statsInfoIcon">help</i>
-            <i id="statsIcon" class="material-icons">insert_chart</i>
-            <div id="single" class="statsText"></div>
-          </div>
-          <div class="statsField">
-            <span class="statsText">Average of</span>
-            <input type="number" id="averageOf" class="statsTextField" min="3" value="5">
-            <span class="statsText">:</span>
-            <div id="average" class="statsText"></div>
+          <div id="infoContainer">
+            <div>
+              <div class="statsField">
+                <span class="statsText">Single from</span>
+                <input type="text" id="singleFrom" class="statsTextField" value="all">
+                <span class="statsText">:</span>
+                <div id="single" class="statsText"></div>
+              </div>
+              <div class="statsField">
+                <span class="statsText">Average of</span>
+                <input type="number" id="averageOf" class="statsTextField" min="3" value="5">
+                <span class="statsText">:</span>
+                <div id="average" class="statsText"></div>
+              </div>
+            </div>
+            <div id="icons">
+              <i class="material-icons statsInfoIcon">help</i>
+              <i id="statsIcon" class="material-icons">insert_chart</i>
+            </div>
           </div>
         </div>
-        <div id="session" class="hide-on-med-and-down">
+        <div id="session" class="hide-on-med-and-down mdc-elevation--z6">
           Please Wait...
         </div>
       </div>
@@ -766,9 +769,9 @@
             <i class="material-icons">edit</i>
           </button>
         </div>
-        <div id="selectSessionDivision" class="mdc-menu-anchor button-group-right">
+        <div id="selectSessionDivision" class="mdc-menu-surface--anchor button-group-right">
           <button id="selectSession" class="mdc-button mdc-button--outlined">Session 1</button>
-          <div id="selectSessionMenu" class="mdc-menu" tabindex="-1">
+          <div id="selectSessionMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
             <ul class="mdc-menu__items mdc-list" role="menu" aria-hidden="true" data-selected="1">
               <li class="mdc-list-item" role="menuitem" tabindex="0">Session 1</li>
               <li class="mdc-list-item" role="menuitem" tabindex="0">Session 2</li>
@@ -795,9 +798,9 @@
         <source src="/audio/12_seconds.mp3" type="audio/mp3">
       </audio>
       <div id="categoryButtonGroup" class="button-group">
-        <div id="selectCategoryDivision" class="mdc-menu-anchor button-group-left">
+        <div id="selectCategoryDivision" class="mdc-menu-surface--anchor button-group-left">
           <button id="selectCategory" class="mdc-button mdc-button--outlined">3x3x3</button>
-          <div id="selectCategoryMenu" class="mdc-menu" tabindex="-1">
+          <div id="selectCategoryMenu" class="mdc-menu mdc-menu-surface" tabindex="-1">
             <ul class="mdc-menu__items mdc-list" role="menu" aria-hidden="true">
               <li class="mdc-list-item" role="menuitem" tabindex="0">3x3x3</li>
               <li class="mdc-list-item" role="menuitem" tabindex="0">2x2x2</li>
@@ -829,28 +832,28 @@
       <div id="rightPanel" class="mdc-elevation--z6">
         <div id="scrambleImage"></div>
         <div id="recordStats" class="hide-on-med-and-down">
-          <div class="mdc-elevation--z6">
+          <div class="recordStat mdc-elevation--z1">
             <b>PB : </b><div class="pb">-:--.---</div><br>
           </div>
-          <div class="mdc-elevation--z6">
+          <div class="recordStat mdc-elevation--z1">
             <b>Mo3 : </b><div class="mo3">-:--.---</div><br>
           </div>
-          <div class="mdc-elevation--z6">
+          <div class="recordStat mdc-elevation--z1">
             <b>Avg of 5: </b><div class="ao5">-:--.---</div><br>
           </div>
-          <div class="mdc-elevation--z6">
+          <div class="recordStat mdc-elevation--z1">
             <b>Avg of 12: </b><div class="ao12">-:--.---</div><br>
           </div>
-          <div class="mdc-elevation--z6">
+          <div class="recordStat mdc-elevation--z1">
             <b>Avg of 50: </b><div class="ao50">-:--.---</div><br>
           </div>
-          <div class="mdc-elevation--z6">
+          <div class="recordStat mdc-elevation--z1">
             <b>Avg of 100: </b><div class="ao100">-:--.---</div><br>
           </div>
-          <div class="mdc-elevation--z6">
+          <div class="recordStat mdc-elevation--z1">
             <b>Avg of 250: </b><div class="ao250">-:--.---</div><br>
           </div>
-          <div class="mdc-elevation--z6">
+          <div class="recordStat mdc-elevation--z1">
             <b>Avg of 1000: </b><div class="ao1000">-:--.---</div>
           </div>
         </div>
@@ -914,14 +917,14 @@
 <script async>
   if (navigator.serviceWorker.controller) {
     console.log('Active service worker found, no need to register');
-  }/* else {
+  } else {
     //Register the ServiceWorker
     navigator.serviceWorker.register('firebase-messaging-sw.js', {
       scope: './'
     }).then(function(reg) {
       console.log('Service worker has been registered for scope:'+ reg.scope);
     });
-  }*/
+  }
 </script>
 <script async>
   function hideloader() {
@@ -946,10 +949,11 @@
   mdc.textField.MDCTextField.attachTo(document.querySelector('#sessionNameInput'));
 
   //Drawers
-  var drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-drawer--temporary'));
-  document.querySelector('.menu').addEventListener('click', function() {drawer.open = true;});
-  var sessionDrawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('#sessionDrawer'));
-  document.querySelector('#mobileSessionFAB').addEventListener('click', () => sessionDrawer.open = true);
+  var drawer = new mdc.drawer.MDCDrawer(document.querySelector('#sideMenu'));
+  $('.menu').click(() => drawer.open = true);
+  var sessionDrawer = new mdc.drawer.MDCDrawer(document.querySelector('#sessionDrawer'));
+  $('#mobileSessionFAB').click(() => sessionDrawer.open = true);
+  $('#sessionDrawer + .mdc-drawer-scrim').click(() => sessionDrawer.open = false);
 
   $('#moreFAB').click(function() {
     $('#importFAB, #infoFAB, #settingsFAB, #feedbackFAB').slideToggle(300);
