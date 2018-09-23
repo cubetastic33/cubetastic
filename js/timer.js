@@ -631,10 +631,37 @@ function showTimesFromFirebase() {
         </tbody>
       </table>
     `);
+    window.timesForAvg = [];
+    var pb = '-:--.---';
+    snapshot.forEach((data) => {
+      var solve = data.val().split('|');
+      solve[1] = parseInt(solve[1]);
+      solve[3] = $.parseJSON(solve[3]);
+      solve[4] = parseInt(solve[4]);
+      if (solve.length > 6) {
+        solve[5] = solve.slice(5).join('|');
+        solve = solve.slice(0, 6);
+      }
+      //Now, solve is in the format of [category, time, scramble, penalty, solveDate, (opt)comment]
+      var time = solve[1];
+      if (solve[3] === 2) {
+        time += 2000;
+        dt = formatTime(time) + '+';
+      } else if (solve[3] === 1) {
+        dt = 'DNF';
+        time += '(DNF)';
+        timesForAvg.push(0);
+        allTimes[solve[4]] = 0;
+      }
+      if (solve[3] !== 1) {
+        timesForAvg.push(time);
+        allTimes[solve[4]] = time;
+        if (pb == '-:--.---' || time < pb) {pb = time}
+      }
+    });
     db.ref('/times/'+firebase.auth().currentUser.uid+'/session'+$('#selectSession + div ul').attr('data-selected')).limitToLast(limit).once('value', function(data) {
       console.log(snapshot.numChildren());
       var n = snapshot.numChildren()-data.numChildren();
-      window.timesForAvg = [];
       var pb = '-:--.---';
       data.forEach(function(snapshot) {
         n++;
@@ -656,12 +683,8 @@ function showTimesFromFirebase() {
         } else if (solve[3] === 1) {
           dt = 'DNF';
           time += '(DNF)';
-          timesForAvg.push(0);
-          allTimes[solve[4]] = 0;
         }
         if (solve[3] !== 1) {
-          timesForAvg.push(time);
-          allTimes[solve[4]] = time;
           if (pb == '-:--.---' || time < pb) {pb = time}
         }
         $('#session table tbody, #sessionTimesTable table tbody').prepend('\
@@ -685,8 +708,7 @@ function showTimesFromFirebase() {
           $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
         });
         $('#session, #sessionDrawer .mdc-drawer__content').off('scroll').scroll(() => {
-          if ((($('#session').prop('scrollHeight') - $('#session').prop('scrollTop') === $('#session').prop('clientHeight')) && $('#session').prop('scrollHeight') > 0) ||
-          ($('#sessionDrawer .mdc-drawer__content').prop('scrollTop') + $('#sessionDrawer .mdc-drawer__content').innerHeight() >= $('#sessionDrawer .mdc-drawer__content').prop('scrollHeight'))) {
+          if ($('#session').prop('scrollHeight') - $('#session').prop('scrollTop') === $('#session').prop('clientHeight')) {
             //User has scrolled to bottom, load more solves
             var lastSolveKey = $('#session table tbody tr:last-child').attr('data-key');
             console.log(document.querySelector('#session table tbody tr:last-child'));
