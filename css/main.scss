@@ -178,6 +178,7 @@ $warning: #F9A825;
 @import "@material/floating-label/mdc-floating-label";
 @import "@material/select/mdc-select";
 @import "@material/list/mdc-list";
+@import "@material/menu-surface/mdc-menu-surface";
 @import "@material/menu/mdc-menu";
 @import "@material/checkbox/mdc-checkbox";
 @import "@material/radio/mdc-radio";
@@ -187,7 +188,7 @@ $warning: #F9A825;
 @import "@material/textfield/icon/mdc-text-field-icon";
 @import "@material/top-app-bar/mdc-top-app-bar";
 @import "@material/elevation/mdc-elevation";
-@import "@material/drawer/temporary/mdc-temporary-drawer";
+@import "@material/drawer/mdc-drawer";
 @import "@material/dialog/mdc-dialog";
 @import "@material/snackbar/mdc-snackbar";
 @import "@material/tab-bar/mdc-tab-bar";
@@ -211,23 +212,29 @@ $warning: #F9A825;
   font-size: 2rem;
 }
 
-.mdc-drawer {
-  font-family: Roboto;
-  z-index: 5;
-}
-
 .mdc-drawer__header {
+  @include mdc-drawer-title-ink-color($mdc-theme-on-primary);
   background-image: url('/images/material_bg.png');
   background-size: 100%;
+  padding: 15% 1rem 20% 1rem;
+
+  h3 {
+    display: inline-block;
+    font-family: Play;
+    font-size: 1.75rem;
+    padding-left: 0.5rem;
+  }
+
+  h6 {
+    color: $mdc-theme-on-primary;
+  }
 
   img {
-    position: absolute;
-    height: 50%;
-    top: 25%;
-    left: 50%;
-    transform: translateX(-50%);
+    height: 2rem;
+    transform: translateY(25%);
   }
 }
+
 .mdc-select__native-control {
   -webkit-appearance: none;
   -moz-appearance: none;
