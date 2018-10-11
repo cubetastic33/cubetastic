@@ -1,21 +1,10 @@
-/*const fs = require('fs');
-fs.readFile('../../../Downloads/cstimer.txt', 'utf-8', (err, data) => {
-	data = JSON.parse(data);
-	penalty = data['session2'][10][0][0];
-	time = data['session2'][10][0][1];
-	scramble = data['session2'][10][1];
-	comment = data['session2'][10][2];
-	console.log(`Penalty: ${penalty}\nTime: ${time}\nScramble: ${scramble}\nComment: ${comment}`);
-});
-*/
-
 var importFile = false;
 var importFrom = false;
 
 $('#chooseImportFileCSV, #chooseImportFileTXT').hide();
 
 $('#importInfo').click(() => {
-	importInfoDialog.show();
+	importInfoDialog.open();
 });
 
 $('#csTimer').click(() => {

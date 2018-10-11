@@ -42,7 +42,7 @@
       <div class="mdc-drawer__header">
         <img src="/images/icons/icon-152x152.png" alt="cubetastic logo">
         <h3 class="mdc-drawer__title">Cubetastic</h3>
-        <h6 class="mdc-drawer__subtitle">Version 1.4.9</h6>
+        <h6 class="mdc-drawer__subtitle">Version 1.4.10</h6>
       </div>
       <div class="mdc-drawer__content">
         <nav class="mdc-list-group">
@@ -102,28 +102,29 @@
       </div>
     </aside>
     <div class="mdc-drawer-scrim"></div>
-    <aside id="editSessionsDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="editSessionsLabel">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="editSessionsLabel" class="mdc-dialog__header__title">
-            Edit Sessions
-          </h2>
-        </header>
-        <section class="mdc-dialog__body">
-          <div id="sessionNameInput" class="mdc-text-field mdc-text-field--box">
-            <input type="text" id="newSessionName" class="mdc-text-field__input">
-            <label class="mdc-floating-label" for="newSessionName">Name</label>
-            <div class="mdc-line-ripple"></div>
-          </div><br>
-          <button id="createNewSession" class="mdc-button">+ New Session</button>
-          <button id="renameSession" class="mdc-button mdc-button--unelevated">Rename Session</button>
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-button--unelevated mdc-dialog__footer__button mdc-dialog__footer__button--accept">Done</button>
-        </footer>
+    <div id="editSessionsDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="editSessionsDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="editSessionsDialogLabel" class="mdc-dialog__title"><!--
+         -->Info<!--
+       --></h2>
+          <div class="mdc-dialog__content">
+            <div id="sessionNameInput" class="mdc-text-field mdc-text-field--box">
+              <input type="text" id="newSessionName" class="mdc-text-field__input">
+              <label class="mdc-floating-label" for="newSessionName">Name</label>
+              <div class="mdc-line-ripple"></div>
+            </div><br>
+            <button id="createNewSession" class="mdc-button">+ New Session</button>
+            <button id="renameSession" class="mdc-button mdc-button--unelevated">Rename Session</button>
+          </div>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button" data-mdc-dialog-action="accept">Done</button>
+          </footer>
+        </div>
       </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
     <header class="mdc-top-app-bar mdc-top-app-bar--fixed">
       <div class="mdc-top-app-bar__row">
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
@@ -135,598 +136,607 @@
         </section>
       </div>
     </header>
-    <aside id="solveInfoDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="solveInfoLabel">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="solveInfoLabel" class="mdc-dialog__header__title">
-            Solve Info
-          </h2>
-        </header>
-        <section id="solveInfo" class="mdc-dialog__body">
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-button--unelevated mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay!</button>
-        </footer>
+    <div id="solveInfoDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="solveInfoDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="solveInfoDialogLabel" class="mdc-dialog__title"><!--
+         -->Solve Info<!--
+       --></h2>
+          <div id="solveInfo" class="mdc-dialog__content">
+          </div>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button" data-mdc-dialog-action="accept">Okay</button>
+          </footer>
+        </div>
       </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
-    <aside id="chooseBGImage" class="mdc-dialog" role="alertdialog" aria-labelledby="chooseBGImageLabel">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="chooseBGImageLabel" class="mdc-dialog__header__title">
-            Choose a background image
-          </h2>
-        </header>
-        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
-          <ul class="mdc-image-list mdc-image-list--masonry my-masonry-image-list mdc-image-list--with-text-protection">
-            <li class="mdc-image-list__item hide" data-image="/images/evening_light_3840x2160.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/evening_light.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Evening Light, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item hide" data-image="/images/bridge_in_the_forest.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/bridge_in_the_forest.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Bridge in the Forest, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/forest_mountain.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/forest_mountain.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Forest Mountain, by <a href="https://ncoll36.deviantart.com/">ncoll36</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item hide" data-image="/images/sunset_in_the_forest_7680x4320.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/sunset_in_the_forest.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Sunset in the Forest, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item hide" data-image="/images/evening_light_1080x1920.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/evening_light_mobile.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Evening Light - mobile, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item hide" data-image="/images/sunset_in_the_forest_1080x1920.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/sunset_in_the_forest_mobile.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Sunset in the Forest - mobile, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/mountain_lake.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/mountain_lake.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Mountain Lake, by <a href="https://ncoll36.deviantart.com/">ncoll36</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/work_table.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/work_table.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Work Table</span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/mountain_silhouette.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/mountain_silhouette.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Mountain Silhouette</span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/clouds_at_dawn.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/clouds_at_dawn.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Clouds At Dawn</span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/vincent-guth-aurora.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/aurora_vincent_guth_mobile.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Aurora, by <a href="https://unsplash.com/@vingtcent">Vincent Guth</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/lake_at_dawn.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/lake_at_dawn.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Lake at Dawn, by <a href="https://www.pexels.com/@blitzboy">Sindre Strøm</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/starry_night.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/starry_night_mobile.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Starry Night, by <a href="https://unsplash.com/@henry_be">Enrico</a></span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/countryside_cabin.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/countryside_cabin.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Countryside Cabin</span>
-              </div>
-            </li>
-            <li class="mdc-image-list__item" data-image="/images/stars_timelapse.jpg">
-              <img class="mdc-image-list__image" src="/images/thumbnails/stars_timelapse.png">
-              <div class="mdc-image-list__supporting">
-                <span class="mdc-image-list__label">Stars Timelapse, by <a href="https://www.pexels.com/@kubiceknov">Jakub</a></span>
-              </div>
-            </li>
-          </ul>
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
-        </footer>
-      </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
-    <aside id="settingsDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="settings-dialog-label">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="settings-dialog-label" class="mdc-dialog__header__title">
-            Settings
-          </h2>
-        </header>
-        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
-          <div id="settingsTabBar" class="mdc-tab-bar" role="tablist">
-            <div class="mdc-tab-scroller">
-              <div class="mdc-tab-scroller__scroll-area">
-                <div class="mdc-tab-scroller__scroll-content">
-                  <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
-                    <div class="mdc-tab__content">
-                      <span class="mdc-tab__text-label">Timer</span>
-                    </div>
-                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                    </span>
-                    <div class="mdc-tab__ripple"></div>
-                  </button>
-                  <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
-                    <div class="mdc-tab__content">
-                      <span class="mdc-tab__text-label">Color</span>
-                    </div>
-                    <span class="mdc-tab-indicator">
-                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                    </span>
-                    <div class="mdc-tab__ripple"></div>
-                  </button>
-                  <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
-                    <div class="mdc-tab__content">
-                      <span class="mdc-tab__text-label">Reminders</span>
-                    </div>
-                    <span class="mdc-tab-indicator">
-                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                    </span>
-                    <div class="mdc-tab__ripple"></div>
-                  </button>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="chooseBGImageDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="chooseBGImageDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="chooseBGImageDialogLabel" class="mdc-dialog__title"><!--
+         -->Choose a background image<!--
+       --></h2>
+          <div class="mdc-dialog__content">
+            <ul class="mdc-image-list mdc-image-list--masonry my-masonry-image-list mdc-image-list--with-text-protection">
+              <li class="mdc-image-list__item hide" data-image="/images/evening_light_3840x2160.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/evening_light.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Evening Light, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div id="timerSettings">
-            <h3>Timer Settings</h3>
-            <div id="selectFont" class="mdc-select">
-              <select id="font" class="mdc-select__native-control">
-                <option value="Play">Play</option>
-                <option value="Iceberg">Iceberg</option>
-                <option value="Unica One">Unica One</option>
-                <option value="Black Han Sans">Black Han Sans</option>
-                <option value="Copse">Copse</option>
-                <option value="Share Tech Mono">Share Tech Mono</option>
-                <option value="Noto Sans">Noto Sans</option>
-                <option value="Contrail one">Contrail One</option>
-                <option value="Space Mono">Space Mono</option>
-                <option value="Titillium Web">Titillium Web</option>
-              </select>
-              <label class="mdc-floating-label">Timer Font</label>
-              <div class="mdc-line-ripple"></div>
-            </div><br>
-            <div id="inspectionFormField" class="mdc-form-field">
-              <div class="mdc-switch">
-                <input type="checkbox" id="enableInspection" class="mdc-switch__native-control" role="switch">
-                <div class="mdc-switch__background">
-                  <div class="mdc-switch__knob"></div>
+              </li>
+              <li class="mdc-image-list__item hide" data-image="/images/bridge_in_the_forest.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/bridge_in_the_forest.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Bridge in the Forest, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
                 </div>
-              </div>
-              <label for="enableInspection">Inspection</label>
-            </div><br>
-            <div id="audioCuesFormField" class="mdc-form-field">
-              <div class="mdc-switch">
-                <input type="checkbox" id="enableAudioCues" class="mdc-switch__native-control" role="switch">
-                <div class="mdc-switch__background">
-                  <div class="mdc-switch__knob"></div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/forest_mountain.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/forest_mountain.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Forest Mountain, by <a href="https://ncoll36.deviantart.com/">ncoll36</a></span>
                 </div>
-              </div>
-              <label for="enableAudioCues">Audio Cues</label>
-            </div><br>
-            <div id="longPressFormField" class="mdc-form-field">
-              <div class="mdc-switch">
-                <input type="checkbox" id="enableLongPress" class="mdc-switch__native-control" role="switch">
-                <div class="mdc-switch__background">
-                  <div class="mdc-switch__knob"></div>
+              </li>
+              <li class="mdc-image-list__item hide" data-image="/images/sunset_in_the_forest_7680x4320.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/sunset_in_the_forest.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Sunset in the Forest, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
                 </div>
-              </div>
-              <label for="enableLongPress">Long press to start</label>
-            </div><br>
-            <div id="scrambleImgFormField" class="mdc-form-field">
-              <div id="scrambleImgCheckbox" class="mdc-checkbox">
-                <input type="checkbox" class="mdc-checkbox__native-control" id="showscrambleimage"/>
-                <div class="mdc-checkbox__background">
-                  <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                    <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
-                  </svg>
-                  <div class="mdc-checkbox__mixedmark"></div>
+              </li>
+              <li class="mdc-image-list__item hide" data-image="/images/evening_light_1080x1920.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/evening_light_mobile.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Evening Light - mobile, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
                 </div>
-              </div>
-              <label for="showscrambleimage">Show Scramble Image</label>
-            </div><br>
-            <div id="showRecordStatsFormField" class="mdc-form-field">
-              <div id="showRecordStatsCheckbox" class="mdc-checkbox">
-                <input type="checkbox" class="mdc-checkbox__native-control" id="showRecordStats"/>
-                <div class="mdc-checkbox__background">
-                  <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                    <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
-                  </svg>
-                  <div class="mdc-checkbox__mixedmark"></div>
+              </li>
+              <li class="mdc-image-list__item hide" data-image="/images/sunset_in_the_forest_1080x1920.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/sunset_in_the_forest_mobile.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Sunset in the Forest - mobile, by <a href="https://designuchiha.deviantart.com/">designuchiha</a></span>
                 </div>
-              </div>
-              <label for="showRecordStats">Show Records</label>
-            </div><br>
-            <div id="hideelementsFormField" class="mdc-form-field">
-              <div id="hideelementsCheckbox" class="mdc-checkbox">
-                <input type="checkbox" class="mdc-checkbox__native-control" id="hideelements"/>
-                <div class="mdc-checkbox__background">
-                  <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                    <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
-                  </svg>
-                  <div class="mdc-checkbox__mixedmark"></div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/mountain_lake.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/mountain_lake.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Mountain Lake, by <a href="https://ncoll36.deviantart.com/">ncoll36</a></span>
                 </div>
-              </div>
-              <label for="hideelements">Hide Elements when Timer is running</label>
-            </div><br>
-            <div id="selectBGImage" class="mdc-select">
-              <select id="bgImage" class="mdc-select__native-control">
-                <option value="None">None</option>
-                <option value="Custom">Custom</option>
-                <option value="Choose">Choose Image</option>
-              </select>
-              <label class="mdc-floating-label">Background Image</label>
-              <div class="mdc-line-ripple"></div>
-            </div>
-            <div id="syncSettings"></div>
-          </div>
-          <div id="colorSettings">
-            <h3>Color Settings</h3>
-            <div id="toggleThemesFormField" class="mdc-form-field">
-              <div id="toggleThemesRadio" class="mdc-radio">
-                <input value="theme" class="mdc-radio__native-control" type="radio" id="enableThemesRadio" name="colorsMethod">
-                <div class="mdc-radio__background">
-                  <div class="mdc-radio__outer-circle"></div>
-                  <div class="mdc-radio__inner-circle"></div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/work_table.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/work_table.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Work Table</span>
                 </div>
-              </div>
-              <label for="enableThemesRadio">Theme</label>
-            </div><br>
-            <div id="selectTheme" class="mdc-select">
-              <select id="theme" class="mdc-select__native-control">
-                <option value="Gray Wisp">Gray Wisp</option>
-                <option value="Dark">Dark</option>
-                <option value="Chloris Gray">Chloris Gray</option>
-                <option value="Transparent">Transparent (Use with BG Image)</option>
-              </select>
-              <label class="mdc-floating-label">Select Theme</label>
-              <div class="mdc-line-ripple"></div>
-            </div><br>
-            <div id="toggleCustomColorsFormField" class="mdc-form-field">
-              <div id="toggleCustomColorsRadio" class="mdc-radio">
-                <input value="customColors" class="mdc-radio__native-control" type="radio" id="enableCustomColorsRadio" name="colorsMethod">
-                <div class="mdc-radio__background">
-                  <div class="mdc-radio__outer-circle"></div>
-                  <div class="mdc-radio__inner-circle"></div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/mountain_silhouette.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/mountain_silhouette.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Mountain Silhouette</span>
                 </div>
-              </div>
-              <label for="enableCustomColorsRadio">Custom Colors</label>
-            </div><br>
-            <label for="bgcolor" class="customColorsLabel">Background Color: </label>
-            <input type="color" id="bgcolor"><br>
-            <label for="textcolor" class="customColorsLabel">Text Color: </label>
-            <input type="color" id="textcolor"><br>
-            <label for="recordsbgcolor" class="customColorsLabel">Records BG Color: </label>
-            <input type="color" id="recordsbgcolor"><br>
-            <label for="sessionbgcolor" class="customColorsLabel">Session BG Color: </label>
-            <input type="color" id="sessionbgcolor"><br>
-            <label for="scrambleimagebgcolor" class="customColorsLabel">Scramble Image BG Color: </label>
-            <input type="color" id="scrambleimagebgcolor"><br>
-            <div id="replaceShadowFormField" class="mdc-form-field">
-              <div id="replaceShadowCheckbox" class="mdc-checkbox">
-                <input type="checkbox" class="mdc-checkbox__native-control" id="replaceshadow"/>
-                <div class="mdc-checkbox__background">
-                  <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                    <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
-                  </svg>
-                  <div class="mdc-checkbox__mixedmark"></div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/clouds_at_dawn.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/clouds_at_dawn.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Clouds At Dawn</span>
                 </div>
-              </div>
-              <label for="replaceshadow" class="customColorsLabel">Replace Shadows with border</label>
-            </div><br>
-            <button id="resetColorSettings" class="mdc-button">Reset Color Settings</button>
-          </div>
-          <div id="remindersSettings">
-            <h3>Reminders</h3>
-            <div id="toggleRemindersFormField" class="mdc-form-field">
-              <label for="toggleReminders">Reminders</label>
-              <div class="mdc-switch">
-                <input type="checkbox" id="toggleReminders" class="mdc-switch__native-control" role="switch">
-                <div class="mdc-switch__background">
-                  <div class="mdc-switch__knob"></div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/vincent-guth-aurora.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/aurora_vincent_guth_mobile.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Aurora, by <a href="https://unsplash.com/@vingtcent">Vincent Guth</a></span>
                 </div>
-              </div>
-            </div><br>
-            <div class="mdc-form-field">
-              <div class="mdc-radio">
-                <input class="mdc-radio__native-control" type="radio" id="visualReminder" value="visual" name="reminderType">
-                <div class="mdc-radio__background">
-                  <div class="mdc-radio__outer-circle"></div>
-                  <div class="mdc-radio__inner-circle"></div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/lake_at_dawn.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/lake_at_dawn.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Lake at Dawn, by <a href="https://www.pexels.com/@blitzboy">Sindre Strøm</a></span>
                 </div>
-              </div>
-              <label for="visualReminder">Visual Reminder</label>
-            </div>
-            <div class="mdc-form-field">
-              <div class="mdc-radio">
-                <input class="mdc-radio__native-control" type="radio" id="auditoryReminder" value="audial" name="reminderType">
-                <div class="mdc-radio__background">
-                  <div class="mdc-radio__outer-circle"></div>
-                  <div class="mdc-radio__inner-circle"></div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/starry_night.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/starry_night_mobile.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Starry Night, by <a href="https://unsplash.com/@henry_be">Enrico</a></span>
                 </div>
-              </div>
-              <label for="auditoryReminder">Audial Reminder</label>
-            </div><br>
-            Enter all times in seconds. For example, 1 min 32 sec will be 92.
-            <ul class="mdc-list mdc-list--non-interactive" aria-orientation="vertical">
-              <li id="newReminder" class="mdc-list-item mdc-elevation--z1">
-                <input type="number" id="reminder" placeholder="New Reminder">
-                <i id="newReminderBtn" class="mdc-icon-button mdc-list-item__meta material-icons">add</i>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/countryside_cabin.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/countryside_cabin.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Countryside Cabin</span>
+                </div>
+              </li>
+              <li class="mdc-image-list__item" data-image="/images/stars_timelapse.jpg">
+                <img class="mdc-image-list__image" src="/images/thumbnails/stars_timelapse.png">
+                <div class="mdc-image-list__supporting">
+                  <span class="mdc-image-list__label">Stars Timelapse, by <a href="https://www.pexels.com/@kubiceknov">Jakub</a></span>
+                </div>
               </li>
             </ul>
           </div>
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button mdc-dialog__footer__button--accept">Done</button>
-        </footer>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button" data-mdc-dialog-action="accept">Okay</button>
+          </footer>
+        </div>
       </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
-    <aside id="infoDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="info-dialog-label" aria-describedby="info-dialog-description">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="info-dialog-label" class="mdc-dialog__header__title">
-            Info
-          </h2>
-        </header>
-        <section id="info-dialog-description" class="mdc-dialog__body mdc-dialog__body--scrollable ">
-          Welcome to cubetastic timer! This timer has a lot of uses. One of the most striking
-          features of this timer, is that <span class="highlight">it uses the official TNoodle scrambling
-          program!</span> You can add it to your homescreen like any other app (more details given below),
-          and this website also works offline.<br>
-          When you're online, you get even more features like syncing your times. Once you
-          sign in to your account, any solve you do after that will get synced. Next time,
-          when you are using some other device or browser, you just need to sign in to your
-          account, and all your times from this device will appear there! If you have any feedback,
-          you can click the feedback icon in the menu, and it will redirect you to a feedback
-          page.<br><br>
-          <h3>Keyboard shortcuts</h3>
-          There are currently 3 keyboard shortcuts:
-          <ul>
-            <li>`shift + del` to delete last solve</li>
-            <li>`shift + 2` to toggle last solve as +2</li>
-            <li>`shift + D` to set last solve as DNF</li>
-          </ul>
-          This website is also open source, which means you can view and contribute to the
-          source code. To do this, click the github icon (a cat) in the footer below.<br>
-          <h3>Install PWA</h3>
-          This website is a PWA (Progressive Web App), which means you can add it to your homescreen,
-          and it will work just like any other app, even offline! You can install this (if your browser
-          supports it) by clicking the menu of your browser, and then clicking "Add to homescreen". For
-          more detailed browser - specific instructions, click <a href="/installpwa">here</a>.
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay</button>
-        </footer>
-      </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
-    <aside id="importInfoDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="importInfoDialogLabel">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="importInfoDialogLabel" class="mdc-dialog__header__title">
-            How do I import solves?
-          </h2>
-        </header>
-        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
-          <h3>Import from csTimer</h3>
-          <video id="importInfoVideo" class="video-js vjs-big-play-centered vjs-16-9" controls preload="auto" data-setup="{}">
-            <source src="/videos/cubetastic_import_solves.webm" type='video/webm'>
-            <source src="/videos/cubetastic_import_solves.mp4" type='video/mp4'>
-            <source src="/videos/cubetastic_import_solves.ogg" type='video/ogg'>
-            <p class="vjs-no-js">
-              To view this video please enable JavaScript, and consider upgrading to a web browser that
-              <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-            </p>
-          </video>
-          <h3>Import from Twisty Timer</h3>
-          <video id="twistyTimerVideo" class="video-js vjs-big-play-centered" controls preload="auto" data-setup="{}">
-            <source src="/videos/cubetastic_import_from_twisty_timer.webm" type="video/webm">
-            <source src="/videos/cubetastic_import_from_twisty_timer.m4v">
-            <p class="vjs-no-js">
-              To view this video please enable JavaScript, and consider upgrading to a web browser that
-              <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-            </p>
-          </video>
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay</button>
-        </footer>
-      </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
-    <aside id="importDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="importDialogLabel">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="importDialogLabel" class="mdc-dialog__header__title">
-            Import/Export
-          </h2>
-        </header>
-        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
-          <div id="importExportTabBar" class="mdc-tab-bar" role="tablist">
-            <div class="mdc-tab-scroller">
-              <div class="mdc-tab-scroller__scroll-area">
-                <div class="mdc-tab-scroller__scroll-content">
-                  <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
-                    <div class="mdc-tab__content">
-                      <span class="mdc-tab__text-label">Import</span>
-                    </div>
-                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                    </span>
-                    <div class="mdc-tab__ripple"></div>
-                  </button>
-                  <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
-                    <div class="mdc-tab__content">
-                      <span class="mdc-tab__text-label">Export</span>
-                    </div>
-                    <span class="mdc-tab-indicator">
-                      <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
-                    </span>
-                    <div class="mdc-tab__ripple"></div>
-                  </button>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="settingsDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="settingsDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="settingsDialogLabel" class="mdc-dialog__title"><!--
+         -->Settings<!--
+       --></h2>
+          <div class="mdc-dialog__content">
+            <div id="settingsTabBar" class="mdc-tab-bar" role="tablist">
+              <div class="mdc-tab-scroller">
+                <div class="mdc-tab-scroller__scroll-area">
+                  <div class="mdc-tab-scroller__scroll-content">
+                    <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
+                      <div class="mdc-tab__content">
+                        <span class="mdc-tab__text-label">Timer</span>
+                      </div>
+                      <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                      </span>
+                      <div class="mdc-tab__ripple"></div>
+                    </button>
+                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
+                      <div class="mdc-tab__content">
+                        <span class="mdc-tab__text-label">Color</span>
+                      </div>
+                      <span class="mdc-tab-indicator">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                      </span>
+                      <div class="mdc-tab__ripple"></div>
+                    </button>
+                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
+                      <div class="mdc-tab__content">
+                        <span class="mdc-tab__text-label">Reminders</span>
+                      </div>
+                      <span class="mdc-tab-indicator">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                      </span>
+                      <div class="mdc-tab__ripple"></div>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+            <div id="timerSettings">
+              <h3>Timer Settings</h3>
+              <div id="selectFont" class="mdc-select">
+                <select id="font" class="mdc-select__native-control">
+                  <option value="Play">Play</option>
+                  <option value="Iceberg">Iceberg</option>
+                  <option value="Unica One">Unica One</option>
+                  <option value="Black Han Sans">Black Han Sans</option>
+                  <option value="Copse">Copse</option>
+                  <option value="Share Tech Mono">Share Tech Mono</option>
+                  <option value="Noto Sans">Noto Sans</option>
+                  <option value="Contrail one">Contrail One</option>
+                  <option value="Space Mono">Space Mono</option>
+                  <option value="Titillium Web">Titillium Web</option>
+                </select>
+                <label class="mdc-floating-label">Timer Font</label>
+                <div class="mdc-line-ripple"></div>
+              </div><br>
+              <div id="enableInspectionSwitch" class="mdc-switch">
+                <div class="mdc-switch__track"></div>
+                <div class="mdc-switch__thumb-underlay">
+                  <div class="mdc-switch__thumb">
+                    <input type="checkbox" id="enableInspection" class="mdc-switch__native-control" role="switch">
+                  </div>
+                </div>
+              </div>
+              <label for="enableInspection">Inspection</label><br>
+              <div id="enableAudioCuesSwitch" class="mdc-switch">
+                <div class="mdc-switch__track"></div>
+                <div class="mdc-switch__thumb-underlay">
+                  <div class="mdc-switch__thumb">
+                    <input type="checkbox" id="enableAudioCues" class="mdc-switch__native-control" role="switch">
+                  </div>
+                </div>
+              </div>
+              <label for="enableAudioCues">Audio Cues</label><br>
+              <div id="enableLongPressSwitch" class="mdc-switch">
+                <div class="mdc-switch__track"></div>
+                <div class="mdc-switch__thumb-underlay">
+                  <div class="mdc-switch__thumb">
+                    <input type="checkbox" id="enableLongPress" class="mdc-switch__native-control" role="switch">
+                  </div>
+                </div>
+              </div>
+              <label for="enableLongPress">Long press to start</label><br>
+              <div id="scrambleImgFormField" class="mdc-form-field">
+                <div id="scrambleImgCheckbox" class="mdc-checkbox">
+                  <input type="checkbox" class="mdc-checkbox__native-control" id="showscrambleimage"/>
+                  <div class="mdc-checkbox__background">
+                    <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                      <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                    </svg>
+                    <div class="mdc-checkbox__mixedmark"></div>
+                  </div>
+                </div>
+                <label for="showscrambleimage">Show Scramble Image</label>
+              </div><br>
+              <div id="showRecordStatsFormField" class="mdc-form-field">
+                <div id="showRecordStatsCheckbox" class="mdc-checkbox">
+                  <input type="checkbox" class="mdc-checkbox__native-control" id="showRecordStats"/>
+                  <div class="mdc-checkbox__background">
+                    <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                      <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                    </svg>
+                    <div class="mdc-checkbox__mixedmark"></div>
+                  </div>
+                </div>
+                <label for="showRecordStats">Show Records</label>
+              </div><br>
+              <div id="hideelementsFormField" class="mdc-form-field">
+                <div id="hideelementsCheckbox" class="mdc-checkbox">
+                  <input type="checkbox" class="mdc-checkbox__native-control" id="hideelements"/>
+                  <div class="mdc-checkbox__background">
+                    <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                      <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                    </svg>
+                    <div class="mdc-checkbox__mixedmark"></div>
+                  </div>
+                </div>
+                <label for="hideelements">Hide Elements when Timer is running</label>
+              </div><br>
+              <div id="selectBGImage" class="mdc-select">
+                <select id="bgImage" class="mdc-select__native-control">
+                  <option value="None">None</option>
+                  <option value="Custom">Custom</option>
+                  <option value="Choose">Choose Image</option>
+                </select>
+                <label class="mdc-floating-label">Background Image</label>
+                <div class="mdc-line-ripple"></div>
+              </div>
+              <div id="syncSettings"></div>
+            </div>
+            <div id="colorSettings">
+              <h3>Color Settings</h3>
+              <div id="toggleThemesFormField" class="mdc-form-field">
+                <div id="toggleThemesRadio" class="mdc-radio">
+                  <input value="theme" class="mdc-radio__native-control" type="radio" id="enableThemesRadio" name="colorsMethod">
+                  <div class="mdc-radio__background">
+                    <div class="mdc-radio__outer-circle"></div>
+                    <div class="mdc-radio__inner-circle"></div>
+                  </div>
+                </div>
+                <label for="enableThemesRadio">Theme</label>
+              </div><br>
+              <div id="selectTheme" class="mdc-select">
+                <select id="theme" class="mdc-select__native-control">
+                  <option value="Gray Wisp">Gray Wisp</option>
+                  <option value="Dark">Dark</option>
+                  <option value="Chloris Gray">Chloris Gray</option>
+                  <option value="Transparent">Transparent (Use with BG Image)</option>
+                </select>
+                <label class="mdc-floating-label">Select Theme</label>
+                <div class="mdc-line-ripple"></div>
+              </div><br>
+              <div id="toggleCustomColorsFormField" class="mdc-form-field">
+                <div id="toggleCustomColorsRadio" class="mdc-radio">
+                  <input value="customColors" class="mdc-radio__native-control" type="radio" id="enableCustomColorsRadio" name="colorsMethod">
+                  <div class="mdc-radio__background">
+                    <div class="mdc-radio__outer-circle"></div>
+                    <div class="mdc-radio__inner-circle"></div>
+                  </div>
+                </div>
+                <label for="enableCustomColorsRadio">Custom Colors</label>
+              </div><br>
+              <label for="bgcolor" class="customColorsLabel">Background Color: </label>
+              <input type="color" id="bgcolor"><br>
+              <label for="textcolor" class="customColorsLabel">Text Color: </label>
+              <input type="color" id="textcolor"><br>
+              <label for="recordsbgcolor" class="customColorsLabel">Records BG Color: </label>
+              <input type="color" id="recordsbgcolor"><br>
+              <label for="sessionbgcolor" class="customColorsLabel">Session BG Color: </label>
+              <input type="color" id="sessionbgcolor"><br>
+              <label for="scrambleimagebgcolor" class="customColorsLabel">Scramble Image BG Color: </label>
+              <input type="color" id="scrambleimagebgcolor"><br>
+              <div id="replaceShadowFormField" class="mdc-form-field">
+                <div id="replaceShadowCheckbox" class="mdc-checkbox">
+                  <input type="checkbox" class="mdc-checkbox__native-control" id="replaceshadow"/>
+                  <div class="mdc-checkbox__background">
+                    <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                      <path class="mdc-checkbox__checkmark-path" fill="none" stroke="white" d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                    </svg>
+                    <div class="mdc-checkbox__mixedmark"></div>
+                  </div>
+                </div>
+                <label for="replaceshadow" class="customColorsLabel">Replace Shadows with border</label>
+              </div><br>
+              <button id="resetColorSettings" class="mdc-button">Reset Color Settings</button>
+            </div>
+            <div id="remindersSettings">
+              <h3>Reminders</h3>
+              <div id="toggleRemindersFormField" class="mdc-form-field">
+                <label for="toggleReminders">Reminders</label>
+                <div class="mdc-switch">
+                  <input type="checkbox" id="toggleReminders" class="mdc-switch__native-control" role="switch">
+                  <div class="mdc-switch__background">
+                    <div class="mdc-switch__knob"></div>
+                  </div>
+                </div>
+              </div><br>
+              <div class="mdc-form-field">
+                <div class="mdc-radio">
+                  <input class="mdc-radio__native-control" type="radio" id="visualReminder" value="visual" name="reminderType">
+                  <div class="mdc-radio__background">
+                    <div class="mdc-radio__outer-circle"></div>
+                    <div class="mdc-radio__inner-circle"></div>
+                  </div>
+                </div>
+                <label for="visualReminder">Visual Reminder</label>
+              </div>
+              <div class="mdc-form-field">
+                <div class="mdc-radio">
+                  <input class="mdc-radio__native-control" type="radio" id="auditoryReminder" value="audial" name="reminderType">
+                  <div class="mdc-radio__background">
+                    <div class="mdc-radio__outer-circle"></div>
+                    <div class="mdc-radio__inner-circle"></div>
+                  </div>
+                </div>
+                <label for="auditoryReminder">Audial Reminder</label>
+              </div><br>
+              Enter all times in seconds. For example, 1 min 32 sec will be 92.
+              <ul class="mdc-list mdc-list--non-interactive" aria-orientation="vertical">
+                <li id="newReminder" class="mdc-list-item mdc-elevation--z1">
+                  <input type="number" id="reminder" placeholder="New Reminder">
+                  <i id="newReminderBtn" class="mdc-icon-button mdc-list-item__meta material-icons">add</i>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div id="import">
-            Right now, only importing solves from the specified timers is supported. Please <b>do not</b> try to import
-            from other timers, because it might cause errors!<i id="importInfo" class="material-icons" title="how?">help</i><br>
-            Note: For csTimer and TNT, make sure you import as .csv, and <b>not</b> as .txt or .json.<br><br>
-            <button id="csTimer" class="mdc-button mdc-button--outlined exception">csTimer</button>
-            <button id="TNT" class="mdc-button mdc-button--outlined exception">TNoodle Timer</button>
-            <button id="twistyTimer" class="mdc-button mdc-button--outlined exception">Twisty Timer</button>
-            <input type="file" id="chooseImportFileCSV" accept=".csv">
-            <input type="file" id="chooseImportFileTXT" accept=".txt">
-            <div id="importedSample"></div>
-          </div>
-          <div id="export">
-            Under construction
-          </div>
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
-          <button type="button" class="mdc-button mdc-button--unelevated mdc-dialog__footer__button" disabled>Done</button>
-        </footer>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button" data-mdc-dialog-action="accept">Okay</button>
+          </footer>
+        </div>
       </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
-    <aside id="statsInfoDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="statsInfoDialogLabel">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="statsInfoDialogLabel" class="mdc-dialog__header__title">
-            Statistics
-          </h2>
-        </header>
-        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
-          Firstly, select whether you want to see info about your best solves, or your current solves,
-          or your worst solves, by clicking on the select menu in the very top of the stats box.<br>
-          Now, you can see your averages and singles for the type of stats you selected. If you want
-          to see your average of 12, for example, just type in "12" in the text field after "Average Of".
-          And then, let's say you selected "Best" in the select menu. Now, if you want to see your best
-          single from your last 10 solves, and you've done a total of 25 solves, just enter "15-25" in the
-          text field after "Single From". Same goes for "Worst" also. If you select "Current", and then
-          enter "1-17", you'll get what your 17<sup>th</sup> solve was.
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay</button>
-        </footer>
-      </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
-    <aside id="statsDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="statsDialogLabel">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="statsDialogLabel" class="mdc-dialog__header__title">
-            Statistics
-          </h2>
-        </header>
-        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
-          <div id="graphDetailSelect" class="mdc-select">
-            <select class="mdc-select__native-control">
-              <option value="solves">
-                Solves
-              </option>
-              <option value="date-time">
-                Date-time
-              </option>
-            </select>
-            <label class="mdc-floating-label">Graph detail</label>
-            <div class="mdc-line-ripple"></div>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="infoDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="infoDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="infoDialogLabel" class="mdc-dialog__title"><!--
+        -->Info<!--
+      --></h2>
+          <div class="mdc-dialog__content">
+            Welcome to cubetastic timer! This timer has a lot of uses. One of the most striking
+            features of this timer, is that <span class="highlight">it uses the official TNoodle scrambling
+            program!</span> You can add it to your homescreen like any other app (more details given below),
+            and this website also works offline.<br>
+            When you're online, you get even more features like syncing your times. Once you
+            sign in to your account, any solve you do after that will get synced. Next time,
+            when you are using some other device or browser, you just need to sign in to your
+            account, and all your times from this device will appear there! If you have any feedback,
+            you can click the feedback icon in the menu, and it will redirect you to a feedback
+            page.<br><br>
+            <h3>Keyboard shortcuts</h3>
+            There are currently 3 keyboard shortcuts:
+            <ul>
+              <li>`shift + del` to delete last solve</li>
+              <li>`shift + 2` to toggle last solve as +2</li>
+              <li>`shift + D` to set last solve as DNF</li>
+            </ul>
+            This website is also open source, which means you can view and contribute to the
+            source code. To do this, click the github icon (a cat) in the footer below.<br>
+            <h3>Install PWA</h3>
+            This website is a PWA (Progressive Web App), which means you can add it to your homescreen,
+            and it will work just like any other app, even offline! You can install this (if your browser
+            supports it) by clicking the menu of your browser, and then clicking "Add to homescreen". For
+            more detailed browser - specific instructions, click <a href="/installpwa">here</a>.
           </div>
-          <div id="solvesGraphIntro">
-            Graph of last
-            <div id="lastNSolvesTextField" class="mdc-text-field">
-              <input type="text" id="lastNSolves" class="mdc-text-field__input" value="50">
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button" data-mdc-dialog-action="accept">Okay</button>
+          </footer>
+        </div>
+      </div>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="importInfoDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="importInfoDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="importInfoDialogLabel" class="mdc-dialog__title"><!--
+         -->How do I import solves?<!--
+       --></h2>
+          <div class="mdc-dialog__content">
+            <h3>Import from csTimer</h3>
+            <video id="importInfoVideo" class="video-js vjs-big-play-centered vjs-16-9" controls preload="auto" data-setup="{}">
+              <source src="/videos/cubetastic_import_solves.webm" type='video/webm'>
+              <source src="/videos/cubetastic_import_solves.mp4" type='video/mp4'>
+              <source src="/videos/cubetastic_import_solves.ogg" type='video/ogg'>
+              <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a web browser that
+                <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+              </p>
+            </video>
+            <h3>Import from Twisty Timer</h3>
+            <video id="twistyTimerVideo" class="video-js vjs-big-play-centered" controls preload="auto" data-setup="{}">
+              <source src="/videos/cubetastic_import_from_twisty_timer.webm" type="video/webm">
+              <source src="/videos/cubetastic_import_from_twisty_timer.m4v">
+              <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a web browser that
+                <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+              </p>
+            </video>
+          </div>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button" data-mdc-dialog-action="accept">Okay</button>
+          </footer>
+        </div>
+      </div>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="importDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="importDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="importDialogLabel" class="mdc-dialog__title"><!--
+         -->Import/Export<!--
+       --></h2>
+          <div class="mdc-dialog__content">
+            <div id="importExportTabBar" class="mdc-tab-bar" role="tablist">
+              <div class="mdc-tab-scroller">
+                <div class="mdc-tab-scroller__scroll-area">
+                  <div class="mdc-tab-scroller__scroll-content">
+                    <button class="mdc-tab mdc-tab--active" role="tab" aria-selected="true" tabindex="0">
+                      <div class="mdc-tab__content">
+                        <span class="mdc-tab__text-label">Import</span>
+                      </div>
+                      <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                      </span>
+                      <div class="mdc-tab__ripple"></div>
+                    </button>
+                    <button class="mdc-tab" role="tab" aria-selected="false" tabindex="-1">
+                      <div class="mdc-tab__content">
+                        <span class="mdc-tab__text-label">Export</span>
+                      </div>
+                      <span class="mdc-tab-indicator">
+                        <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                      </span>
+                      <div class="mdc-tab__ripple"></div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="import">
+              Right now, only importing solves from the specified timers is supported. Please <b>do not</b> try to import
+              from other timers, because it might cause errors!<i id="importInfo" class="material-icons" title="how?">help</i><br>
+              Note: For csTimer and TNT, make sure you import as .csv, and <b>not</b> as .txt or .json.<br><br>
+              <button id="csTimer" class="mdc-button mdc-button--outlined exception">csTimer</button>
+              <button id="TNT" class="mdc-button mdc-button--outlined exception">TNoodle Timer</button>
+              <button id="twistyTimer" class="mdc-button mdc-button--outlined exception">Twisty Timer</button>
+              <input type="file" id="chooseImportFileCSV" accept=".csv">
+              <input type="file" id="chooseImportFileTXT" accept=".txt">
+              <div id="importedSample"></div>
+            </div>
+            <div id="export">
+              Under construction
+            </div>
+          </div>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-dialog__footer__button" data-mdc-dialog-action="close">Cancel</button>
+            <button type="button" class="mdc-button mdc-button--unelevated mdc-dialog__footer__button" disabled>Done</button>
+          </footer>
+        </div>
+      </div>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="statsInfoDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="statsInfoDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="statsInfoDialogLabel" class="mdc-dialog__title"><!--
+         -->Statistics<!--
+       --></h2>
+          <div class="mdc-dialog__content">
+            Firstly, select whether you want to see info about your best solves, or your current solves,
+            or your worst solves, by clicking on the select menu in the very top of the stats box.<br>
+            Now, you can see your averages and singles for the type of stats you selected. If you want
+            to see your average of 12, for example, just type in "12" in the text field after "Average Of".
+            And then, let's say you selected "Best" in the select menu. Now, if you want to see your best
+            single from your last 10 solves, and you've done a total of 25 solves, just enter "15-25" in the
+            text field after "Single From". Same goes for "Worst" also. If you select "Current", and then
+            enter "1-17", you'll get what your 17<sup>th</sup> solve was.
+          </div>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button" data-mdc-dialog-action="accept">Okay</button>
+          </footer>
+        </div>
+      </div>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="statsDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="statsDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="statsDialogLabel" class="mdc-dialog__title"><!--
+         -->Statistics<!--
+       --></h2>
+          <div class="mdc-dialog__content">
+            <div id="graphDetailSelect" class="mdc-select">
+              <select class="mdc-select__native-control">
+                <option value="solves">
+                  Solves
+                </option>
+                <option value="date-time">
+                  Date-time
+                </option>
+              </select>
+              <label class="mdc-floating-label">Graph detail</label>
               <div class="mdc-line-ripple"></div>
             </div>
-            solves
+            <div id="solvesGraphIntro">
+              Graph of last
+              <div id="lastNSolvesTextField" class="mdc-text-field">
+                <input type="text" id="lastNSolves" class="mdc-text-field__input" value="50">
+                <div class="mdc-line-ripple"></div>
+              </div>
+              solves
+            </div>
+            <div id="dateTimeGraphIntro">
+              Time Range:<br><br>
+              <div id="lastNHoursSlider"></div>
+              <div id="hoursRange"></div>
+            </div>
+            <div id="graphContainer">
+              <canvas id="solves_graph"></canvas>
+            </div>
           </div>
-          <div id="dateTimeGraphIntro">
-            Time Range:<br><br>
-            <div id="lastNHoursSlider"></div>
-            <div id="hoursRange"></div>
-          </div>
-          <div id="graphContainer">
-            <canvas id="solves_graph"></canvas>
-          </div>
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Okay!</button>
-        </footer>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-button--raised mdc-dialog__footer__button" data-mdc-dialog-action="accept">Okay</button>
+          </footer>
+        </div>
       </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
-    <aside id="addSolvesDialog" class="mdc-dialog" role="alertdialog" aria-labelledby="addSolvesDialogLabel">
-      <div class="mdc-dialog__surface">
-        <header class="mdc-dialog__header">
-          <h2 id="addSolvesDialogLabel" class="mdc-dialog__header__title">
-            Add Solves
-          </h2>
-        </header>
-        <section class="mdc-dialog__body mdc-dialog__body--scrollable">
-          Note: You can set solves as +2 or DNF <i>after</i> adding them to your session.
-          <ul class="mdc-list mdc-list--two-line mdc-list--non-interactive" aria-orientation="vertical">
-            <li id="newSolve" class="mdc-list-item">
-              <span class="mdc-list-item__text">
-                <span class="mdc-list-item__primary-text"><input type="text" placeholder="21.415"></span>
-                <span class="mdc-list-item__secondary-text"><div>Category: <select id="newSolveCategory">
-                  <option value="3x3x3">3x3x3</option>
-                  <option value="2x2x2">2x2x2</option>
-                  <option value="3x3x3 bld">3x3x3 bld</option>
-                  <option value="Pyraminx">Pyraminx</option>
-                  <option value="4x4x4">4x4x4</option>
-                  <option value="5x5x5">5x5x5</option>
-                  <option value="6x6x6">6x6x6</option>
-                  <option value="7x7x7">7x7x7</option>
-                  <option value="Megaminx">Megaminx</option>
-                  <option value="Skweb">Skweb</option>
-                  <option value="Square 1">Square 1</option>
-                </select></div><div> | </div><div><label>Scramble (opt):</label><input type="text" placeholder="R' F R B' R2 D' F U' F' R2 U' L2 B2 D R2 U L2 F2 D B2"></div></span>
-              </span>
-              <i id="newSolveBtn" class="mdc-icon-button mdc-list-item__meta material-icons">add</i>
-            </li>
-          </ul>
-        </section>
-        <footer class="mdc-dialog__footer">
-          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
-          <button type="button" id="addSolvesBtn" class="mdc-button mdc-button--unelevated mdc-dialog__footer__button">Add</button>
-        </footer>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
+    <div id="addSolvesDialog" class="mdc-dialog" role="alertdialog" aria-modal="true" aria-labelledby="addSolvesDialogLabel">
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 id="addSolvesDialogLabel" class="mdc-dialog__title"><!--
+         -->Add Solves<!--
+       --></h2>
+          <div class="mdc-dialog__content">
+            Note: You can set solves as +2 or DNF <i>after</i> adding them to your session.
+            <ul class="mdc-list mdc-list--two-line mdc-list--non-interactive" aria-orientation="vertical">
+              <li id="newSolve" class="mdc-list-item">
+                <span class="mdc-list-item__text">
+                  <span class="mdc-list-item__primary-text"><input type="text" placeholder="21.415"></span>
+                  <span class="mdc-list-item__secondary-text"><div>Category: <select id="newSolveCategory">
+                    <option value="3x3x3">3x3x3</option>
+                    <option value="2x2x2">2x2x2</option>
+                    <option value="3x3x3 bld">3x3x3 bld</option>
+                    <option value="Pyraminx">Pyraminx</option>
+                    <option value="4x4x4">4x4x4</option>
+                    <option value="5x5x5">5x5x5</option>
+                    <option value="6x6x6">6x6x6</option>
+                    <option value="7x7x7">7x7x7</option>
+                    <option value="Megaminx">Megaminx</option>
+                    <option value="Skweb">Skweb</option>
+                    <option value="Square 1">Square 1</option>
+                  </select></div><div> | </div><div><label>Scramble (opt):</label><input type="text" placeholder="R' F R B' R2 D' F U' F' R2 U' L2 B2 D R2 U L2 F2 D B2"></div></span>
+                </span>
+                <i id="newSolveBtn" class="mdc-icon-button mdc-list-item__meta material-icons">add</i>
+              </li>
+            </ul>
+          </div>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-dialog__footer__button" data-mdc-dialog-action="close">Cancel</button>
+            <button type="button" id="addSolvesBtn" class="mdc-button mdc-button--raised mdc-dialog__footer__button">Add</button>
+          </footer>
+        </div>
       </div>
-      <div class="mdc-dialog__backdrop"></div>
-    </aside>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
     <div id="timer">
       <div id="leftPanel">
         <div id="records" class="hide-on-med-and-down mdc-elevation--z6">
@@ -937,7 +947,7 @@
 <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase.js"></script>
 <script async src="js/tnoodle.js"></script>
 <script src="js/main.js"></script>
-<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+<script src="js/mdc-web.min.js"></script>
 <script src="js/nouislider.min.js"></script>
 <script async>
   mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
@@ -969,15 +979,15 @@
   //FABs
   document.querySelector('#importFAB').addEventListener('click', function (evt) {
     importDialog.lastFocusedTarget = evt.target;
-    importDialog.show();
+    importDialog.open();
   });
   document.querySelector('#infoFAB').addEventListener('click', function (evt) {
     infoDialog.lastFocusedTarget = evt.target;
-    infoDialog.show();
+    infoDialog.open();
   });
   $('#settingsFAB').click(function(evt) {
     settingsDialog.lastFocusedTarget = evt.target;
-    settingsDialog.show();
+    settingsDialog.open();
   });
   $('#feedbackFAB').click(function() {
     window.location.href = "/contactMe";
@@ -1034,6 +1044,11 @@
   const selectTheme = new mdc.select.MDCSelect(document.querySelector('#selectTheme'));
   const selectBGImage = new mdc.select.MDCSelect(document.querySelector('#selectBGImage'));
 
+  // Switches
+  const enableInspectionSwitch = new mdc.switchControl.MDCSwitch(document.querySelector('#enableInspectionSwitch'));
+  const enableAudioCuesSwitch = new mdc.switchControl.MDCSwitch(document.querySelector('#enableAudioCuesSwitch'));
+  const enableLongPressSwitch = new mdc.switchControl.MDCSwitch(document.querySelector('#enableLongPressSwitch'));
+
   //Checkboxes
   const scrambleImgCheckbox = new mdc.checkbox.MDCCheckbox(document.querySelector('#scrambleImgCheckbox'));
   const scrambleImgFormField = new mdc.formField.MDCFormField(document.querySelector('#scrambleImgFormField'));
@@ -1064,12 +1079,6 @@
     $('#scramble').css('top', $('#time h1').offset().top + $('#time h1').height());
   });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-<script src="https://vjs.zencdn.net/7.1.0/video.js"></script>
-<script src="/js/talkify.js"></script>
 <script src="/js/timer.js"></script>
-<script src="/js/stats.js"></script>
-<script src="/js/papaparse.min.js"></script>
-<script async src="/js/importTimes.js"></script>
 <script async src="/js/loggedStatus.js"></script>
 </html>

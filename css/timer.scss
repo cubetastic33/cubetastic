@@ -21,6 +21,7 @@ $mdc-theme-on-secondary: #000000;
 @import "@material/select/mdc-select";
 @import "@material/switch/mdc-switch";
 @import "@material/slider/mdc-slider";
+@import "@material/dialog/mdc-dialog";
 @import "@material/image-list/mdc-image-list";
 @import "@material/top-app-bar/mdc-top-app-bar";
 
@@ -50,19 +51,26 @@ $mdc-theme-on-secondary: #000000;
 	border-radius: 3px;
 }
 
+.mdc-dialog {
+	@include mdc-dialog-min-width(75vw);
+	@include mdc-dialog-max-width(75vw, 1vw);
+}
+
+.mdc-switch {
+	@include mdc-switch-toggled-on-color($mdc-theme-primary);
+
+	+ label {
+		color: #000000;
+	}
+}
+
 .mdc-checkbox {
 	@include mdc-checkbox-container-colors(#757575, #FFFFFF, $mdc-theme-primary);
 	@include mdc-checkbox-ink-color($mdc-theme-on-primary);
 }
 
-.mdc-switch {
-	margin: 0.5rem;
-	@include mdc-switch-track-color($mdc-theme-primary);
-	@include mdc-switch-knob-color($mdc-theme-primary);
-}
-
 .my-masonry-image-list {
-	@include mdc-image-list-corner-radius(5px);
+	@include mdc-image-list-shape-radius(5px);
 	@include mdc-image-list-masonry-columns(3);
 
 	li:hover {
@@ -289,16 +297,12 @@ $mdc-theme-on-secondary: #000000;
 	}
 }
 
-#settingsDialog .mdc-dialog__body--scrollable, #chooseBGImage .mdc-dialog__body--scrollable, #importDialog .mdc-dialog__body--scrollable, #importInfoDialog .mdc-dialog__body--scrollable, #addSolvesDialog .mdc-dialog__body--scrollable {
-	max-height: 60vh;
-}
-
 #statsDialog .mdc-dialog__body--scrollable {
 	max-height: 67.5vh;
 	position: relative;
 }
 
-#chooseBGImage {
+#chooseBGImageDialog {
 	z-index: 100;
 }
 

@@ -28,7 +28,7 @@ slider.noUiSlider.on('change', function() {
 
 document.querySelector('.statsInfoIcon').addEventListener('click', function (evt) {
   statsInfoDialog.lastFocusedTarget = evt.target;
-  statsInfoDialog.show();
+  statsInfoDialog.open();
 });
 
 var ctx = $('#solves_graph');
@@ -36,7 +36,7 @@ window.chartObj = false;
 
 document.querySelector('#statsIcon').addEventListener('click', function (evt) {
   statsDialog.lastFocusedTarget = evt.target;
-  statsDialog.show();
+  statsDialog.open();
   if (timesForAvg.length > 0) {
     if (graphDetailSelect.value === 'solves') {
       $('#solvesGraphIntro').show();

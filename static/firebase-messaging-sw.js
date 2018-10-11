@@ -22,7 +22,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV1.4.9';
+var cacheName = 'cubetasticV1.4.10';
 var filesToCache = [
   '/',
   '/index',
@@ -34,12 +34,12 @@ var filesToCache = [
   'https://fonts.googleapis.com/css?family=Acme|Cabin|Play|Saira|Oswald',
   'https://fonts.googleapis.com/css?family=Cabin|Saira|Play|Iceberg|Unica+One|Contrail+One|Share+Tech+Mono|Black+Han+Sans|Copse|Noto+Sans|Space+Mono|Titillium+Web',
   'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js',
-  'https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js',
   'https://vjs.zencdn.net/7.1.0/video-js.css',
   '/css/main.css',
   '/css/timer.css',
   '/images/icons/icon-512x512.png',
   '/images/textures/cubes.png',
+  '/js/mdc-web.min.js',
   '/js/main.js',
   '/js/loggedStatus.js',
   '/js/timer.js',

@@ -309,7 +309,7 @@ ol li {
 
 #githubBtn, #gitlabBtn {
   @include mdc-button-container-fill-color(#FFFFFF);
-  @include mdc-button-corner-radius(3px);
+  @include mdc-button-shape-radius(3px);
   font-family: Roboto-Medium;
   font-size: 14px;
   color: rgba(0, 0, 0, 0.75);
@@ -572,7 +572,7 @@ a {
 
     button {
       @include mdc-button-container-fill-color(#FFFFFF);
-      @include mdc-button-corner-radius(3px);
+      @include mdc-button-shape-radius(3px);
       font-family: Roboto-Medium;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.54);

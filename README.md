@@ -1,7 +1,7 @@
 # Cubetastic
 
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://gitlab.com/cubetastic/cubetastic/blob/master/LICENSE)
-![Version](https://img.shields.io/badge/version-1.4.9-brightgreen.svg)
+![Version](https://img.shields.io/badge/version-1.4.10-brightgreen.svg)
 
 Hello everyone, and welcome to cubetastic. Here, you can find the official source code of my website. Click [here](https://cubetastic.herokuapp.com) to go to the website itself.
 
@@ -26,12 +26,12 @@ The main features of this timer are:
 However, please note that the TNoodle scrambles for bigger puzzles like 4x4, 5x5, etc. can take some time to generate. If you have any queries, or feature request, or feedback, please tell me in the [contact me](https://cubetastic.herokuapp.com/contactMe) page of the website. Here are some images in different browsers:
 
 + Google Chrome (Linux, added to homescreen), with custom background image and inbuilt transparent theme, customized to have white text
-   ![Google Chrome (Linux, added to homescreen), with custom background image and inbuilt transparent theme, customized to have white text](https://i.redd.it/yd56znlkgk411.png "Google Chrome (Linux, added to homescreen), with custom background image and inbuilt transparent theme, customized to have white text")
-+ Firefox Quantum (on Linux), with inbuilt Gray Wisp theme
-   ![Firefox Quantum (on Linux), with inbuilt Gray Wisp theme](https://i.redd.it/8gw6x2wbjk411.png "Firefox Quantum (on Linux), with inbuilt Gray Wisp theme")
+   ![Google Chrome (Linux, added to homescreen), with custom background image and inbuilt transparent theme, customized to have white text](https://i.imgur.com/XKpRgO6.png "Google Chrome (Linux, added to homescreen), with custom background image and inbuilt transparent theme, customized to have white text")
++ Firefox Quantum (on Linux), with inbuilt Chloris Gray theme
+   ![Firefox Quantum (on Linux), with inbuilt Chloris Gray theme](https://i.imgur.com/aYuIlmD.png "Firefox Quantum (on Linux), with inbuilt Gray Wisp theme")
 + Chrome (Android, added to homescreen), with inbuilt Chloris Gray theme
 
    ![Chrome (Android, added to homescreen), with inbuilt Chloris Gray theme](/images/cubetastic_android.png "Chrome (Android, added to homescreen), with inbuilt Chloris Gray theme")
 + Safari (iOS, added to homescreen), with custom background image
 
-   ![Safari (iOS, added to homescreen), with custom background image](/images/cubetastic_ios.PNG "Safari (iOS, added to homescreen), with custom background image")
+   ![Safari (iOS, added to homescreen), with custom background image](https://i.imgur.com/rZ8Jw9t.png "Safari (iOS, added to homescreen), with custom background image")

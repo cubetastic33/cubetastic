@@ -17,7 +17,7 @@ entireTimerDiv.addEventListener("touchend", handleFullEnd, false);
 
 var solveInfoDialog = new mdc.dialog.MDCDialog(document.querySelector('#solveInfoDialog'));
 var editSessionsDialog = new mdc.dialog.MDCDialog(document.querySelector('#editSessionsDialog'));
-var chooseBGImageDialog = new mdc.dialog.MDCDialog(document.querySelector('#chooseBGImage'));
+var chooseBGImageDialog = new mdc.dialog.MDCDialog(document.querySelector('#chooseBGImageDialog'));
 var addSolvesDialog = new mdc.dialog.MDCDialog(document.querySelector('#addSolvesDialog'));
 var snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar'));
 var typeOfStats = new mdc.select.MDCSelect(document.querySelector('#typeOfStats'));
@@ -44,12 +44,12 @@ $(window).keydown(function(e) {
       if (typeof inspectionTimeout != 'undefined') {
         inspectionCompleted = true;
       }
-      if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+      if (enableInspectionSwitch.checked === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
         //Inspection needs to finish before starting the timer, so show green div
         $('#green').attr('class', 'green');
       } else {
-        var delayLength = $('#enableLongPress').prop('checked') ? 700 : 0;
-        delayLength = (delayLength == 700 && $('#enableInspection').prop('checked') && selectedCategory != '3x3x3 bld') ? 0 : delayLength;
+        var delayLength = enableLongPressSwitch.checked ? 700 : 0;
+        delayLength = (delayLength == 700 && enableInspectionSwitch.checked && selectedCategory != '3x3x3 bld') ? 0 : delayLength;
         greenTimeout = setTimeout(() => {$('#green').attr('class', 'green')}, delayLength);
       }
     }
@@ -79,12 +79,12 @@ function handleStart(e) {
     if (typeof inspectionTimeout != 'undefined') {
       inspectionCompleted = true;
     }
-    if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+    if (enableInspectionSwitch.checked === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
       //Inspection needs to finish before starting the timer, so show green div
       $('#green').attr('class', 'green');
     } else {
-      var delayLength = $('#enableLongPress').prop('checked') ? 700 : 0;
-      delayLength = (delayLength == 700 && $('#enableInspection').prop('checked') && selectedCategory != '3x3x3 bld') ? 0 : delayLength;
+      var delayLength = enableLongPressSwitch.checked ? 700 : 0;
+      delayLength = (delayLength == 700 && enableInspectionSwitch.checked && selectedCategory != '3x3x3 bld') ? 0 : delayLength;
       greenTimeout = setTimeout(() => {$('#green').attr('class', 'green')}, delayLength);
     }
   }
@@ -98,7 +98,7 @@ $(window).keyup(function(e) {
         clearTimeout(inspectionTimeout);
         inspectionTimeout = undefined;
       }
-      if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+      if (enableInspectionSwitch.checked === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
         //Start inspection
         inspection();
         if ($('#hideelements').prop('checked') == true) {
@@ -161,7 +161,7 @@ function handleEnd(e) {
       clearTimeout(inspectionTimeout);
       inspectionTimeout = undefined;
     }
-    if ($('#enableInspection').prop('checked') === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
+    if (enableInspectionSwitch.checked === true && selectedCategory != '3x3x3 bld' && inspectionCompleted === false) {
       //Start inspection
       inspection();
       if ($('#hideelements').prop('checked') == true) {
@@ -448,7 +448,7 @@ categoryMenuEl.addEventListener('MDCMenu:selected', function(evt) {
 
 //Handle renaming of sessions
 $('#editSessions').click(function() {
-  editSessionsDialog.show();
+  editSessionsDialog.open();
 });
 
 $('#createNewSession').click(function() {
@@ -569,13 +569,14 @@ function calcSingle(type, range) {
   return single;
 }
 
-function calcAverage(type, range) {
+function calcAverage(type, range, n) {
+  var times = timesForAvg.slice(0, n);
   range = parseInt(range);
-  remove = Math.ceil(parseInt(range)*5/100);
+  remove = Math.ceil(range*5/100);
   var avg = '-:--.---';
   if (type === 'current') {
-    if (timesForAvg.length >= range) {
-      var localTimes = timesForAvg.slice(-1*range);
+    if (times.length >= range) {
+      var localTimes = times.slice(-1*range);
       for (var i = 1; i <= remove; i++) {
         localTimes.splice(localTimes.indexOf(Array.min(localTimes)), 1);
         localTimes.splice(localTimes.indexOf(Array.max(localTimes)), 1);
@@ -583,10 +584,10 @@ function calcAverage(type, range) {
       avg = localTimes.reduce(add, 0)/localTimes.length;
     }
   } else {
-    if (timesForAvg.length >= range) {
+    if (times.length >= range) {
       averages = [];
-      for (var i=(range-1); i<timesForAvg.length; i++) {
-        var localTimes = timesForAvg.slice(i-(range-1), i+1);
+      for (var i=(range-1); i<times.length; i++) {
+        var localTimes = times.slice(i-(range-1), i+1);
         for (var n = 1; n <= remove; n++) {
           localTimes.splice(localTimes.indexOf(Array.min(localTimes)), 1);
           localTimes.splice(localTimes.indexOf(Array.max(localTimes)), 1);
@@ -692,20 +693,20 @@ function showTimesFromFirebase() {
           '" data-scramble="'+escapeHTML(solve[2])+'" data-category="'+escapeHTML(solve[0])+
           '" data-penalty="'+escapeHTML(solve[3].toString())+'" data-solve-date="'+new Date(solve[4]).toLocaleString()+
           '" data-comment="'+comment+'"><td>'+n+'</td><td>'+dt+
-          '</td><td>'+calcAverage('current', 5)+'</td></tr>\
+          '</td><td>'+calcAverage('current', 5, n)+'</td></tr>\
         ');
         $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
-        $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+        $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val(), n));
         $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
-        $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+        $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val(), n));
         document.querySelector('#session').scrollTo(0, 0);
         $('#typeOfStats select, #singleFrom, #averageOf').off('change').change(function() {
           $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
-          $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+          $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val(), n));
         });
         $('#mobileTypeOfStats select, #mobileSingleFrom, #mobileAverageOf').off('change').change(function() {
           $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
-          $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+          $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val(), n));
         });
         $('#session, #sessionDrawer .mdc-drawer__content').off('scroll').scroll(() => {
           if ($('#session').prop('scrollHeight') - $('#session').prop('scrollTop') === $('#session').prop('clientHeight')) {
@@ -753,9 +754,9 @@ function showTimesFromFirebase() {
                     '</td><td>-:--.---</td></tr>\
                   ');
                   $('#single').text(calcSingle($('#typeOfStats select').val(), $('#singleFrom').val()));
-                  $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val()));
+                  $('#average').text(calcAverage($('#typeOfStats select').val(), $('#averageOf').val(), i));
                   $('#mobileSingle').text(calcSingle($('#mobileTypeOfStats select').val(), $('#mobileSingleFrom').val()));
-                  $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val()));
+                  $('#mobileAverage').text(calcAverage($('#mobileTypeOfStats select').val(), $('#mobileAverageOf').val(), i));
                 }
               });
               updateRecordsStats();
@@ -1066,7 +1067,7 @@ function initContextMenu() {
       'top': e.pageY-10 + 'px'
     });
     $('#viewScramble').off('click').click(function() {
-      solveInfoDialog.show();
+      solveInfoDialog.open();
       $('#solveInfo').html('\
         <b>Category: </b>'+category+'<br>\
         <b>Solve Time: </b>'+time+'\
@@ -1130,7 +1131,7 @@ function initMobileContextMenu() {
       'top': e.pageY-10 + 'px'
     });
     $('#viewScramble').off('click').click(function() {
-      solveInfoDialog.show();
+      solveInfoDialog.open();
       $('#solveInfo').html('\
         <b>Category: </b>'+category+'<br>\
         <b>Solve Time: </b>'+time+'\
@@ -1180,7 +1181,7 @@ function initMobileContextMenu() {
 
 $('#addSolves').click(() => {
   $('#contextMenu').hide();
-  addSolvesDialog.show();
+  addSolvesDialog.open();
 });
 
 function verifyTimeAndScramble(time, scramble) {
@@ -1434,9 +1435,9 @@ function updateSettings() {
 function updateSettingsUI() {
   var settings = localStorage.getItem('settings').split('|');
   $('#font').val(settings[2]);
-  $('#enableInspection').prop('checked', $.parseJSON(settings[5]));
-  $('#enableAudioCues').prop('checked', $.parseJSON(settings[6]));
-  $('#enableLongPress').prop('checked', $.parseJSON(settings[7]));
+  enableInspectionSwitch.checked = $.parseJSON(settings[5]);
+  enableAudioCuesSwitch.checked = $.parseJSON(settings[6]);
+  enableLongPressSwitch.checked = $.parseJSON(settings[7]);
   if ($('#scrambleImage').css('display') == 'none') {
     $('#showscrambleimage').prop('checked', false);
   } else {
@@ -1494,19 +1495,19 @@ selectFont.listen('change', () => {
 
 $('#enableInspection').change(() => {
   var settings = localStorage.getItem('settings').split('|');
-  settings[5] = $('#enableInspection').prop('checked');
+  settings[5] = enableInspectionSwitch.checked;
   localStorage.setItem('settings', settings.join('|'));
 });
 
 $('#enableAudioCues').change(() => {
   var settings = localStorage.getItem('settings').split('|');
-  settings[6] = $('#enableAudioCues').prop('checked');
+  settings[6] = enableAudioCuesSwitch.checked;
   localStorage.setItem('settings', settings.join('|'));
 });
 
 $('#enableLongPress').change(() => {
   var settings = localStorage.getItem('settings').split('|');
-  settings[7] = $('#enableLongPress').prop('checked');
+  settings[7] = enableLongPressSwitch.checked;
   localStorage.setItem('settings', settings.join('|'));
 });
 
@@ -1545,7 +1546,7 @@ selectBGImage.listen('change', () => {
     localStorage.setItem('settings', settings.join('|'));
     $('#timer').css('background-image', '');
   } else if (selectBGImage.value === 'Choose') {
-    chooseBGImageDialog.show();
+    chooseBGImageDialog.open();
   } else {
     var imageURL = prompt('Enter image URL');
     console.log(imageURL);
@@ -1563,7 +1564,7 @@ selectBGImage.listen('change', () => {
   }
 });
 
-$('#chooseBGImage .mdc-image-list li').click(function() {
+$('#chooseBGImageDialog .mdc-image-list li').click(function() {
   var settings = localStorage.getItem('settings').split('|');
   settings[9] = $(this).attr('data-image');
   localStorage.setItem('settings', settings.join('|'));
