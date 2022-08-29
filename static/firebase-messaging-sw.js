@@ -1,6 +1,8 @@
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
+// Edit: 48943153451964
+
 // Initialize the Firebase app in the service worker by passing in the messagingSenderId.
 firebase.initializeApp({
   'messagingSenderId': '744871672011'
@@ -22,7 +24,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
   return self.registration.showNotification(title, options);
 });
 
-var cacheName = 'cubetasticV1.4.10';
+var cacheName = 'cubetasticV1.4.11';
 var filesToCache = [
   '/',
   '/index',

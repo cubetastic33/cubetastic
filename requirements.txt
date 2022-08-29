@@ -1,0 +1,4 @@
+flask
+gunicorn
+firebase-admin
+pyfcm
