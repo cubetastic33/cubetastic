@@ -10,7 +10,7 @@ dotenv.load_dotenv()
 push_service = FCMNotification(api_key=getenv('API_KEY'))
 
 #Firebase Initialization
-cred = credentials.Certificate('static/cubetastic-33-firebase-adminsdk-89yl9-fe0a5bbca0.json')
+cred = credentials.Certificate('cubetastic-33-firebase-adminsdk-89yl9-fe0a5bbca0.json')
 default_app = firebase_admin.initialize_app(cred, {
   'databaseURL': 'https://cubetastic-33.firebaseio.com'
 })
