@@ -2,3 +2,4 @@ flask
 gunicorn
 firebase-admin
 pyfcm
+python-dotenv
