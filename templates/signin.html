@@ -3,192 +3,212 @@
 {% block title %}Cubetastic | Sign in{% endblock %}
 
 {% block body %}
-    <div id="signinDivision">
-        <div id="formHeading">Sign In</div>
-        <div id="signInContainer">
-            <form id="formDiv" class="mdc-elevation--z4" onsubmit="signInUser(event)">
-                <div class="outlined-input-field"> <i class="material-icons">account_circle</i> <input type="text" id="username" class="outlined-text-field" autocomplete="off"> <label for="username">Username</label> <i class="material-icons warning-icon">warning</i>
-                    <i class="material-icons error-icon">error_outline</i>
-                    <div class="helper-text"></div>
-                </div><br><br>
-                <div class="outlined-input-field"> <i class="material-icons">lock</i> <input type="password" id="password" class="outlined-text-field" autocomplete="off" readonly onfocus="if (this.hasAttribute('readonly')) {this.removeAttribute('readonly');this.blur();this.focus();}">
-                    <label for="password">Password</label></div><br>
-                <div class="button-container"> <button type="button" id="forgotPassword" class="mdc-button">Forgot Password</button> <button type="submit" id="signInButton" class="mdc-button mdc-button--unelevated">Sign In</button></div>
-                <p>Not a member of cubetastic yet? <a href="signup">Sign up</a> now!</p>
-            </form>
-            <div id="signInDivider">
-                <div></div>
-                <div>OR</div>
-                <div></div>
-            </div>
-            <div id="alternateSignInProviders">
-                <p>You can also sign in using your existing Google or GitHub accounts</p> <button id="signInWithGoogle" class="mdc-button mdc-button--raised"> <img src="/images/google_logo.png" alt="google icon" aria-hidden="true"> Sign in with Google
-            </button> <button id="signInWithGitHub" class="mdc-button mdc-button--raised"> <img src="/images/Octocat/Octocat.png" alt="github icon" aria-hidden="true"> Sign in with GitHub </button>
-            </div>
-        </div>
+<div id="signinDivision">
+  <div id="formHeading">Sign In</div>
+  <div id="signInContainer">
+    <form id="formDiv" class="mdc-elevation--z4" onsubmit="signInUser(event)">
+      <div class="outlined-input-field"><i class="material-icons">account_circle</i> <input
+        type="text" id="username" class="outlined-text-field" autocomplete="off"> <label
+        for="username">Username</label> <i class="material-icons warning-icon">warning</i>
+        <i class="material-icons error-icon">error_outline</i>
+        <div class="helper-text"></div>
+      </div>
+      <br><br>
+      <div class="outlined-input-field"><i class="material-icons">lock</i> <input type="password"
+                                                                                  id="password"
+                                                                                  class="outlined-text-field"
+                                                                                  autocomplete="off"
+                                                                                  readonly
+                                                                                  onfocus="if (this.hasAttribute('readonly')) {this.removeAttribute('readonly');this.blur();this.focus();}">
+        <label for="password">Password</label></div>
+      <br>
+      <div class="button-container">
+        <button type="button" id="forgotPassword" class="mdc-button">Forgot Password</button>
+        <button type="submit" id="signInButton" class="mdc-button mdc-button--unelevated">Sign
+          In
+        </button>
+      </div>
+      <p>Not a member of cubetastic yet? <a href="signup">Sign up</a> now!</p>
+    </form>
+    <div id="signInDivider">
+      <div></div>
+      <div>OR</div>
+      <div></div>
     </div>
+    <div id="alternateSignInProviders">
+      <p>You can also sign in using your existing Google or GitHub accounts</p>
+      <button id="signInWithGoogle" class="mdc-button mdc-button--raised"><img
+        src="/images/google_logo.png" alt="google icon" aria-hidden="true"> Sign in with Google
+      </button>
+      <button id="signInWithGitHub" class="mdc-button mdc-button--raised"><img
+        src="/images/Octocat/Octocat.png" alt="github icon" aria-hidden="true"> Sign in with
+        GitHub
+      </button>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block javascript %}
 <script>
-	snackbar.show({
-		message: 'Please wait...'
-	});
-	var googleProvider = new firebase.auth.GoogleAuthProvider();
-	var gitHubProvider = new firebase.auth.GithubAuthProvider();
-	firebase.auth().getRedirectResult().then(function(result) {
-		if (result.credential) {
-			var token = result.credential.accessToken;
-		}
-		var newUser = result.user;
-		console.log(newUser);
-		if (newUser) {
-			if (newUser.displayName.length >= 6) {
-				$.ajax({
-					type: 'POST',
-					url: '/userExists',
-					data: {
-						username: newUser.displayName,
-						uid: newUser.uid
-					},
-					success: function(userExists) {
-						console.log(userExists);
-						var deleted = false;
-						if (userExists.name == 'True' && userExists.uid.includes(newUser.uid) === false) {
-							snackbar.show({
-								message: 'Somebody else already has that username! Please try other options.',
-								multiline: true,
-								timeout: 10000
-							});
-							newUser.delete().then(function() {
-								console.log('Deleted account');
-							}).catch(function(error) {
-								console.log(error);
-							});
-							deleted = true;
-						}
-						if (userExists.uid.includes(newUser.uid) === true) {
-							deleted = true;
-							snackbar.show({
-								message: 'User already exists, signing in',
-								multiline: true,
-								timeout: 10000
-							});
-							window.location.href = "/profile";
-						}
-						if (userExists.name == 'False' && deleted === false) {
-							snackbar.show({
-								message: 'Success! Creating user "' + newUser.displayName + '".',
-								multiline: true,
-								timeout: 5000
-							});
-							$.ajax({
-								type: 'POST',
-								url: '/createUser',
-								data: {
-									uid: newUser.uid,
-									email: newUser.email,
-									location: '',
-									phone: '',
-									photoURL: newUser.photoURL,
-									username: newUser.displayName
-								},
-								success: function(result) {
-									console.log(result);
-									if (result == 'created user ' + newUser.displayName + '.') {
-										newUser.sendEmailVerification().then(function() {
-											alert("Verification email has been sent.");
-											window.location.href = "/profile";
-										}).catch(function(error) {
-											console.log(error);
-											snackbar.show({
-												message: error,
-												multiline: true,
-												timeout: 10000
-											});
-										});
-									}
-								}
-							});
-						}
-					}
-				});
-			} else {
-				snackbar.show({
-					message: 'Your username "' + newUser.displayName + '" is too short. Please try other options!',
-					multiline: true,
-					timeout: 6000
-				});
-				newUser.delete().then(function() {
-					console.log('Deleted account');
-				}).catch(function(error) {
-					console.log(error);
-				});
-			}
-		} else {
-			firebase.auth().onAuthStateChanged(function(user) {
-				if ((user) && (signedinnow === false)) {
-					signOutUser();
-					snackbar.show({
-						message: 'You have been signed out',
-						timeout: 5000
-					});
-				}
-			});
-		}
-	}).catch(function(error) {
-		console.log(error);
-		var errorCode = error.code;
-		var errorMessage = error.message;
-		snackbar.show({
-			message: errorMessage,
-			multiline: true,
-			timeout: 10000
-		});
-		var email = error.email;
-		var credential = error.credential;
-	});
-	$('#signInWithGoogle').click(function() {
-		firebase.auth().signInWithRedirect(googleProvider);
-	});
-	$('#signInWithGitHub').click(function() {
-		firebase.auth().signInWithRedirect(gitHubProvider);
-	});
-	mdc.ripple.MDCRipple.attachTo(document.querySelector('#forgotPassword'));
-	mdc.ripple.MDCRipple.attachTo(document.querySelector('#signInButton'));
-	mdc.ripple.MDCRipple.attachTo(document.querySelector('#signInWithGoogle'));
-	mdc.ripple.MDCRipple.attachTo(document.querySelector('#signInWithGitHub'));
-	$('#username').focusin(function() {
-		$('#username ~ label').animate({
-			'fontSize': '0.8rem',
-			'top': '-0.7rem',
-			'padding': '0.25rem'
-		}, 80);
-	});
-	$('#username').focusout(function() {
-		if ($(this).val() === '') {
-			$('#username ~ label').animate({
-				'fontSize': '1rem',
-				'top': '1rem',
-				'padding': 0
-			}, 80);
-		}
-	});
-	$('#password').focusin(function() {
-		$('#password ~ label').animate({
-			'fontSize': '0.8rem',
-			'top': '-0.7rem',
-			'padding': '0.25rem'
-		}, 80);
-	});
-	$('#password').focusout(function() {
-		if ($(this).val() === '') {
-			$('#password ~ label').animate({
-				'fontSize': '1rem',
-				'top': '1rem',
-				'padding': 0
-			}, 80);
-		}
-	});
+  snackbar.show({
+    message: 'Please wait...',
+  });
+  var googleProvider = new firebase.auth.GoogleAuthProvider();
+  var gitHubProvider = new firebase.auth.GithubAuthProvider();
+  firebase.auth().getRedirectResult().then(function (result) {
+    if (result.credential) {
+      var token = result.credential.accessToken;
+    }
+    var newUser = result.user;
+    console.log(newUser);
+    if (newUser) {
+      if (newUser.displayName.length >= 6) {
+        $.ajax({
+          type: 'POST',
+          url: '/userExists',
+          data: {
+            username: newUser.displayName,
+            uid: newUser.uid,
+          },
+          success: function (userExists) {
+            console.log(userExists);
+            var deleted = false;
+            if (userExists.name == 'True' && userExists.uid.includes(newUser.uid) === false) {
+              snackbar.show({
+                message: 'Somebody else already has that username! Please try other options.',
+                multiline: true,
+                timeout: 10000,
+              });
+              newUser.delete().then(function () {
+                console.log('Deleted account');
+              }).catch(function (error) {
+                console.log(error);
+              });
+              deleted = true;
+            }
+            if (userExists.uid.includes(newUser.uid) === true) {
+              deleted = true;
+              snackbar.show({
+                message: 'User already exists, signing in',
+                multiline: true,
+                timeout: 10000,
+              });
+              window.location.href = '/profile';
+            }
+            if (userExists.name == 'False' && deleted === false) {
+              snackbar.show({
+                message: 'Success! Creating user "' + newUser.displayName + '".',
+                multiline: true,
+                timeout: 5000,
+              });
+              $.ajax({
+                type: 'POST',
+                url: '/createUser',
+                data: {
+                  uid: newUser.uid,
+                  email: newUser.email,
+                  location: '',
+                  phone: '',
+                  photoURL: newUser.photoURL,
+                  username: newUser.displayName,
+                },
+                success: function (result) {
+                  console.log(result);
+                  if (result == 'created user ' + newUser.displayName + '.') {
+                    newUser.sendEmailVerification().then(function () {
+                      alert('Verification email has been sent.');
+                      window.location.href = '/profile';
+                    }).catch(function (error) {
+                      console.log(error);
+                      snackbar.show({
+                        message: error,
+                        multiline: true,
+                        timeout: 10000,
+                      });
+                    });
+                  }
+                },
+              });
+            }
+          },
+        });
+      } else {
+        snackbar.show({
+          message: 'Your username "' + newUser.displayName + '" is too short. Please try other options!',
+          multiline: true,
+          timeout: 6000,
+        });
+        newUser.delete().then(function () {
+          console.log('Deleted account');
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    } else {
+      firebase.auth().onAuthStateChanged(function (user) {
+        if ((user) && (signedinnow === false)) {
+          signOutUser();
+          snackbar.show({
+            message: 'You have been signed out',
+            timeout: 5000,
+          });
+        }
+      });
+    }
+  }).catch(function (error) {
+    console.log(error);
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    snackbar.show({
+      message: errorMessage,
+      multiline: true,
+      timeout: 10000,
+    });
+    var email = error.email;
+    var credential = error.credential;
+  });
+  $('#signInWithGoogle').click(function () {
+    firebase.auth().signInWithRedirect(googleProvider);
+  });
+  $('#signInWithGitHub').click(function () {
+    firebase.auth().signInWithRedirect(gitHubProvider);
+  });
+  mdc.ripple.MDCRipple.attachTo(document.querySelector('#forgotPassword'));
+  mdc.ripple.MDCRipple.attachTo(document.querySelector('#signInButton'));
+  mdc.ripple.MDCRipple.attachTo(document.querySelector('#signInWithGoogle'));
+  mdc.ripple.MDCRipple.attachTo(document.querySelector('#signInWithGitHub'));
+  $('#username').focusin(function () {
+    $('#username ~ label').animate({
+      'fontSize': '0.8rem',
+      'top': '-0.7rem',
+      'padding': '0.25rem',
+    }, 80);
+  });
+  $('#username').focusout(function () {
+    if ($(this).val() === '') {
+      $('#username ~ label').animate({
+        'fontSize': '1rem',
+        'top': '1rem',
+        'padding': 0,
+      }, 80);
+    }
+  });
+  $('#password').focusin(function () {
+    $('#password ~ label').animate({
+      'fontSize': '0.8rem',
+      'top': '-0.7rem',
+      'padding': '0.25rem',
+    }, 80);
+  });
+  $('#password').focusout(function () {
+    if ($(this).val() === '') {
+      $('#password ~ label').animate({
+        'fontSize': '1rem',
+        'top': '1rem',
+        'padding': 0,
+      }, 80);
+    }
+  });
 </script>
 {% endblock %}

@@ -7,14 +7,20 @@
   <div id="contactMeForm" class="mdc-elevation--z2">
     <h2>Send Feedback to Me</h2>
     <div id="titleTextField" class="mdc-text-field mdc-text-field--fullwidth">
-      <input type="text" id="title" class="mdc-text-field__input" placeholder="Title" aria-label="Title">
+      <input type="text" id="title" class="mdc-text-field__input" placeholder="Title"
+             aria-label="Title">
       <div class="mdc-line-ripple"></div>
-    </div><br>
-    <div id="messageTextField" class="mdc-text-field mdc-text-field--textarea mdc-text-field--fullwidth">
-      <textarea id="message" class="mdc-text-field__input" rows="6" placeholder="Type your message here. Make sure you mention your email id if you want a response from me!"></textarea>
-    </div><br>
+    </div>
+    <br>
+    <div id="messageTextField"
+         class="mdc-text-field mdc-text-field--textarea mdc-text-field--fullwidth">
+      <textarea id="message" class="mdc-text-field__input" rows="6"
+                placeholder="Type your message here. Make sure you mention your email id if you want a response from me!"></textarea>
+    </div>
+    <br>
     <div id="submitMessage" class="mdc-button mdc-button--raised">Submit</div>
-  </div><br><br>
+  </div>
+  <br><br>
 </div>
 {% endblock %}
 
@@ -24,43 +30,43 @@
   mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
   const titleTextField = new mdc.textField.MDCTextField(document.querySelector('#titleTextField'));
   const messageTextField = new mdc.textField.MDCTextField(document.querySelector('#messageTextField'));
-  $('#submitMessage').click(function() {
+  $('#submitMessage').click(function () {
     var title = $('#title').val();
     var message = $('#message').val();
     $('#contactMeForm').html('\
-      <h2>Send Feedback to Me</h2>\
-      <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">\
-        <div class="mdc-linear-progress__buffering-dots"></div>\
-        <div class="mdc-linear-progress__buffer"></div>\
-        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">\
-          <span class="mdc-linear-progress__bar-inner"></span>\
-        </div>\
-        <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">\
-          <span class="mdc-linear-progress__bar-inner"></span>\
-        </div>\
+    <h2>Send Feedback to Me</h2>\
+    <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">\
+      <div class="mdc-linear-progress__buffering-dots"></div>\
+      <div class="mdc-linear-progress__buffer"></div>\
+      <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">\
+        <span class="mdc-linear-progress__bar-inner"></span>\
       </div>\
-    ');
+      <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">\
+        <span class="mdc-linear-progress__bar-inner"></span>\
+      </div>\
+    </div>\
+  ');
     if ((title != '') && (message != '')) {
       $.ajax({
         type: 'POST',
         url: '/sendFeedback',
         data: {
           title: title,
-          message: message
+          message: message,
         },
-        success: function(result) {
+        success: function (result) {
           console.log(result);
           if (result == 'Done!') {
             $('#contactMeForm').html('\
-              <div class="row">\
-                <h2>Send Feedback to Me</h2>\
-              </div>\
-              <div class="row">\
-                <p class="flow-text">Thanks a lot for sending your message!</p>\
-              </div>\
-            ');
+            <div class="row">\
+              <h2>Send Feedback to Me</h2>\
+            </div>\
+            <div class="row">\
+              <p class="flow-text">Thanks a lot for sending your message!</p>\
+            </div>\
+          ');
           }
-        }
+        },
       });
     }
   });

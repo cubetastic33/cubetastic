@@ -1,1 +1,33 @@
-{% extends 'layout.html' %}{% block title %}Cubetastic{% endblock %}{% block body %}<div id="homeDiv"><div id="box1" class="valign-wrapper"><p class="hide-on-small-only"> Welcome to cubetastic!</p><h2 class="hide-on-med-and-up"> Welcome to cubetastic!</h2><div class="centre" onclick="window.location.href='#box2'"><div class="arrow"></div><div class="arrow arrow-bottom"></div></div></div><div id="box2"><div id="actualBox2"><h2 class="hide-on-small-only"> Cubetastic Timer</h2><h2 class="hide-on-med-and-up"> Cubetastic Timer</h2><p> A timer on the web, that can sync your times across devices!<span class="hide-on-small-only"> You can personalise it to look the way you want.</span> An important feature of this site is that it can generate TNoodle scrambles for most of the official puzzles. Click <a href="/timer">here</a> to use the timer.</p><div class="centre hide-on-short-only" onclick="window.location.href='#'"><div class="arrow"></div><div class="arrow arrow-bottom"></div></div></div></div> {% endblock %}{% block javascript %} <script>$(document).ready(function(){$('.mdc-drawer__content .mdc-list:first-child a:first-child').addClass('mdc-list-item--activated');});</script> {% endblock %}
+{% extends 'layout.html' %}
+
+{% block title %}Cubetastic{% endblock %}
+
+{% block body %}
+<div id="homeDiv">
+<div id="box1" class="valign-wrapper"><p class="hide-on-small-only">Welcome to cubetastic!</p>
+  <h2 class="hide-on-med-and-up">Welcome to cubetastic!</h2>
+  <div class="centre" onclick="window.location.href='#box2'">
+    <div class="arrow"></div>
+    <div class="arrow arrow-bottom"></div>
+  </div>
+</div>
+<div id="box2">
+  <div id="actualBox2"><h2 class="hide-on-small-only">Cubetastic Timer</h2>
+    <h2 class="hide-on-med-and-up">Cubetastic Timer</h2>
+    <p>A timer on the web, that can sync your times across devices!<span
+      class="hide-on-small-only"> You can personalise it to look the way you want.</span> An
+      important feature of this site is that it can generate TNoodle scrambles for most of the
+      official puzzles. Click <a href="/timer">here</a> to use the timer.</p>
+    <div class="centre hide-on-short-only" onclick="window.location.href='#'">
+      <div class="arrow"></div>
+      <div class="arrow arrow-bottom"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>$(document).ready(function () {
+  $('.mdc-drawer__content .mdc-list:first-child a:first-child').addClass('mdc-list-item--activated');
+});</script>
+{% endblock %}
