@@ -1,5 +1,5 @@
 flask
 gunicorn
-firebase-admin
-pyfcm
+firebase-admin==5.4.0
+pyfcm==1.5.4
 python-dotenv
